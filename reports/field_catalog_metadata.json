@@ -1,0 +1,28 @@
+{
+  "tickers_analyzed": [
+    "PLTR",
+    "MSFT",
+    "AAPL",
+    "NVDA",
+    "JPM",
+    "BAC",
+    "WFC",
+    "WMT",
+    "AMZN",
+    "COST",
+    "JNJ",
+    "UNH",
+    "PFE",
+    "XOM",
+    "CVX",
+    "GOLD",
+    "VALE",
+    "FCX",
+    "CAT",
+    "GE",
+    "VZ"
+  ],
+  "failed_tickers": [],
+  "total_fields": 4148,
+  "total_companies": 21
+}

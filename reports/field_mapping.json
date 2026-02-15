@@ -1,0 +1,2610 @@
+{
+  "deprecated_fields": [
+    {
+      "field_name": "AcquiredFiniteLivedIntangibleAssetAmount",
+      "label": "Acquired Finite-lived Intangible Asset, Amount (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "AcquiredFiniteLivedIntangibleAssetWeightedAverageUsefulLife",
+      "label": "Acquired Finite-lived Intangible Asset, Weighted Average Useful Life (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "AssetsFairValueDisclosureRecurring",
+      "label": "Assets, Fair Value Disclosure, Recurring (Deprecated 2018-01-31)"
+    },
+    {
+      "field_name": "AvailableForSaleSecuritiesDebtMaturitiesAmortizedCost",
+      "label": "Available-for-sale Securities, Debt Maturities, Amortized Cost Basis (Deprecated 2014-01-31)"
+    },
+    {
+      "field_name": "AvailableForSaleSecuritiesDebtMaturitiesFairValue",
+      "label": "Available-for-sale Securities, Debt Maturities, Fair Value (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "AvailableForSaleSecuritiesGrossUnrealizedLosses1",
+      "label": "Available-for-sale Securities, Gross Unrealized Losses (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "AvailableforsaleSecuritiesContinuousUnrealizedLossPosition12MonthsOrLongerAggregateLosses1",
+      "label": "Available-for-sale Securities, Continuous Unrealized Loss Position, 12 Months or Longer, Aggregate Losses (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "AvailableforsaleSecuritiesContinuousUnrealizedLossPosition12MonthsOrLongerAggregateLosses2",
+      "label": "Available-for-sale Securities, Continuous Unrealized Loss Position, 12 Months or Longer, Aggregate Losses (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "AvailableforsaleSecuritiesContinuousUnrealizedLossPositionAggregateLosses1",
+      "label": "Available-for-sale Securities, Continuous Unrealized Loss Position, Aggregate Losses (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "AvailableforsaleSecuritiesContinuousUnrealizedLossPositionAggregateLosses2",
+      "label": "Available-for-sale Securities, Continuous Unrealized Loss Position, Aggregate Losses (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "AvailableforsaleSecuritiesContinuousUnrealizedLossPositionLessThan12MonthsAggregateLosses1",
+      "label": "Available-for-sale Securities, Continuous Unrealized Loss Position, Less than 12 Months, Aggregate Losses (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "AvailableforsaleSecuritiesContinuousUnrealizedLossPositionLessThan12MonthsAggregateLosses2",
+      "label": "Available-for-sale Securities, Continuous Unrealized Loss Position, Less than 12 Months, Aggregate Losses (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "AvailableforsaleSecuritiesGrossUnrealizedGain",
+      "label": "Available-for-sale Securities, Gross Unrealized Gains (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "BusinessAcquisitionCostOfAcquiredEntityCashPaid",
+      "label": "Business Acquisition, Cost of Acquired Entity, Cash Paid (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "CapitalizedComputerSoftwareAmortization",
+      "label": "Capitalized Computer Software, Amortization (Deprecated 2016-01-31)"
+    },
+    {
+      "field_name": "CommonStockIncludingAdditionalPaidInCapital",
+      "label": "Common Stock, Including Additional Paid in Capital (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "CostOfGoodsSold",
+      "label": "Cost of Goods Sold (Deprecated 2018-01-31)"
+    },
+    {
+      "field_name": "CumulativeEffectOfInitialAdoptionOfFIN48",
+      "label": "Cumulative Effect of Initial Adoption of FIN 48 (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "CumulativeEffectOfInitialAdoptionOfNewAccountingPrinciple",
+      "label": "Cumulative Effect of Initial Adoption of New Accounting Principle (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "DebtInstrumentPrincipalOutstanding",
+      "label": "Debt Instrument, Principal Outstanding (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "DeferredRevenueRevenueRecognized",
+      "label": "Deferred Revenue, Revenue Recognized (Deprecated 2016-01-31)"
+    },
+    {
+      "field_name": "DeferredTaxLiabilityNotRecognizedAmountOfUnrecognizedDeferredTaxLiability",
+      "label": "Deferred Tax Liability Not Recognized, Amount of Unrecognized Deferred Tax Liability (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "DeferredTaxLiabilityNotRecognizedCumulativeAmountOfTemporaryDifference",
+      "label": "Deferred Tax Liability Not Recognized, Cumulative Amount of Temporary Difference (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "DefinedContributionPlanMaximumAnnualContributionPerEmployeePercent",
+      "label": "Defined Contribution Plan, Maximum Annual Contribution Per Employee, Percent (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "DerivativeAssetDesignatedAsHedgingInstrumentFairValue",
+      "label": "Derivative Asset Designated as Hedging Instrument, Fair Value (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "DerivativeAssetNotDesignatedAsHedgingInstrumentFairValue",
+      "label": "Derivative Asset Not Designated as Hedging Instrument, Fair Value (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "EmployeeServiceShareBasedCompensationCashReceivedFromExerciseOfStockOptions",
+      "label": "Employee Service Share-based Compensation, Cash Received from Exercise of Stock Options (Deprecated 2017-01-31)"
+    },
+    {
+      "field_name": "EmployeeServiceShareBasedCompensationTaxBenefitRealizedFromExerciseOfStockOptions",
+      "label": "Employee Service Share-based Compensation, Tax Benefit Realized from Exercise of Stock Options (Deprecated 2017-01-31)"
+    },
+    {
+      "field_name": "EntityWideDisclosureOnGeographicAreasLongLivedAssetsInEntitysCountryOfDomicile",
+      "label": "Disclosure on Geographic Areas, Long-Lived Assets in Entity's Country of Domicile (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "EntityWideDisclosureOnGeographicAreasLongLivedAssetsInForeignCountries",
+      "label": "Disclosure on Geographic Areas, Long-Lived Assets in Foreign Countries (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "EntityWideDisclosureOnGeographicAreasRevenueFromExternalCustomersAttributedToEntitysCountryOfDomicile",
+      "label": "Disclosure on Geographic Areas, Revenue from External Customers Attributed to Entity's Country of Domicile (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "EntityWideDisclosureOnGeographicAreasRevenueFromExternalCustomersAttributedToForeignCountries",
+      "label": "Disclosure on Geographic Areas, Revenue from External Customers Attributed to Foreign Countries (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "FairValueAssetsMeasuredOnRecurringBasisCashAndCashEquivalents",
+      "label": "Fair Value, Assets Measured on Recurring Basis, Cash and Cash Equivalents (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "FairValueAssetsMeasuredOnRecurringBasisChangeInUnrealizedGainLossIncludedInOtherIncome",
+      "label": "Fair Value, Assets Measured on Recurring Basis, Change in Unrealized Gain (Loss) Included in Other Income (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "FairValueMeasurementWithUnobservableInputsReconciliationRecurringBasisAssetGainLossIncludedInEarnings",
+      "label": "Fair Value, Measurement with Unobservable Inputs Reconciliation, Recurring Basis, Asset, Gain (Loss) Included in Earnings (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "FairValueMeasurementWithUnobservableInputsReconciliationRecurringBasisAssetGainLossIncludedInOtherComprehensiveIncome",
+      "label": "Fair Value, Measurement with Unobservable Inputs Reconciliation, Recurring Basis, Asset, Gain (Loss) Included in Other Comprehensive Income (Loss) (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "FiniteLivedIntangibleAssetsAmortizationExpense",
+      "label": "Finite-Lived Intangible Assets, Amortization Expense (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "FiniteLivedIntangibleAssetsUsefulLifeMaximum",
+      "label": "Finite-Lived Intangible Assets, Useful Life, Maximum (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "FiniteLivedIntangibleAssetsUsefulLifeMinimum",
+      "label": "Finite-Lived Intangible Assets, Useful Life, Minimum (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "FutureAmortizationExpenseAfterYearFive",
+      "label": "Future Amortization Expense, after Year Five (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "FutureAmortizationExpenseYearFive",
+      "label": "Future Amortization Expense, Year Five (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "FutureAmortizationExpenseYearFour",
+      "label": "Future Amortization Expense, Year Four (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "FutureAmortizationExpenseYearOne",
+      "label": "Future Amortization Expense, Year One (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "FutureAmortizationExpenseYearThree",
+      "label": "Future Amortization Expense, Year Three (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "FutureAmortizationExpenseYearTwo",
+      "label": "Future Amortization Expense, Year Two (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "GoodwillOtherChanges",
+      "label": "Goodwill, Other Changes (Deprecated 2016-01-31)"
+    },
+    {
+      "field_name": "MarketableSecuritiesRealizedGainLossOtherThanTemporaryImpairmentsAmount",
+      "label": "Marketable Securities, Realized Loss, Other than Temporary Impairments, Amount (Deprecated 2018-01-31)"
+    },
+    {
+      "field_name": "OptionIndexedToIssuersEquityStrikePrice",
+      "label": "Option Indexed to Issuer's Equity, Strike Price (Deprecated 2014-01-31)"
+    },
+    {
+      "field_name": "OtherComprehensiveIncomeAvailableForSaleSecuritiesAdjustmentNetOfTaxPeriodIncreaseDecrease",
+      "label": "Other Comprehensive Income (Loss), Available-for-sale Securities Adjustment, Net of Tax (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "OtherComprehensiveIncomeDerivativesQualifyingAsHedgesNetOfTaxPeriodIncreaseDecrease",
+      "label": "Other Comprehensive Income (Loss), Derivatives Qualifying as Hedges, Net of Tax (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "OtherComprehensiveIncomeForeignCurrencyTransactionAndTranslationAdjustmentNetOfTaxPeriodIncreaseDecrease",
+      "label": "Other Comprehensive Income (Loss), Foreign Currency Transaction and Translation Adjustment, Net of Tax (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "OtherComprehensiveIncomeForeignCurrencyTranslationAdjustmentTax",
+      "label": "Other Comprehensive Income (Loss), Foreign Currency Translation Adjustment, Tax (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "OtherComprehensiveIncomeLossNetOfTaxPeriodIncreaseDecrease",
+      "label": "Other Comprehensive Income (Loss), Net of Tax (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "OtherComprehensiveIncomeLossReclassificationAdjustmentForSaleOfSecuritiesIncludedInNetIncomeNetOfTax",
+      "label": "Other Comprehensive Income (Loss), Reclassification Adjustment for Sale of Securities Included in Net Income, Net of Tax (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "OtherComprehensiveIncomeLossReclassificationAdjustmentForSaleOfSecuritiesIncludedInNetIncomeTax",
+      "label": "Other Comprehensive Income (Loss), Reclassification Adjustment for Sale of Securities Included in Net Income, Tax (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "OtherComprehensiveIncomeLossReclassificationAdjustmentOnDerivativesIncludedInNetIncomeNetOfTax",
+      "label": "Other Comprehensive Income (Loss), Reclassification Adjustment on Derivatives Included in Net Income, Net of Tax (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "OtherComprehensiveIncomeLossReclassificationAdjustmentOnDerivativesIncludedInNetIncomeTax",
+      "label": "Other Comprehensive Income (Loss), Reclassification Adjustment on Derivatives Included in Net Income, Tax (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "OtherComprehensiveIncomeReclassificationAdjustmentForSaleOfSecuritiesIncludedInNetIncomeNetOfTax",
+      "label": "Other Comprehensive Income (Loss), Reclassification Adjustment for Sale of Securities Included in Net Income, Net of Tax (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "OtherComprehensiveIncomeReclassificationAdjustmentForSaleOfSecuritiesIncludedInNetIncomeTax",
+      "label": "Other Comprehensive Income (Loss), Reclassification Adjustment for Sale of Securities Included in Net Income, Tax (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "OtherComprehensiveIncomeReclassificationAdjustmentOnDerivativesIncludedInNetIncomeNetOfTax",
+      "label": "Other Comprehensive Income (Loss), Reclassification Adjustment on Derivatives Included in Net Income, Net of Tax (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "OtherComprehensiveIncomeReclassificationAdjustmentOnDerivativesIncludedInNetIncomeTax",
+      "label": "Other Comprehensive Income (Loss), Reclassification Adjustment on Derivatives Included in Net Income, Tax (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "RestructuringReserveSettledWithCash",
+      "label": "Restructuring Reserve, Settled With Cash (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "RestructuringReserveSettledWithoutCash1",
+      "label": "Restructuring Reserve, Settled without Cash (Deprecated 2016-01-31)"
+    },
+    {
+      "field_name": "SalesRevenueGoodsNet",
+      "label": "Sales Revenue, Goods, Net (Deprecated 2018-01-31)"
+    },
+    {
+      "field_name": "SalesRevenueNet",
+      "label": "Revenue, Net (Deprecated 2018-01-31)"
+    },
+    {
+      "field_name": "SegmentReportingReconcilingItemForOperatingProfitLossFromSegmentToConsolidatedAmount",
+      "label": "Segment Reporting, Reconciling Item for Operating Profit (Loss) from Segment to Consolidated, Amount (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "SeveranceCosts",
+      "label": "Severance Costs (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "ShareBasedCompensationArrangementByShareBasedPaymentAwardOptionsExercisableIntrinsicValue",
+      "label": "Share-based Compensation Arrangement by Share-based Payment Award, Options, Exercisable, Intrinsic Value (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "ShareBasedCompensationArrangementByShareBasedPaymentAwardOptionsExercisableWeightedAverageRemainingContractualTerm",
+      "label": "Share-based Compensation Arrangement by Share-based Payment Award, Options, Exercisable, Weighted Average Remaining Contractual Term (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "ShareBasedCompensationArrangementByShareBasedPaymentAwardOptionsExercisesInPeriod",
+      "label": "Share-based Compensation Arrangement by Share-based Payment Award, Options, Exercises in Period (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "ShareBasedCompensationArrangementByShareBasedPaymentAwardOptionsExercisesInPeriodWeightedAverageExercisePrice",
+      "label": "Share-based Compensation Arrangement by Share-based Payment Award, Options, Exercises in Period, Weighted Average Exercise Price (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "ShareBasedCompensationArrangementByShareBasedPaymentAwardOptionsExpirationsInPeriodWeightedAverageExercisePrice",
+      "label": "Share-based Compensation Arrangement by Share-based Payment Award, Options, Expirations in Period, Weighted Average Exercise Price (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "ShareBasedCompensationArrangementByShareBasedPaymentAwardOptionsForfeituresInPeriodWeightedAverageExercisePrice",
+      "label": "Share-based Compensation Arrangement by Share-based Payment Award, Options, Forfeitures in Period, Weighted Average Exercise Price (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "ShareBasedCompensationArrangementByShareBasedPaymentAwardOptionsGrantsInPeriodWeightedAverageExercisePrice",
+      "label": "Share-based Compensation Arrangement by Share-based Payment Award, Options, Grants in Period, Weighted Average Exercise Price (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "ShareBasedCompensationArrangementByShareBasedPaymentAwardOptionsOutstandingWeightedAverageRemainingContractualTerm",
+      "label": "Share-based Compensation Arrangement by Share-based Payment Award, Options, Outstanding, Weighted Average Remaining Contractual Term (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "SharebasedCompensationArrangementBySharebasedPaymentAwardOptionsOutstandingWeightedAverageRemainingContractualTerm1",
+      "label": "Share-based Compensation Arrangement by Share-based Payment Award, Options, Outstanding, Weighted Average Remaining Contractual Term (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "StockRepurchaseProgramAuthorizedAmount",
+      "label": "Stock Repurchase Program, Authorized Amount (Deprecated 2014-01-31)"
+    },
+    {
+      "field_name": "StockRepurchaseProgramRemainingAuthorizedRepurchaseAmount",
+      "label": "Stock Repurchase Program, Remaining Authorized Repurchase Amount (Deprecated 2014-01-31)"
+    },
+    {
+      "field_name": "TaxBenefitFromStockOptionsExercised",
+      "label": "Tax Benefit from Stock Options Exercised (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "AccountsPayable",
+      "label": "Accounts Payable (Deprecated 2009-01-31)"
+    },
+    {
+      "field_name": "AccruedLiabilities",
+      "label": "Accrued Liabilities (Deprecated 2009-01-31)"
+    },
+    {
+      "field_name": "AvailableForSaleSecuritiesFairValueDisclosure",
+      "label": "Available-for-sale Securities, Fair Value Disclosure (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "BusinessAcquisitionCostOfAcquiredEntityPurchasePrice",
+      "label": "Business Acquisition, Cost of Acquired Entity, Purchase Price (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "BusinessAcquisitionPurchasePriceAllocationAmortizableIntangibleAssets",
+      "label": "Business Acquisition, Purchase Price Allocation, Amortizable Intangible Assets (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "BusinessAcquisitionPurchasePriceAllocationGoodwillAmount",
+      "label": "Business Acquisition, Purchase Price Allocation, Goodwill Amount (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "BusinessAcquisitionPurchasePriceAllocationLiabilitiesAssumed",
+      "label": "Business Acquisition, Purchase Price Allocation, Liabilities Assumed (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "ChangeInUnrealizedGainLossOnFairValueHedgingInstruments",
+      "label": "Change in Unrealized Gain (Loss) on Fair Value Hedging Instruments (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "CostOfReimbursableExpense",
+      "label": "Cost of Reimbursable Expense (Deprecated 2018-01-31)"
+    },
+    {
+      "field_name": "DefinedContributionPlanMaximumAnnualContributionPerEmployeeAmount",
+      "label": "Defined Contribution Plan, Maximum Annual Contribution Per Employee, Amount (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "DerivativeInstrumentsGainLossRecognizedInOtherComprehensiveIncomeEffectivePortionNet",
+      "label": "Derivative Instruments, Gain (Loss) Recognized in Other Comprehensive Income (Loss), Effective Portion, Net (Deprecated 2018-01-31)"
+    },
+    {
+      "field_name": "EmployeeServiceShareBasedCompensationNonvestedAwardsTotalCompensationCostNotYetRecognizedPeriodForRecognition",
+      "label": "Employee Service Share-based Compensation, Nonvested Awards, Total Compensation Cost Not yet Recognized, Period for Recognition (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "EmployeeServiceShareBasedCompensationUnrecognizedCompensationCostsOnNonvestedAwards",
+      "label": "Employee Service Share-based Compensation, Unrecognized Compensation Costs on Nonvested Awards (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "EmployeeServiceShareBasedCompensationUnrecognizedCompensationCostsOnNonvestedAwardsWeightedAveragePeriodOfRecognition",
+      "label": "Employee Service Share-based Compensation, Unrecognized Compensation Costs on Nonvested Awards, Weighted Average Period of Recognition (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "FairValueAssetsMeasuredOnRecurringBasisDerivativeFinancialInstrumentsAssets",
+      "label": "Fair Value, Assets Measured on Recurring Basis, Derivative Financial Instruments, Assets (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "FairValueLiabilitiesMeasuredOnRecurringBasisDerivativeFinancialInstrumentsLiabilities",
+      "label": "Fair Value, Liabilities Measured on Recurring Basis, Derivative Financial Instruments, Liabilities (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "ForeignCurrencyDerivativeAssetsAtFairValue",
+      "label": "Foreign Currency Derivative Assets at Fair Value (Deprecated 2014-01-31)"
+    },
+    {
+      "field_name": "ForeignCurrencyDerivativeLiabilitiesAtFairValue",
+      "label": "Foreign Currency Derivative Liabilities at Fair Value (Deprecated 2014-01-31)"
+    },
+    {
+      "field_name": "NotionalAmountOfForeignCurrencyDerivativeInstrumentsNotDesignatedAsHedgingInstruments",
+      "label": "Notional Amount of Foreign Currency Derivative Instruments Not Designated as Hedging Instruments (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "SalesRevenueServicesGross",
+      "label": "Sales Revenue, Services, Other (Deprecated 2018-01-31)"
+    },
+    {
+      "field_name": "SegmentReportingInformationOperatingIncomeLoss",
+      "label": "Segment Reporting Information, Operating Income (Loss) (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "SegmentReportingReconcilingItemsAssets",
+      "label": "Segment Reporting, Reconciling Items, Assets (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "SegmentReportingSegmentAssets",
+      "label": "Segment Reporting, Segment Assets (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "ShareBasedCompensationArrangementByShareBasedPaymentAwardEquityInstrumentsOtherThanOptionsForfeitedInPeriodWeightedAverageGrantDateFairValue",
+      "label": "Share-based Compensation Arrangement by Share-based Payment Award, Equity Instruments Other than Options, Forfeited in Period, Weighted Average Grant Date Fair Value (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "ShareBasedCompensationArrangementByShareBasedPaymentAwardFairValueAssumptionsExpectedTerm",
+      "label": "Share-based Compensation Arrangement by Share-based Payment Award, Fair Value Assumptions, Expected Term (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "SignificantChangeInUnrecognizedTaxBenefitsIsReasonablyPossibleEstimatedRangeOfChangeLowerBound",
+      "label": "Significant (Increase) Decrease in Unrecognized Tax Benefits is Reasonably Possible, Estimated Range of Change, Lower Bound (Deprecated 2015-01-31)"
+    },
+    {
+      "field_name": "SignificantChangeInUnrecognizedTaxBenefitsIsReasonablyPossibleEstimatedRangeOfChangeUpperBound",
+      "label": "Significant (Increase) Decrease in Unrecognized Tax Benefits is Reasonably Possible, Estimated Range of Change, Upper Bound (Deprecated 2015-01-31)"
+    },
+    {
+      "field_name": "AccruedIncomeTaxesPayable",
+      "label": "Accrued Income Taxes Payable (Deprecated 2009-01-31)"
+    },
+    {
+      "field_name": "AdjustmentsNoncashItemsToReconcileNetIncomeLossToCashProvidedByUsedInOperatingActivitiesOther",
+      "label": "Adjustments, Noncash Items, to Reconcile Net Income (Loss) to Cash Provided by (Used in) Operating Activities, Other (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "AmortizationOfAcquiredIntangibleAssets",
+      "label": "Amortization of Acquired Intangible Assets (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "AssetsHeldForSaleCurrent",
+      "label": "Assets Held-for-sale, Current (Deprecated 2014-01-31)"
+    },
+    {
+      "field_name": "AvailableForSaleSecuritiesChangeInNetUnrealizedHoldingGainLossNetOfTax",
+      "label": "Available-for-sale Securities, Change in Net Unrealized Holding Gain (Loss), Net of Tax (Deprecated 2018-01-31)"
+    },
+    {
+      "field_name": "AvailableForSaleSecuritiesContinuousUnrealizedLossPosition12MonthsOrLongerAggregateLosses",
+      "label": "Available-for-sale Securities, Continuous Unrealized Loss Position, 12 Months or Longer, Aggregate Loss (Deprecated 2018-01-31)"
+    },
+    {
+      "field_name": "AvailableForSaleSecuritiesContinuousUnrealizedLossPositionAggregateLosses",
+      "label": "Available-for-sale Securities, Continuous Unrealized Loss Position, Aggregate Loss (Deprecated 2018-01-31)"
+    },
+    {
+      "field_name": "AvailableForSaleSecuritiesContinuousUnrealizedLossPositionLessThan12MonthsAggregateLosses",
+      "label": "Available-for-sale Securities, Continuous Unrealized Loss Position, Less than 12 Months, Aggregate Loss (Deprecated 2018-01-31)"
+    },
+    {
+      "field_name": "AvailableForSaleSecuritiesInUnrealizedLossPositionsQualitativeDisclosureNumberOfPositions",
+      "label": "Available-for-sale, Securities in Unrealized Loss Positions, Qualitative Disclosure, Number of Positions (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "AvailableforsaleSecuritiesGrossUnrealizedGainLoss1",
+      "label": "Available-for-sale Securities, Gross Unrealized Gain (Loss) (Deprecated 2018-01-31)"
+    },
+    {
+      "field_name": "BusinessAcquisitionContingentConsiderationPotentialCashPayment",
+      "label": "Business Acquisition, Contingent Consideration, Potential Cash Payment (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "BusinessAcquisitionProFormaNetIncomeLoss",
+      "label": "Business Acquisition, Pro Forma Net Income (Loss) (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "BusinessAcquisitionProFormaRevenue",
+      "label": "Business Acquisition, Pro Forma Revenue (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "BusinessAcquisitionPurchasePriceAllocationAssetsAcquired",
+      "label": "Business Acquisition, Purchase Price Allocation, Assets Acquired (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "BusinessAcquisitionPurchasePriceAllocationAssetsAcquiredLiabilitiesAssumedNet",
+      "label": "Business Acquisition, Purchase Price Allocation, Assets Acquired (Liabilities Assumed), Net (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "BusinessAcquisitionPurchasePriceAllocationCurrentAssetsInventory",
+      "label": "Business Acquisition, Purchase Price Allocation, Current Assets, Inventory (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "BusinessAcquisitionPurchasePriceAllocationCurrentAssetsPrepaidExpenseAndOtherAssets",
+      "label": "Business Acquisition, Purchase Price Allocation, Current Assets, Prepaid Expense and Other Assets (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "BusinessAcquisitionPurchasePriceAllocationCurrentAssetsReceivables",
+      "label": "Business Acquisition, Purchase Price Allocation, Current Assets, Receivables (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "BusinessAcquisitionPurchasePriceAllocationCurrentLiabilitiesAccountsPayable",
+      "label": "Business Acquisition, Purchase Price Allocation, Current Liabilities, Accounts Payable (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "BusinessAcquisitionPurchasePriceAllocationCurrentLiabilitiesAccruedLiabilities",
+      "label": "Business Acquisition, Purchase Price Allocation, Current Liabilities, Accrued Liabilities (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "BusinessAcquisitionPurchasePriceAllocationNoncurrentAssets",
+      "label": "Business Acquisition, Purchase Price Allocation, Noncurrent Assets (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "BusinessAcquisitionPurchasePriceAllocationNotesPayableAndLongTermDebt",
+      "label": "Business Acquisition, Purchase Price Allocation, Notes Payable and Long-term Debt (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "BusinessAcquisitionPurchasePriceAllocationOtherNoncurrentAssets",
+      "label": "Business Acquisition, Purchase Price Allocation, Other Noncurrent Assets (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "BusinessAcquisitionPurchasePriceAllocationPropertyPlantAndEquipment",
+      "label": "Business Acquisition, Purchase Price Allocation, Property, Plant and Equipment (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "CostOfGoodsSoldAmortization",
+      "label": "Cost of Goods Sold, Amortization (Deprecated 2018-01-31)"
+    },
+    {
+      "field_name": "CumulativeEffectOfNewAccountingPrincipleInPeriodOfAdoption",
+      "label": "Cumulative Effect of New Accounting Principle in Period of Adoption (Deprecated 2020-01-31)"
+    },
+    {
+      "field_name": "DebtInstrumentConvertibleConversionRatio",
+      "label": "Debt Instrument, Convertible, Conversion Ratio (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "DebtInstrumentConvertibleEffectiveInterestRate",
+      "label": "Debt Instrument, Convertible, Effective Interest Rate (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "DebtInstrumentConvertibleInterestExpense",
+      "label": "Debt Instrument, Convertible, Interest Expense (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "EntityWideDisclosureOnGeographicAreasLongLivedAssetsInIndividualForeignCountriesAmount",
+      "label": "Disclosure on Geographic Areas, Long-Lived Assets in Individual Foreign Countries, Amount (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "FiniteLivedIntangibleAssetsUsefulLife",
+      "label": "Finite-Lived Intangible Assets, Useful Life (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "FutureAmortizationExpenseRemainderOfFiscalYear",
+      "label": "Future Amortization Expense, Remainder of Fiscal Year (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "LiabilitiesAssumed",
+      "label": "Liabilities Assumed (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "LitigationSettlementGross",
+      "label": "Litigation Settlement, Gross (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "NoncashOrPartNoncashAcquisitionIntangibleAssetsAcquired",
+      "label": "Noncash or Part Noncash Acquisition, Intangible Assets Acquired (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "OtherComprehensiveIncomeReclassificationAdjustmentForSaleOfSecuritiesIncludedInNetIncomeBeforeTax",
+      "label": "Other Comprehensive Income (Loss), Reclassification Adjustment for Sale of Securities Included in Net Income, before Tax (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "OtherComprehensiveIncomeReclassificationOfDefinedBenefitPlansNetGainLossRecognizedInNetPeriodicBenefitCostNetOfTax",
+      "label": "Other Comprehensive Income (Loss), Reclassification, Pension and Other Postretirement Benefit Plans, Net Gain (Loss) Recognized in Net Periodic Benefit Cost, Net of Tax (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "OtherNoncurrentLiabilities",
+      "label": "Other Noncurrent Liabilities (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "PropertyPlantAndEquipmentUsefulLifeMaximum",
+      "label": "Property, Plant and Equipment, Useful Life, Maximum (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "PropertyPlantAndEquipmentUsefulLifeMinimum",
+      "label": "Property, Plant and Equipment, Useful Life, Minimum (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "ShareBasedCompensationArrangementByShareBasedPaymentAwardOptionsVestedAndExpectedToVestOutstandingWeightedAverageRemainingContractualTerm",
+      "label": "Share-based Compensation Arrangement by Share-based Payment Award, Options, Vested and Expected to Vest, Outstanding, Weighted Average Remaining Contractual Term (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "ShareBasedCompensationArrangementByShareBasedPaymentAwardOptionsVestedInPeriodFairValue",
+      "label": "Share-based Compensation Arrangement by Share-based Payment Award, Options, Vested in Period, Fair Value (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "SharebasedCompensationSharesAuthorizedUnderStockOptionPlansExercisePriceRangeExercisableOptionsWeightedAverageRemainingContractualTerm1",
+      "label": "Share-based Compensation, Shares Authorized under Stock Option Plans, Exercise Price Range, Exercisable Options, Weighted Average Remaining Contractual Term (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "TaxBenefitFromStockOptionsExercised1",
+      "label": "Tax Benefit from Stock Options Exercised (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "AdministrativeServicesRevenue",
+      "label": "Administrative Services Revenue (Deprecated 2018-01-31)"
+    },
+    {
+      "field_name": "AllowanceForLoanAndLeaseLossesProvisionForLossNet",
+      "label": "Allowance for Loan and Lease Losses, Provision for Loss, Net (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "AlternativeInvestmentsFairValueDisclosure",
+      "label": "Alternative Investment, Fair Value Disclosure (Deprecated 2018-01-31)"
+    },
+    {
+      "field_name": "AssetManagementFees",
+      "label": "Asset Management Fees (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "AssetManagementFees1",
+      "label": "Asset Management Fees (Deprecated 2018-01-31)"
+    },
+    {
+      "field_name": "BusinessAcquisitionProFormaIncomeLossFromContinuingOperationsBeforeChangesInAccountingAndExtraordinaryItemsNetOfTax",
+      "label": "Business Acquisition, Pro Forma Income (Loss) from Continuing Operations before Changes in Accounting and Extraordinary Items, Net of Tax (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "CashFlowsBetweenSecuritizationSpecialPurposeEntitySPEAndTransferorOtherCashFlowsReceivedOnRetainedInterests",
+      "label": "Cash Flows Between Securitization or Asset-backed Financing Arrangement Special Purpose Entity (SPE) and Transferor, Other Cash Flows Received on Retained Interests (Deprecated 2009-01-31)"
+    },
+    {
+      "field_name": "CashFlowsBetweenSecuritizationSpecialPurposeEntitySPEAndTransferorPurchasesOfDelinquentOrForeclosedAssets",
+      "label": "Cash Flows Between Securitization or Asset-backed Financing Arrangement Special Purpose Entity (SPE) and Transferor, Purchases of Previously Transferred Financial Assets (Deprecated 2009-01-31)"
+    },
+    {
+      "field_name": "CashFlowsBetweenSecuritizationSpecialPurposeEntitySPEAndTransferorServicingFeesReceived",
+      "label": "Cash Flows Between Securitization or Asset-backed Financing Arrangement Special Purpose Entity (SPE) and Transferor, Servicing Fees Received (Deprecated 2009-01-31)"
+    },
+    {
+      "field_name": "ChangeInUnrealizedGainLossOnHedgedItemInFairValueHedge",
+      "label": "Change in Unrealized Gain (Loss) on Hedged Item in Fair Value Hedge (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "ClassOfWarrantOrRightExercisePriceOfWarrantsOrRights",
+      "label": "Class of Warrant or Right, Exercise Price of Warrants or Rights (Deprecated 2014-01-31)"
+    },
+    {
+      "field_name": "CreditDerivativeCurrentFairValue",
+      "label": "Credit Derivative, Current Fair Value (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "DebtInstrumentInterestRateStatedPercentageRateRangeMaximum",
+      "label": "Debt Instrument, Interest Rate, Stated Percentage Rate Range, Maximum (Deprecated 2016-01-31)"
+    },
+    {
+      "field_name": "DebtInstrumentInterestRateStatedPercentageRateRangeMinimum",
+      "label": "Debt Instrument, Interest Rate, Stated Percentage Rate Range, Minimum (Deprecated 2016-01-31)"
+    },
+    {
+      "field_name": "DefinedBenefitPlanEffectOfOnePercentagePointDecreaseOnAccumulatedPostretirementBenefitObligation",
+      "label": "Defined Benefit Plan, Effect of One Percentage Point Decrease on Accumulated Postretirement Benefit Obligation (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "DefinedBenefitPlanEffectOfOnePercentagePointDecreaseOnServiceAndInterestCostComponents",
+      "label": "Defined Benefit Plan, Effect of One Percentage Point Decrease on Service and Interest Cost Components (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "DerivativeInstrumentsGainLossRecognizedInIncomeNet",
+      "label": "Derivative Instruments, Gain (Loss) Recognized in Income, Net (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "DerivativeLiabilityDesignatedAsHedgingInstrumentFairValue",
+      "label": "Derivative Liability Designated as Hedging Instrument, Fair Value (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "DerivativeLiabilityNotDesignatedAsHedgingInstrumentFairValue",
+      "label": "Derivative Liability Not Designated as Hedging Instrument, Fair Value (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "ExtraordinaryItemNetOfTax",
+      "label": "Extraordinary Item, Gain (Loss), Net of Tax, Including Portion Attributable to Noncontrolling Interest (Deprecated 2019-01-31)"
+    },
+    {
+      "field_name": "FairValueAssetsMeasuredOnRecurringBasisLoansReceivable",
+      "label": "Fair Value, Assets Measured on Recurring Basis, Loans Receivable (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "FairValueAssetsMeasuredOnRecurringBasisServicingRights",
+      "label": "Fair Value, Assets Measured on Recurring Basis, Servicing Rights (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "FairValueAssetsMeasuredOnRecurringBasisTradingAccountAssets",
+      "label": "Fair Value, Assets Measured on Recurring Basis, Trading Account Assets (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "FairValueLiabilitiesMeasuredOnRecurringBasisBorrowings",
+      "label": "Fair Value, Liabilities Measured on Recurring Basis, Borrowings (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "FairValueLiabilitiesMeasuredOnRecurringBasisSecuritiesSoldNotYetPurchased",
+      "label": "Fair Value, Liabilities Measured on Recurring Basis, Securities Sold, Not yet Purchased (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "FairValueMeasuredOnRecurringBasisInvestments",
+      "label": "Fair Value, Measured on Recurring Basis, Investments (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "FairValueOptionChangesInFairValueGainLoss",
+      "label": "Fair Value, Option, Changes in Fair Value, Gain (Loss) (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "FairValueOptionCreditRiskGainsLossesOnLiabilities",
+      "label": "Fair Value, Option, Credit Risk, Gains (Losses) on Liabilities (Deprecated 2018-01-31)"
+    },
+    {
+      "field_name": "FederalHomeLoanBankAdvancesShortTerm",
+      "label": "Federal Home Loan Bank, Advances, Short-term (Deprecated 2014-01-31)"
+    },
+    {
+      "field_name": "FeesAndCommissions",
+      "label": "Fees and Commissions (Deprecated 2018-01-31)"
+    },
+    {
+      "field_name": "FeesAndCommissionsCreditAndDebitCards",
+      "label": "Fees and Commissions, Credit and Debit Cards (Deprecated 2018-01-31)"
+    },
+    {
+      "field_name": "FeesAndCommissionsDepositorAccounts",
+      "label": "Fees and Commissions, Depositor Accounts (Deprecated 2018-01-31)"
+    },
+    {
+      "field_name": "FeesAndCommissionsOther",
+      "label": "Fees and Commissions, Other (Deprecated 2018-01-31)"
+    },
+    {
+      "field_name": "FinancingReceivableAllowanceForCreditLossesIndividuallyEvaluatedForImpairment",
+      "label": "Financing Receivable, Allowance for Credit Losses, Individually Evaluated for Impairment (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "HeldToMaturitySecuritiesDebtMaturitiesFairValue",
+      "label": "Held-to-maturity Securities, Debt Maturities, Fair Value (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "HeldToMaturitySecuritiesDebtMaturitiesNetCarryingAmount",
+      "label": "Held-to-maturity Securities, Debt Maturities, Net Carrying Amount (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "HeldToMaturitySecuritiesUnrecognizedHoldingGains",
+      "label": "Held-to-maturity Securities, Unrecognized Holding Gain (Deprecated 2018-01-31)"
+    },
+    {
+      "field_name": "HeldToMaturitySecuritiesUnrecognizedHoldingLoss",
+      "label": "Held-to-maturity Securities, Unrecognized Holding Loss (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "HeldToMaturitySecuritiesUnrecognizedHoldingLosses",
+      "label": "Held-to-maturity Securities, Unrecognized Holding Loss (Deprecated 2018-01-31)"
+    },
+    {
+      "field_name": "HeldtomaturitySecuritiesUnrecognizedHoldingGain",
+      "label": "Held-to-maturity Securities, Unrecognized Holding Gain (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "IncomeLossBeforeExtraordinaryItemsAndCumulativeEffectOfChangeInAccountingPrinciple",
+      "label": "Income (Loss) from Operations before Extraordinary Items (Deprecated 2019-01-31)"
+    },
+    {
+      "field_name": "IncomeLossBeforeExtraordinaryItemsAndCumulativeEffectOfChangeInAccountingPrinciplePerBasicShare",
+      "label": "Income (Loss) from Operations before Extraordinary Items, Per Basic Share (Deprecated 2019-01-31)"
+    },
+    {
+      "field_name": "IncomeLossBeforeExtraordinaryItemsAndCumulativeEffectOfChangeInAccountingPrinciplePerDilutedShare",
+      "label": "Income (Loss) from Operations before Extraordinary Items, Per Diluted Share (Deprecated 2019-01-31)"
+    },
+    {
+      "field_name": "IncomeLossFromExtraordinaryItemsNetOfTaxPerBasicShare",
+      "label": "Income (Loss) from Extraordinary Items, Net of Tax, Per Basic Share (Deprecated 2019-01-31)"
+    },
+    {
+      "field_name": "IncomeLossFromExtraordinaryItemsNetOfTaxPerDilutedShare",
+      "label": "Income (Loss) from Extraordinary Items, Net of Tax, Per Diluted Share (Deprecated 2019-01-31)"
+    },
+    {
+      "field_name": "IncomeTaxExpenseBenefitContinuingOperations",
+      "label": "Income Tax Expense (Benefit), Continuing Operations (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "InterestRevenueExpense",
+      "label": "Segment Reporting Information, Interest Income or Expense, Net (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "InvestmentAdvisoryFees",
+      "label": "Investment Advisory Fees (Deprecated 2018-01-31)"
+    },
+    {
+      "field_name": "LoansAndLeasesReceivableCommercial",
+      "label": "Loans and Leases Receivable, Gross, Commercial (Deprecated 2016-01-31)"
+    },
+    {
+      "field_name": "LoansAndLeasesReceivableCommercialGovernments",
+      "label": "Loans and Leases Receivable, Gross, Commercial, Governments (Deprecated 2019-01-31)"
+    },
+    {
+      "field_name": "LoansAndLeasesReceivableConsumer",
+      "label": "Loans and Leases Receivable, Gross, Consumer (Deprecated 2016-01-31)"
+    },
+    {
+      "field_name": "LoansAndLeasesReceivableConsumerMortgage",
+      "label": "Loans and Leases Receivable, Gross, Consumer, Mortgage (Deprecated 2019-01-31)"
+    },
+    {
+      "field_name": "LoansAndLeasesReceivableConsumerOther",
+      "label": "Loans and Leases Receivable, Gross, Consumer, Other (Deprecated 2019-01-31)"
+    },
+    {
+      "field_name": "LoansAndLeasesReceivableConsumerRevolvingCreditCard",
+      "label": "Loans and Leases Receivable, Gross, Consumer, Revolving, Credit Card (Deprecated 2019-01-31)"
+    },
+    {
+      "field_name": "LoansAndLeasesReceivableImpairedAllowanceForLoanLosses",
+      "label": "Loans and Leases Receivable, Impaired, Allowance for Loan Losses (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "LoansAndLeasesReceivableImpairedAtCarryingValue",
+      "label": "Loans and Leases Receivable, Impaired, at Carrying Value (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "LoansAndLeasesReceivableImpairedAverageInvestment",
+      "label": "Loans and Leases Receivable, Impaired, Average Investment (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "LoansAndLeasesReceivableImpairedEndOfPeriodInAllowanceForLoanLoss",
+      "label": "Loans and Leases Receivable, Impaired, End of Period, in Allowance for Loan Loss (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "LoansAndLeasesReceivableImpairedEndOfPeriodNotInAllowanceForLoanLoss",
+      "label": "Loans and Leases Receivable, Impaired, End of Period, Not in Allowance for Loan Loss (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "LoansAndLeasesReceivableImpairedInterestIncomeRecognized",
+      "label": "Loans and Leases Receivable, Impaired, Interest Income Recognized (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "LoansAndLeasesReceivableOther",
+      "label": "Loans and Leases Receivable, Gross, Other (Deprecated 2016-01-31)"
+    },
+    {
+      "field_name": "LoansHeldForSaleConsumerInstallmentStudent",
+      "label": "Disposal Group, Including Discontinued Operation, Consumer, Installment, Student Loans (Deprecated 2015-01-31)"
+    },
+    {
+      "field_name": "LoansReceivableCommercialAndIndustrial",
+      "label": "Loans Receivable, Gross, Commercial and Industrial (Deprecated 2019-01-31)"
+    },
+    {
+      "field_name": "LoansReceivableCommercialRealEstate",
+      "label": "Loans Receivable, Gross, Commercial, Real Estate (Deprecated 2019-01-31)"
+    },
+    {
+      "field_name": "LoansReceivableNet",
+      "label": "Loans Receivable, Net (Deprecated 2019-01-31)"
+    },
+    {
+      "field_name": "NewAccountingPronouncementOrChangeInAccountingPrincipleCumulativeEffectOfChangeOnEquityOrNetAssets",
+      "label": "New Accounting Pronouncement or Change in Accounting Principle, Cumulative Effect of Change on Equity or Net Assets (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "NewAccountingPronouncementOrChangeInAccountingPrincipleEffectOfChangeOnNetIncome",
+      "label": "New Accounting Pronouncement or Change in Accounting Principle, Effect of Change on Net Income (Deprecated 2020-01-31)"
+    },
+    {
+      "field_name": "NewAccountingPronouncementOrChangeInAccountingPrincipleEffectOfChangeOnNetRevenue",
+      "label": "New Accounting Pronouncement or Change in Accounting Principle, Effect of Change on Net Revenue (Deprecated 2016-01-31)"
+    },
+    {
+      "field_name": "NoncashOrPartNoncashAcquisitionNoncashFinancialOrEquityInstrumentConsiderationSharesIssued",
+      "label": "Noncash or Part Noncash Acquisition, Noncash Financial or Equity Instrument Consideration, Shares Issued (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "NotionalAmountOfDerivatives",
+      "label": "Notional Amount of Derivatives (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "OriginationOfMortgageServicingRightsMSRs",
+      "label": "Origination of Mortgage Servicing Rights (MSRs) (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "OtherComprehensiveIncomeDerivativesQualifyingAsHedgesBeforeTaxPeriodIncreaseDecrease",
+      "label": "Other Comprehensive Income (Loss), Derivatives Qualifying as Hedges, before Tax (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "OtherComprehensiveIncomeLossBeforeTaxPeriodIncreaseDecrease",
+      "label": "Other Comprehensive Income (Loss), before Tax (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "ParticipatingSecuritiesDistributedAndUndistributedEarnings",
+      "label": "Participating Securities, Distributed and Undistributed Earnings (Deprecated 2014-01-31)"
+    },
+    {
+      "field_name": "PreferredStockDividends",
+      "label": "Preferred Stock Dividends (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "QualitativeAndQuantitativeInformationAssetsOrLiabilitiesForTransferorsContinuingInvolvementInSecuritizationOrAssetbackedFinancingArrangementPrincipalAmountsOutstanding",
+      "label": "Qualitative and Quantitative Information, Transferor's Continuing Involvement, Principal Amount Outstanding (Deprecated 2014-01-31)"
+    },
+    {
+      "field_name": "RevenueFromAdministrativeServices",
+      "label": "Revenue from Administrative Services (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "SegmentReportingInformationExtraordinaryItems",
+      "label": "Segment Reporting Information, Extraordinary Items (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "SegmentReportingInformationIncomeLossBeforeIncomeTaxes",
+      "label": "Segment Reporting Information, Income (Loss) before Income Taxes (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "SegmentReportingInformationIncomeTaxExpenseBenefit",
+      "label": "Segment Reporting Information, Income Tax Expense (Benefit) (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "SegmentReportingInformationInterestIncomeExpenseNet",
+      "label": "Segment Reporting Information, Interest Income (Expense), Net (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "SegmentReportingInformationNoninterestExpense",
+      "label": "Segment Reporting Information, Noninterest Expense (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "SegmentReportingInformationNoninterestIncome",
+      "label": "Segment Reporting Information, Noninterest Income (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "SegmentReportingInformationProfitLoss",
+      "label": "Segment Reporting Information, Profit (Loss) (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "SegmentReportingInformationProvisionForCreditLosses",
+      "label": "Segment Reporting Information, Provision for Credit Losses (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "ServicingAssetAtAmortizedValueAmortization",
+      "label": "Servicing Asset at Amortized Value, Amortization (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "TaxCutsAndJobsActOf2017IncompleteAccountingChangeInTaxRateProvisionalIncomeTaxExpenseBenefit",
+      "label": "Tax Cuts and Jobs Act, Incomplete Accounting, Change in Tax Rate, Provisional Income Tax Expense (Benefit) (Deprecated 2020-01-31)"
+    },
+    {
+      "field_name": "TaxCutsAndJobsActOf2017IncompleteAccountingProvisionalIncomeTaxExpenseBenefit",
+      "label": "Tax Cuts and Jobs Act, Incomplete Accounting, Provisional Income Tax Expense (Benefit) (Deprecated 2020-01-31)"
+    },
+    {
+      "field_name": "TaxCutsAndJobsActOf2017IncompleteAccountingTransitionTaxForAccumulatedForeignEarningsProvisionalIncomeTaxExpense",
+      "label": "Tax Cuts and Jobs Act, Incomplete Accounting, Transition Tax for Accumulated Foreign Earnings, Provisional Income Tax Expense (Deprecated 2020-01-31)"
+    },
+    {
+      "field_name": "TimeDeposits100000OrMoreDomestic",
+      "label": "Time Deposits, $100,000 or More, Domestic (Deprecated 2016-01-31)"
+    },
+    {
+      "field_name": "TimeDeposits100000OrMoreForeign",
+      "label": "Time Deposits, $100,000 or More, Foreign (Deprecated 2016-01-31)"
+    },
+    {
+      "field_name": "TradingSecuritiesPledgedAsCollateral",
+      "label": "Trading Securities Pledged as Collateral (Deprecated 2018-01-31)"
+    },
+    {
+      "field_name": "VariableInterestMaximumExposureToLoss",
+      "label": "Variable Interest, Maximum Exposure to Loss (Deprecated 2009-01-31)"
+    },
+    {
+      "field_name": "AllowanceForLoanAndLeaseLossesProvisionForLossGross",
+      "label": "Allowance for Loan and Lease Losses, Provision for Loss, Gross (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "AllowanceForLoanAndLeaseLossesRecoveriesOfBadDebts",
+      "label": "Allowance for Loan and Lease Losses, Recoveries of Bad Debts (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "BusinessAcquisitionCostOfAcquiredEntityEquityInterestsIssuedAndIssuable",
+      "label": "Business Acquisition, Cost of Acquired Entity, Equity Interests Issued and Issuable (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "BusinessAcquisitionPurchasePriceAllocationDeferredIncomeTaxesAssetLiabilityNet",
+      "label": "Business Acquisition, Purchase Price Allocation, Deferred Taxes Asset (Liability), Net, Noncurrent (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "CashFlowHedgeGainLossReclassifiedToInterestExpenseNet",
+      "label": "Cash Flow Hedge Gain (Loss) Reclassified to Interest Expense, Net (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "CashFlowHedgeGainLossReclassifiedToInvestmentIncomeNet",
+      "label": "Cash Flow Hedge Gain (Loss) Reclassified to Investment Income, Net (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "CashFlowHedgeGainReclassifiedToInvestmentIncome",
+      "label": "Cash Flow Hedge Gain Reclassified to Investment Income (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "CashFlowHedgeLossReclassifiedToEarnings",
+      "label": "Cash Flow Hedge Loss Reclassified to Earnings (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "CashFlowsBetweenSecuritizationSpecialPurposeEntitySPEAndTransferorProceedsFromCollectionsReinvestedInRevolvingPeriodSecuritizations",
+      "label": "Cash Flows Between Securitization or Asset-backed Financing Arrangement Special Purpose Entity (SPE) and Transferor, Proceeds from Collections Reinvested in Revolving Period Securitizations (Deprecated 2009-01-31)"
+    },
+    {
+      "field_name": "CertainLoansAcquiredInTransferAccountedForAsHeldToMaturityDebtSecuritiesAccretableYieldDisposalsOfLoans",
+      "label": "Certain Loans Acquired in Transfer Accounted for as Held-to-maturity Debt Securities, Accretable Yield, Disposals of Loans (Deprecated 2015-01-31)"
+    },
+    {
+      "field_name": "CommonStockIncludingAdditionalPaidInCapitalNetOfDiscount",
+      "label": "Common Stock, Including Additional Paid in Capital, Net of Discount (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "DefinedBenefitPlanAmortizationOfNetGainsLosses",
+      "label": "Defined Benefit Plan, Amortization of Net Gains (Losses) (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "DefinedBenefitPlanAmortizationOfNetPriorServiceCostCredit",
+      "label": "Defined Benefit Plan, Amortization of Net Prior Service Cost (Credit) (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "DefinedBenefitPlanAmortizationOfNetTransitionAssetObligation",
+      "label": "Defined Benefit Plan, Future Amortization of Transition Obligation (Asset) (Deprecated 2017-01-31)"
+    },
+    {
+      "field_name": "DefinedBenefitPlanAmountsThatWillBeAmortizedFromAccumulatedOtherComprehensiveIncomeLossInNextFiscalYear",
+      "label": "Pension and Other Postretirement Benefit Plans, Amounts that Will be Amortized from Accumulated Other Comprehensive Income (Loss) in Next Fiscal Year (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "DefinedBenefitPlanAmountToBeAmortizedFromAccumulatedOtherComprehensiveIncomeLossNextFiscalYear",
+      "label": "Defined Benefit Plan, Amount to be Amortized from Accumulated Other Comprehensive Income (Loss) Next Fiscal Year (Deprecated 2017-01-31)"
+    },
+    {
+      "field_name": "DefinedBenefitPlanFutureAmortizationOfGainLoss",
+      "label": "Defined Benefit Plan, Future Amortization of Gain (Loss) (Deprecated 2017-01-31)"
+    },
+    {
+      "field_name": "DefinedBenefitPlanFutureAmortizationOfPriorServiceCostCredit",
+      "label": "Defined Benefit Plan, Future Amortization of Prior Service Cost (Credit) (Deprecated 2017-01-31)"
+    },
+    {
+      "field_name": "DepreciationPremisesAndEquipment",
+      "label": "Depreciation Premises and Equipment (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "FairValueAssetsMeasuredOnRecurringBasisFederalFundsSoldAndSecuritiesBorrowedOrPurchasedUnderAgreementsToResell",
+      "label": "Fair Value, Assets Measured on Recurring Basis, Federal Funds Sold and Securities Borrowed or Purchased under Agreements to Resell (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "FairValueAssetsMeasuredOnRecurringBasisGainLossIncludedInInvestmentIncome",
+      "label": "Fair Value, Assets Measured on Recurring Basis, Gain (Loss) Included in Investment Income (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "FairValueLiabilitiesMeasuredOnRecurringBasisFederalFundsPurchasedAndSecuritiesSoldUnderAgreementsToRepurchase",
+      "label": "Fair Value, Liabilities Measured on Recurring Basis, Federal Funds Purchased and Securities Sold under Agreements to Repurchase (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "FairValueLiabilitiesMeasuredOnRecurringBasisGainLossIncludedInOtherIncome",
+      "label": "Fair Value, Liabilities Measured on Recurring Basis, Gain (Loss) Included in Other Income (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "FairValueLiabilitiesMeasuredOnRecurringBasisGainLossIncludedInTradingRevenue",
+      "label": "Fair Value, Liabilities Measured on Recurring Basis, Gain (Loss) Included in Trading Revenue (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "FairValueLiabilitiesMeasuredOnRecurringBasisTradingLiabilities",
+      "label": "Fair Value, Liabilities Measured on Recurring Basis, Trading Liabilities (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "FeesAndCommissionsMortgageBanking",
+      "label": "Fees and Commissions, Mortgage Banking (Deprecated 2018-01-31)"
+    },
+    {
+      "field_name": "FinancingReceivableAcquiredWithDeterioratedCreditQuality",
+      "label": "Financing Receivable, Acquired with Deteriorated Credit Quality (Deprecated 2015-01-31)"
+    },
+    {
+      "field_name": "FinancingReceivableAllowanceForCreditLossesAcquiredWithDeterioratedCreditQuality",
+      "label": "Financing Receivable, Allowance for Credit Losses, Acquired with Deteriorated Credit Quality (Deprecated 2015-01-31)"
+    },
+    {
+      "field_name": "FinancingReceivableRecordedInvestment1To29DaysPastDue",
+      "label": "Financing Receivable, Recorded Investment, 1 to 29 Days Past Due (Deprecated 2015-01-31)"
+    },
+    {
+      "field_name": "FinancingReceivableRecordedInvestment30To59DaysPastDue",
+      "label": "Financing Receivable, Recorded Investment, 30 to 59 Days Past Due (Deprecated 2015-01-31)"
+    },
+    {
+      "field_name": "FinancingReceivableRecordedInvestment60To89DaysPastDue",
+      "label": "Financing Receivable, Recorded Investment, 60 to 89 Days Past Due (Deprecated 2015-01-31)"
+    },
+    {
+      "field_name": "FinancingReceivableRecordedInvestmentEqualToGreaterThan90DaysPastDue",
+      "label": "Financing Receivable, Recorded Investment, Equal to Greater than 90 Days Past Due (Deprecated 2015-01-31)"
+    },
+    {
+      "field_name": "HeldToMaturitySecuritiesPledgedAsCollateral",
+      "label": "Held-to-maturity Securities Pledged as Collateral (Deprecated 2018-01-31)"
+    },
+    {
+      "field_name": "LeasesReceivableCommercialLeaseFinancing",
+      "label": "Leases Receivable, Gross, Commercial, Lease Financing (Deprecated 2019-01-31)"
+    },
+    {
+      "field_name": "LoansAndLeasesReceivableConsumerHomeEquity",
+      "label": "Loans and Leases Receivable, Gross, Consumer, Home Equity (Deprecated 2019-01-31)"
+    },
+    {
+      "field_name": "LoansAndLeasesReceivableConsumerLeaseFinancing",
+      "label": "Loans and Leases Receivable, Gross, Consumer, Lease Financing (Deprecated 2019-01-31)"
+    },
+    {
+      "field_name": "LoansAndLeasesReceivableForeignCommercial",
+      "label": "Loans and Leases Receivable, Gross, Foreign, Commercial (Deprecated 2016-01-31)"
+    },
+    {
+      "field_name": "LoansAndLeasesReceivableGrossCarryingAmountCommercial",
+      "label": "Loans and Leases Receivable, Gross, Carrying Amount, Commercial (Deprecated 2016-01-31)"
+    },
+    {
+      "field_name": "LoansAndLeasesReceivableGrossCarryingAmountConsumer",
+      "label": "Loans and Leases Receivable, Gross, Carrying Amount, Consumer (Deprecated 2016-01-31)"
+    },
+    {
+      "field_name": "LoansAndLeasesReceivableImpairedNonperformingOver90DaysAccrualOfInterest",
+      "label": "Loans and Leases Receivable, Impaired, Nonperforming, over 90 Days, Accrual of Interest (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "LoansReceivableHeldForSaleNet",
+      "label": "Disposal Group, Including Discontinued Operation, Loans Receivable, Net (Deprecated 2015-01-31)"
+    },
+    {
+      "field_name": "LossContingencyAccrualCarryingValuePayments",
+      "label": "Loss Contingency Accrual, Payments (Deprecated 2016-01-31)"
+    },
+    {
+      "field_name": "LossContingencyRangeOfPossibleLossMaximum",
+      "label": "Loss Contingency, Range of Possible Loss, Maximum (Deprecated 2016-01-31)"
+    },
+    {
+      "field_name": "LossContingencyRangeOfPossibleLossMinimum",
+      "label": "Loss Contingency, Range of Possible Loss, Minimum (Deprecated 2016-01-31)"
+    },
+    {
+      "field_name": "NewAccountingPronouncementOrChangeInAccountingPrincipleEffectOfAdoptionQuantification",
+      "label": "New Accounting Pronouncement or Change in Accounting Principle, Effect of Adoption, Quantification (Deprecated 2020-01-31)"
+    },
+    {
+      "field_name": "NoncashOrPartNoncashAcquisitionValueOfAssetsAcquired",
+      "label": "Noncash or Part Noncash Acquisition, Value of Assets Acquired (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "NoncashOrPartNoncashAcquisitionValueOfLiabilitiesAssumed",
+      "label": "Noncash or Part Noncash Acquisition, Value of Liabilities Assumed (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "OtherComprehensiveIncomeAmortizationOfDefinedBenefitPlanNetPriorServiceCostCreditRecognizedInNetPeriodicBenefitCostBeforeTax",
+      "label": "Other Comprehensive Income (Loss), Amortization, Pension and Other Postretirement Benefit Plans, Net Prior Service Cost (Credit) Recognized in Net Periodic Benefit Cost, before Tax (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "OtherComprehensiveIncomeCumulativeEffectOfChangeInAccountingPrincipleNetOfTaxes",
+      "label": "Other Comprehensive Income (Loss), Effect of Change in Accounting Principle, Net of Taxes (Deprecated 2016-01-31)"
+    },
+    {
+      "field_name": "OtherComprehensiveIncomeDefinedBenefitPlansAdjustmentBeforeTaxPeriodIncreaseDecrease",
+      "label": "Other Comprehensive Income (Loss), Pension and Other Postretirement Benefit Plans, Adjustment, before Tax (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "OtherComprehensiveIncomeDefinedBenefitPlansAdjustmentNetOfTaxPeriodIncreaseDecrease",
+      "label": "Other Comprehensive Income (Loss), Pension and Other Postretirement Benefit Plans, Adjustment, Net of Tax (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "OtherComprehensiveIncomeDefinedBenefitPlansNetUnamortizedGainLossArisingDuringPeriodBeforeTax",
+      "label": "Other Comprehensive Income (Loss), Pension and Other Postretirement Benefit Plans, Net Unamortized Gain (Loss) Arising During Period, before Tax (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "OtherComprehensiveIncomeForeignCurrencyTransactionAndTranslationReclassificationAdjustmentRealizedUponSaleOrLiquidationBeforeTax",
+      "label": "Other Comprehensive Income (Loss), Foreign Currency Transaction and Translation Reclassification Adjustment Realized upon Sale or Liquidation, before Tax (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "OtherComprehensiveIncomeForeignCurrencyTransactionAndTranslationReclassificationAdjustmentRealizedUponSaleOrLiquidationNetOfTax",
+      "label": "Other Comprehensive Income (Loss), Foreign Currency Transaction and Translation Reclassification Adjustment Realized upon Sale or Liquidation, Net of Tax (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "OtherComprehensiveIncomeForeignCurrencyTranslationReclassificationAdjustmentRealizedUponSaleOrLiquidationTax",
+      "label": "Other Comprehensive Income (Loss), Foreign Currency Translation Reclassification Adjustment Realized upon Sale or Liquidation, Tax (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "OtherComprehensiveIncomeLossAmortizationPensionAndOtherPostretirementBenefitPlansNetPriorServiceCostRecognizedInNetPeriodicBenefitCostBeforeTax",
+      "label": "Other Comprehensive Income (Loss), Amortization, Pension and Other Postretirement Benefit Plans, Net Prior Service Cost Recognized in Net Periodic Benefit Cost, before Tax (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "OtherComprehensiveIncomeLossForeignCurrencyTransactionAndTranslationReclassificationAdjustmentRealizedUponSaleOrLiquidationBeforeTax",
+      "label": "Other Comprehensive Income (Loss), Foreign Currency Transaction and Translation Reclassification Adjustment Realized upon Sale or Liquidation, before Tax (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "OtherComprehensiveIncomeLossForeignCurrencyTransactionAndTranslationReclassificationAdjustmentRealizedUponSaleOrLiquidationNetOfTax",
+      "label": "Other Comprehensive Income (Loss), Foreign Currency Transaction and Translation Reclassification Adjustment Realized upon Sale or Liquidation, Net of Tax (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "OtherComprehensiveIncomeLossForeignCurrencyTranslationReclassificationAdjustmentRealizedUponSaleOrLiquidationTax",
+      "label": "Other Comprehensive Income (Loss), Foreign Currency Translation Reclassification Adjustment Realized upon Sale or Liquidation, Tax (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "OtherComprehensiveIncomeLossReclassificationAdjustmentOnDerivativesIncludedInNetIncomeBeforeTax",
+      "label": "Other Comprehensive Income (Loss), Reclassification Adjustment on Derivatives Included in Net Income, before Tax (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "OtherComprehensiveIncomeReclassificationAdjustmentOnDerivativesIncludedInNetIncomeBeforeTax",
+      "label": "Other Comprehensive Income (Loss), Reclassification Adjustment on Derivatives Included in Net Income, before Tax (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "OtherComprehensiveIncomeReclassificationOfDefinedBenefitPlanNetTransitionAssetObligationRecognizedInNetPeriodicBenefitCostBeforeTax",
+      "label": "Other Comprehensive Income (Loss), Reclassification, Pension and Other Postretirement Benefit Plans, Net Transition Asset (Obligation), Recognized in Net Periodic Benefit Cost, before Tax (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "OtherComprehensiveIncomeReclassificationOfDefinedBenefitPlansNetGainLossRecognizedInNetPeriodicBenefitCostBeforeTax",
+      "label": "Other Comprehensive Income (Loss), Reclassification, Pension and Other Postretirement Benefit Plans, Net Gain (Loss) Recognized in Net Periodic Benefit Cost, before Tax (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "OtherComprehensiveIncomeReclassificationOfDefinedBenefitPlansNetGainLossRecognizedInNetPeriodicBenefitCostTax",
+      "label": "Other Comprehensive Income (Loss), Reclassification, Pension and Other Postretirement Benefit Plans, Net Gain (Loss) Recognized in Net Periodic Benefit Cost, Tax (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "SegmentReportingEntityConsolidatedAssets",
+      "label": "Segment Reporting, Entity Consolidated Assets (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "SegmentReportingEntityConsolidatedRevenue",
+      "label": "Segment Reporting, Entity Consolidated Revenue (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "SegmentReportingInformationAmortizationExpense",
+      "label": "Segment Reporting Information, Amortization Expense (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "SegmentReportingInformationOtherNoninterestExpense",
+      "label": "Segment Reporting Information, Other Noninterest Expense (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "SegmentReportingInformationRevenue",
+      "label": "Segment Reporting Information, Revenue for Reportable Segment (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "SegmentReportingSegmentRevenue",
+      "label": "Segment Reporting, Segment Revenue (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "StockConvertedFromOneClassToAnotherClassValue",
+      "label": "Stock Converted from One Class to Another Class, Value (Deprecated 2009-01-31)"
+    },
+    {
+      "field_name": "TaxCutsAndJobsActOf2017IncompleteAccountingChangeInTaxRateDeferredTaxAssetProvisionalIncomeTaxExpense",
+      "label": "Tax Cuts and Jobs Act, Incomplete Accounting, Change in Tax Rate, Deferred Tax Asset, Provisional Income Tax Expense (Deprecated 2020-01-31)"
+    },
+    {
+      "field_name": "TaxCutsAndJobsActOf2017IncompleteAccountingProvisionalUndistributedAccumulatedEarningsOfForeignSubsidiary",
+      "label": "Tax Cuts and Jobs Act, Incomplete Accounting, Provisional Undistributed Accumulated Earnings of Foreign Subsidiary (Deprecated 2020-01-31)"
+    },
+    {
+      "field_name": "TaxCutsAndJobsActOf2017IncompleteAccountingUndistributedAccumulatedEarningsOfForeignSubsidiaryProvisionalUnrecognizedDeferredTaxLiability",
+      "label": "Tax Cuts and Jobs Act, Incomplete Accounting, Undistributed Accumulated Earnings of Foreign Subsidiary, Provisional Unrecognized Deferred Tax Liability (Deprecated 2020-01-31)"
+    },
+    {
+      "field_name": "TradingActivityGainsAndLossesNet",
+      "label": "Trading Activity, Gains and Losses, Net (Deprecated 2014-01-31)"
+    },
+    {
+      "field_name": "AssumptionForFairValueOnSecuritizationDateOfInterestsContinuedToBeHeldByTransferorServicingAssetsOrLiabilitiesWeightedAverageLife",
+      "label": "Fair Value Assumption, Date of Securitization or Asset-backed Financing Arrangement, Transferor's Continuing Involvement, Servicing Assets or Liabilities, Weighted Average Life (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "AvailableForSaleSecuritiesPledgedAsCollateral",
+      "label": "Available-for-sale Securities Pledged as Collateral (Deprecated 2018-01-31)"
+    },
+    {
+      "field_name": "CashFlowHedgeGainLossReclassifiedToRevenueNet",
+      "label": "Cash Flow Hedge Gain (Loss) Reclassified to Revenue, Net (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "CumulativeEffectAdjustmentApplicationOfFairValueOptionUnrealizedGainsRecognized",
+      "label": "Cumulative-Effect Adjustment, Application of Fair Value Option, Unrealized Gains, Recognized (Deprecated 2014-01-31)"
+    },
+    {
+      "field_name": "DepositLiabilitiesReclassifiedAsLoansReceivable",
+      "label": "Deposit Liabilities Reclassified as Loans Receivable (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "EffectOnRetainedEarningsAccumulatedDeficitDueToChangeInMeasurementDateNetOfTax",
+      "label": "Effect on Retained Earnings (Accumulated Deficit) Due to Change in Measurement Date, Net of Tax (Deprecated 2016-01-31)"
+    },
+    {
+      "field_name": "FairValueLevel1ToLevel2TransfersAmount",
+      "label": "Fair Value, Level 1 to level 2 Transfers, Amount (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "FairValueLevel2ToLevel1TransfersAmount",
+      "label": "Fair Value, Level 2 to level 1 Transfers, Amount (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "FeesAndCommissionsFiduciaryAndTrustActivities",
+      "label": "Fees and Commissions, Fiduciary and Trust Activities (Deprecated 2018-01-31)"
+    },
+    {
+      "field_name": "FinancingReceivableModificationsSubsequentDefaultRecordedInvestment",
+      "label": "Financing Receivable, Modifications, Subsequent Default, Recorded Investment (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "GainLossOnDispositionOfProperty",
+      "label": "Gain (Loss) on Disposition of Property (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "ImpactOfRestatementOnEarningsPerShareBasic",
+      "label": "Impact of Restatement on Earnings Per Share, Basic (Deprecated 2020-01-31)"
+    },
+    {
+      "field_name": "IndefiniteLivedIntangibleAssets",
+      "label": "Indefinite-lived Intangible Assets (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "InvestmentAdvisoryManagementAndAdministrativeFees",
+      "label": "Investment Advisory, Management and Administrative Fees (Deprecated 2018-01-31)"
+    },
+    {
+      "field_name": "LoansAndLeasesReceivableImpairedInterestIncomeCashBasisMethod",
+      "label": "Loans and Leases Receivable, Impaired, Interest Income, Cash-Basis Method (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "LoansAndLeasesReceivableOtherNetOfDeferredIncome",
+      "label": "Loans and Leases Receivable, Other, Net of Deferred Income (Deprecated 2016-01-31)"
+    },
+    {
+      "field_name": "LoansHeldForSaleMortgages",
+      "label": "Disposal Group, Including Discontinued Operation, Mortgage Loans (Deprecated 2015-01-31)"
+    },
+    {
+      "field_name": "LoansHeldForSaleOther",
+      "label": "Disposal Group, Including Discontinued Operation, Other Loans (Deprecated 2015-01-31)"
+    },
+    {
+      "field_name": "LoansReceivableHeldForSaleNetNotPartOfDisposalGroupMortgage",
+      "label": "Loans Receivable Held-for-sale, Net, Not Part of Disposal Group, Mortgage (Deprecated 2019-01-31)"
+    },
+    {
+      "field_name": "LoansReceivableHeldForSaleNetNotPartOfDisposalGroupOther",
+      "label": "Loans Receivable Held-for-sale, Net, Not Part of Disposal Group, Other (Deprecated 2019-01-31)"
+    },
+    {
+      "field_name": "MinorityInterestIncreaseFromStockIssuance",
+      "label": "Noncontrolling Interest, Increase from Equity Issuance or Sale of Parent Equity Interest (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "NetCreditLossesDuringPeriodOnLoansManagedOrSecuritized",
+      "label": "Net Credit Losses During Period on Loans Managed or Securitized or Asset-backed Financing Arrangement (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "OtherComprehensiveIncomeAvailableForSaleSecuritiesAdjustmentBeforeTaxPeriodIncreaseDecrease",
+      "label": "Other Comprehensive Income (Loss), Available-for-sale Securities Adjustment, before Tax (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "OtherComprehensiveIncomeAvailableForSaleSecuritiesTax",
+      "label": "Other Comprehensive Income (Loss), Available-for-sale Securities, Tax (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "OtherComprehensiveIncomeDefinedBenefitPlansTax",
+      "label": "Other Comprehensive Income (Loss), Pension and Other Postretirement Benefit Plans, Tax (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "OtherComprehensiveIncomeDerivativesQualifyingAsHedgesTaxEffectPeriodIncreaseDecrease",
+      "label": "Other Comprehensive Income (Loss), Derivatives Qualifying as Hedges, Tax Effect (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "OtherComprehensiveIncomeFinalizationOfPensionAndNonPensionPostretirementPlanValuationBeforeTax",
+      "label": "Other Comprehensive Income (Loss), Finalization of Pension and Non-Pension Postretirement Plan Valuation, before Tax (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "OtherComprehensiveIncomeFinalizationOfPensionAndNonPensionPostretirementPlanValuationNetOfTax",
+      "label": "Other Comprehensive Income (Loss), Finalization of Pension and Non-Pension Postretirement Plan Valuation, Net of Tax (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "OtherComprehensiveIncomeForeignCurrencyTransactionAndTranslationAdjustmentBeforeTaxPeriodIncreaseDecrease",
+      "label": "Other Comprehensive Income (Loss), Foreign Currency Transaction and Translation Adjustment, before Tax (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "ProductLiabilityContingencyRecoveryFromThirdPartyOfEnvironmentalRemediationCost",
+      "label": "Product Liability Contingency, Recovery from Third Party of Environmental Remediation Cost (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "RestructuringReserveAccrualAdjustment",
+      "label": "Restructuring Reserve, Accrual Adjustment (Deprecated 2016-01-31)"
+    },
+    {
+      "field_name": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterestAdjustedBalance",
+      "label": "Stockholders' Equity, Including Portion Attributable to Noncontrolling Interest, Adjusted Balance (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "StockholdersEquityIncludingPortionAttributableToNoncontrollingInterestAdjustedBalance1",
+      "label": "Stockholders' Equity, Including Portion Attributable to Noncontrolling Interest, Adjusted Balance (Deprecated 2020-01-31)"
+    },
+    {
+      "field_name": "TradingSecuritiesFairValueDisclosure",
+      "label": "Trading Securities, Fair Value Disclosure (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "TransferOfPortfolioLoansAndLeasesToHeldForSale",
+      "label": "Transfer of Portfolio Loans and Leases to Held-for-sale (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "VariableInterestEntityConsolidatedCarryingAmountLiabilities",
+      "label": "Variable Interest Entity, Consolidated, Carrying Amount, Liabilities (Deprecated 2020-01-31)"
+    },
+    {
+      "field_name": "AdditionsToNoncurrentAssets",
+      "label": "Segment Reporting Information, Expenditures for Additions to Long-Lived Assets (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "CapitalLeasesFutureMinimumPaymentsNetMinimumPayments",
+      "label": "Capital Leases, Future Minimum Payments, Net Minimum Payments (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "FinancingReceivable",
+      "label": "Financing Receivable (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "GoodwillTranslationAdjustments",
+      "label": "Goodwill, Translation Adjustments (Deprecated 2016-01-31)"
+    },
+    {
+      "field_name": "LineOfCreditFacilityAmountOutstanding",
+      "label": "Line of Credit Facility, Amount Outstanding (Deprecated 2014-01-31)"
+    },
+    {
+      "field_name": "NewAccountingPronouncementOrChangeInAccountingPrincipleEffectOfChangeOnOperatingResults",
+      "label": "New Accounting Pronouncement or Change in Accounting Principle, Effect of Change on Operating Results (Deprecated 2020-01-31)"
+    },
+    {
+      "field_name": "OtherComprehensiveIncomeMinimumPensionLiabilityNetAdjustmentNetOfTax",
+      "label": "Other Comprehensive Income (Loss), Minimum Pension Liability Net Adjustment, Net of Tax (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "OtherComprehensiveIncomeMinimumPensionLiabilityNetAdjustmentTax",
+      "label": "Other Comprehensive Income (Loss), Minimum Pension Liability Net Adjustment, Tax (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "ShareBasedCompensationArrangementByShareBasedPaymentAwardCompensationCost",
+      "label": "Share-based Compensation Arrangement by Share-based Payment Award, Compensation Cost (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "TaxCutsAndJobsActOf2017IncompleteAccountingChangeInTaxRateDeferredTaxLiabilityProvisionalIncomeTaxBenefit",
+      "label": "Tax Cuts and Jobs Act, Incomplete Accounting, Change in Tax Rate, Deferred Tax Liability, Provisional Income Tax Benefit (Deprecated 2020-01-31)"
+    },
+    {
+      "field_name": "TranslationAdjustmentForNetInvestmentHedgeLossGainOnReclassifiedOfEarningsNetOfTax",
+      "label": "Derivatives used in Net Investment Hedge, Loss (Gain), Reclassified to Earnings, Net of Tax (Deprecated 2016-01-31)"
+    },
+    {
+      "field_name": "ValuationAllowanceAmount",
+      "label": "Valuation Allowance, Amount (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "BusinessAcquisitionCostOfAcquiredEntityOtherNoncashConsideration",
+      "label": "Business Acquisition, Cost of Acquired Entity, Other Noncash Consideration (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "BusinessAcquisitionPurchasePriceAllocationNoncurrentLiabilitiesLongTermDebt",
+      "label": "Business Acquisition, Purchase Price Allocation, Noncurrent Liabilities, Long-term Debt (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "BusinessAcquisitionPurchasePriceAllocationOtherNoncurrentLiabilities",
+      "label": "Business Acquisition, Purchase Price Allocation, Other Noncurrent Liabilities (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "EquityMethodInvestmentSummarizedFinancialInformationCurrentAssets",
+      "label": "Equity Method Investment, Summarized Financial Information, Current Assets (Deprecated 2020-01-31)"
+    },
+    {
+      "field_name": "EquityMethodInvestmentSummarizedFinancialInformationCurrentLiabilities",
+      "label": "Equity Method Investment, Summarized Financial Information, Current Liabilities (Deprecated 2020-01-31)"
+    },
+    {
+      "field_name": "EquityMethodInvestmentSummarizedFinancialInformationGrossProfitLoss",
+      "label": "Equity Method Investment, Summarized Financial Information, Gross Profit (Loss) (Deprecated 2020-01-31)"
+    },
+    {
+      "field_name": "EquityMethodInvestmentSummarizedFinancialInformationIncomeLossFromContinuingOperationsBeforeExtraordinaryItems",
+      "label": "Equity Method Investment, Summarized Financial Information, Income (Loss) from Continuing Operations (Deprecated 2020-01-31)"
+    },
+    {
+      "field_name": "EquityMethodInvestmentSummarizedFinancialInformationNetIncomeLoss",
+      "label": "Equity Method Investment, Summarized Financial Information, Net Income (Loss) (Deprecated 2020-01-31)"
+    },
+    {
+      "field_name": "EquityMethodInvestmentSummarizedFinancialInformationNoncurrentAssets",
+      "label": "Equity Method Investment, Summarized Financial Information, Noncurrent Assets (Deprecated 2020-01-31)"
+    },
+    {
+      "field_name": "EquityMethodInvestmentSummarizedFinancialInformationNoncurrentLiabilities",
+      "label": "Equity Method Investment, Summarized Financial Information, Noncurrent Liabilities (Deprecated 2020-01-31)"
+    },
+    {
+      "field_name": "EquityMethodInvestmentSummarizedFinancialInformationRedeemablePreferredStock",
+      "label": "Equity Method Investment, Summarized Financial Information, Redeemable Preferred Stock (Deprecated 2020-01-31)"
+    },
+    {
+      "field_name": "EquityMethodInvestmentSummarizedFinancialInformationRevenue",
+      "label": "Equity Method Investment, Summarized Financial Information, Revenue (Deprecated 2020-01-31)"
+    },
+    {
+      "field_name": "FiniteLivedIntangibleAssetsFutureAmortizationExpense",
+      "label": "Finite-Lived Intangible Assets, Future Amortization Expense (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "FiniteLivedIntangibleAssetsWeightedAverageUsefulLife",
+      "label": "Finite-Lived Intangible Assets, Weighted-Average Useful Life (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "IncomeTaxExaminationLiabilityRecorded",
+      "label": "Income Tax Examination, Liability Recorded (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "IncomeTaxExaminationRangeOfPossibleLosses",
+      "label": "Income Tax Examination, Range of Possible Losses (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "OtherAdjustmentsForNoncashItemsIncludedInIncomeLossFromContinuingOperations",
+      "label": "Other Adjustments for Noncash Items Included in Income (Loss) from Continuing Operations (Deprecated 2009-01-31)"
+    },
+    {
+      "field_name": "SalesReturnsAndAllowancesGoods",
+      "label": "Sales Returns and Allowances, Goods (Deprecated 2018-01-31)"
+    },
+    {
+      "field_name": "SalesRevenueServicesNet",
+      "label": "Sales Revenue, Services, Net (Deprecated 2018-01-31)"
+    },
+    {
+      "field_name": "SegmentReportingSegmentOperatingProfitLoss",
+      "label": "Segment Reporting, Segment Operating Profit (Loss) (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "TaxCreditCarryforwardDeferredTaxAsset",
+      "label": "Tax Credit Carryforward, Deferred Tax Asset (Deprecated 2015-01-31)"
+    },
+    {
+      "field_name": "UnrecognizedTaxBenefitsResultingInNetOperatingLossCarryforward",
+      "label": "Unrecognized Tax Benefits Resulting in Net Operating Loss Carryforward (Deprecated 2014-01-31)"
+    },
+    {
+      "field_name": "BusinessExitCosts",
+      "label": "Business Exit Costs (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "CashPaidForCapitalizedInterest",
+      "label": "Cash Paid for Capitalized Interest (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "DividendsPayableAmount",
+      "label": "Dividends Payable, Amount (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "LossContingencyAccrualCarryingValueProvision",
+      "label": "Loss Contingency Accrual, Carrying Value, Provision (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "NewAccountingPronouncementOrChangeInAccountingPrincipleCumulativeEffectOfChangeOnEquityOrNetAssets1",
+      "label": "New Accounting Pronouncement or Change in Accounting Principle, Cumulative Effect of Change on Equity or Net Assets (Deprecated 2020-01-31)"
+    },
+    {
+      "field_name": "ReinsuranceReceivablesPaidLossesRecoverable",
+      "label": "Reinsurance Receivables (Deprecated 2016-01-31)"
+    },
+    {
+      "field_name": "RevenueFromEnrollmentAndRegistrationFeesExcludingHospitalityEnterprises",
+      "label": "Revenue from Enrollment and Registration Fees, Excluding Hospitality Enterprises (Deprecated 2018-01-31)"
+    },
+    {
+      "field_name": "ShareBasedCompensationSharesAuthorizedUnderStockOptionPlansExercisePriceRangeExercisableOptionsWeightedAverageExercisePrice",
+      "label": "Share-based Compensation, Shares Authorized under Stock Option Plans, Exercise Price Range, Exercisable Options, Weighted Average Exercise Price (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "ShareBasedCompensationSharesAuthorizedUnderStockOptionPlansExercisePriceRangeOutstandingOptionsWeightedAverageExercisePriceBeginningBalance",
+      "label": "Share-based Compensation, Shares Authorized under Stock Option Plans, Exercise Price Range, Outstanding Options, Weighted Average Exercise Price, Beginning Balance (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "ShareBasedCompensationSharesAuthorizedUnderStockOptionPlansExercisePriceRangeOutstandingOptionsWeightedAverageRemainingContractualTerm",
+      "label": "Share-based Compensation, Shares Authorized under Stock Option Plans, Exercise Price Range, Outstanding Options, Weighted Average Remaining Contractual Term (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "SharebasedCompensationSharesAuthorizedUnderStockOptionPlansExercisePriceRangeOutstandingOptionsWeightedAverageRemainingContractualTerm1",
+      "label": "Share-based Compensation, Shares Authorized under Stock Option Plans, Exercise Price Range, Outstanding Options, Weighted Average Remaining Contractual Term (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "StockIssued",
+      "label": "Stock Issued (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "AssetsHeldForSaleOtherNoncurrent",
+      "label": "Assets Held-for-sale, Other, Noncurrent (Deprecated 2014-01-31)"
+    },
+    {
+      "field_name": "BusinessAcquisitionCostOfAcquiredEntityLiabilitiesIncurred",
+      "label": "Business Acquisition, Cost of Acquired Entity, Liabilities Incurred (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "CumulativeEffectOnRetainedEarningsNetOfTax1",
+      "label": "Cumulative Effect on Retained Earnings, Net of Tax (Deprecated 2020-01-31)"
+    },
+    {
+      "field_name": "DebtConversionOriginalDebtAmount",
+      "label": "Debt Conversion, Original Debt, Amount (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "DefinedBenefitPlanHealthCareCostTrendRateAssumedForNextFiscalYear",
+      "label": "Defined Benefit Plan, Health Care Cost Trend Rate Assumed for Next Fiscal Year (Deprecated 2017-01-31)"
+    },
+    {
+      "field_name": "DefinedBenefitPlanTargetAllocationPercentageOfAssetsDebtSecurities",
+      "label": "Defined Benefit Plan, Target Allocation Percentage of Assets, Debt Securities (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "DefinedBenefitPlanTargetAllocationPercentageOfAssetsEquitySecurities",
+      "label": "Defined Benefit Plan, Target Allocation Percentage of Assets, Equity Securities (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "DefinedBenefitPlanTargetPlanAssetAllocations",
+      "label": "Defined Benefit Plan, Target Plan Asset Allocations (Deprecated 2017-01-31)"
+    },
+    {
+      "field_name": "DefinedBenefitPlanUltimateHealthCareCostTrendRate",
+      "label": "Defined Benefit Plan, Ultimate Health Care Cost Trend Rate (Deprecated 2017-01-31)"
+    },
+    {
+      "field_name": "EntityWideDisclosureOnGeographicAreasRevenueFromExternalCustomersAttributedToIndividualForeignCountriesAmount",
+      "label": "Entity-Wide Disclosure on Geographic Areas, Revenue from External Customers Attributed to Individual Foreign Countries, Amount (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "FairValueAssetsMeasuredOnRecurringBasisEquityMethodInvestments",
+      "label": "Fair Value, Assets Measured on Recurring Basis, Equity Method Investments (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "NoncashOrPartNoncashAcquisitionNetNonmonetaryAssetsAcquiredLiabilitiesAssumed",
+      "label": "Noncash or Part Noncash Acquisition, Net Nonmonetary Assets Acquired (Liabilities Assumed) (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "OtherComprehensiveIncomeLossAmortizationPensionAndOtherPostretirementBenefitPlansNetPriorServiceCostRecognizedInNetPeriodicPensionCostNetOfTax",
+      "label": "Other Comprehensive Income (Loss), Amortization, Pension and Other Postretirement Benefit Plans, Net Prior Service Cost Recognized in Net Periodic Pension Cost, Net of Tax (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "OtherDerivativesNotDesignatedAsHedgingInstrumentsAssetsAtFairValue",
+      "label": "Other Derivatives Not Designated as Hedging Instruments Assets at Fair Value (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "SegmentReportingInformationDepreciationDepletionAndAmortizationExpense",
+      "label": "Segment Reporting Information, Depreciation, Depletion, and Amortization Expense (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "SegmentReportingInformationExpendituresForAdditionsToLongLivedAssets",
+      "label": "Segment Reporting Information, Expenditures for Additions to Long-Lived Assets (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "ShippingHandlingAndTransportationCosts",
+      "label": "Shipping, Handling and Transportation Costs (Deprecated 2018-01-31)"
+    },
+    {
+      "field_name": "SubsequentEventAmount",
+      "label": "Subsequent Event, Amount (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "DerivativeInstrumentsGainRecognizedInIncome",
+      "label": "Derivative Instruments, Gain Recognized in Income (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "DerivativeInstrumentsLossRecognizedInIncome",
+      "label": "Derivative Instruments, Loss Recognized in Income (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "EntityWideRevenueMajorCustomerPercentage",
+      "label": "Entity-Wide Revenue, Major Customer, Percentage (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "FiveYearScheduleOfMaturitiesOfParentCompanyRepaymentOfPrincipleInYearThree",
+      "label": "Long-term Debt of Registrant, Maturities, Repayments of Principal in Year Three (Deprecated 2014-01-31)"
+    },
+    {
+      "field_name": "FiveYearScheduleOfMaturitiesOfParentCompanyRepaymentsOfPrincipalAfterYearFive",
+      "label": "Long-term Debt of Registrant, Maturities, Repayments of Principal after Year Five (Deprecated 2014-01-31)"
+    },
+    {
+      "field_name": "FiveYearScheduleOfMaturitiesOfParentCompanyRepaymentsOfPrincipleInYearFive",
+      "label": "Long-term Debt of Registrant, Maturities, Repayments of Principal in Year Five (Deprecated 2014-01-31)"
+    },
+    {
+      "field_name": "FiveYearScheduleOfMaturitiesOfParentCompanyRepaymentsOfPrincipleInYearFour",
+      "label": "Long-term Debt of Registrant, Maturities, Repayments of Principal in Year Four (Deprecated 2014-01-31)"
+    },
+    {
+      "field_name": "FiveYearScheduleOfMaturitiesOfParentCompanyRepaymentsOfPrincipleInYearTwo",
+      "label": "Long-term Debt of Registrant, Maturities, Repayments of Principal in Year Two (Deprecated 2014-01-31)"
+    },
+    {
+      "field_name": "FiveYearScheduleOfMaturitiesOfParentCompanyRepaymentsOfPrincipleWithinOneYear",
+      "label": "Long-term Debt of Registrant, Maturities, Repayments of Principal in Next Twelve Months (Deprecated 2014-01-31)"
+    },
+    {
+      "field_name": "LiabilityForUnpaidClaimsAndClaimsAdjustmentExpenseClaimsPaid",
+      "label": "Liability for Unpaid Claims and Claims Adjustment Expense, Claims Paid (Deprecated 2014-01-31)"
+    },
+    {
+      "field_name": "LiabilityForUnpaidClaimsAndClaimsAdjustmentExpenseClaimsPaidCurrentYear",
+      "label": "Liability for Unpaid Claims and Claims Adjustment Expense, Claims Paid, Current Year (Deprecated 2014-01-31)"
+    },
+    {
+      "field_name": "LiabilityForUnpaidClaimsAndClaimsAdjustmentExpenseClaimsPaidPriorYears",
+      "label": "Liability for Unpaid Claims and Claims Adjustment Expense, Claims Paid, Prior Years (Deprecated 2014-01-31)"
+    },
+    {
+      "field_name": "LiabilityForUnpaidClaimsAndClaimsAdjustmentExpenseIncurredClaims",
+      "label": "Liability for Unpaid Claims and Claims Adjustment Expense, Incurred Claims (Deprecated 2014-01-31)"
+    },
+    {
+      "field_name": "LiabilityForUnpaidClaimsAndClaimsAdjustmentExpenseIncurredClaimsCurrentYear",
+      "label": "Liability for Unpaid Claims and Claims Adjustment Expense, Incurred Claims Current Year (Deprecated 2014-01-31)"
+    },
+    {
+      "field_name": "LiabilityForUnpaidClaimsAndClaimsAdjustmentExpenseIncurredClaimsPriorYears",
+      "label": "Liability for Unpaid Claims and Claims Adjustment Expense, Incurred Claims, Prior Years (Deprecated 2014-01-31)"
+    },
+    {
+      "field_name": "NotionalAmountOfFairValueHedgeInstruments",
+      "label": "Notional Amount of Fair Value Hedge Instruments (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "NotionalAmountOfInterestRateFairValueHedgeDerivatives",
+      "label": "Notional Amount of Interest Rate Fair Value Hedge Derivatives (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "OtherComprehensiveIncomeLossReclassificationAdjustmentForSaleOfSecuritiesIncludedInNetIncomeBeforeTax",
+      "label": "Other Comprehensive Income (Loss), Reclassification Adjustment for Sale of Securities Included in Net Income, before Tax (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "RevenuesFromExternalCustomers",
+      "label": "Revenue from External Customers (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "RevenuesFromTransactionsWithOtherOperatingSegmentsOfSameEntity",
+      "label": "Segment Reporting Information, Intersegment Revenue (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "SegmentReportingInformationIntersegmentRevenue",
+      "label": "Segment Reporting Information, Intersegment Revenue (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "SegmentReportingInformationRevenueFromExternalCustomers",
+      "label": "Segment Reporting Information, Revenue from External Customers (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "SignificantChangeInUnrecognizedTaxBenefitsIsReasonablyPossibleEstimatedRangeOfChange",
+      "label": "Significant Change in Unrecognized Tax Benefits is Reasonably Possible, Estimated Range of Change (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "AssetsHeldForSaleLongLived",
+      "label": "Assets Held-for-sale, Long Lived (Deprecated 2014-01-31)"
+    },
+    {
+      "field_name": "AvailableForSaleSecuritiesGrossRealizedGainsLossesSaleProceeds",
+      "label": "Available-for-sale Securities, Gross Realized Gains (Losses), Sale Proceeds (Deprecated 2018-01-31)"
+    },
+    {
+      "field_name": "DefinedBenefitPlanAmountsRecognizedInOtherComprehensiveIncomeNetGainLossBeforeTax",
+      "label": "Defined Benefit Plan, Amounts Recognized in Other Comprehensive Income (Loss), Net Gain (Loss), before Tax (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "DerivativeFinancialInstrumentsLiabilitiesFairValueDisclosure",
+      "label": "Derivative Financial Instruments, Liabilities, Fair Value Disclosure (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "DisposalGroupIncludingDiscontinuedOperationGoodwill",
+      "label": "Disposal Group, Including Discontinued Operation, Goodwill (Deprecated 2014-01-31)"
+    },
+    {
+      "field_name": "DisposalGroupIncludingDiscontinuedOperationIntangibleAssetsNet",
+      "label": "Disposal Group, Including Discontinued Operation, Intangible Assets, Net (Deprecated 2014-01-31)"
+    },
+    {
+      "field_name": "DisposalGroupIncludingDiscontinuedOperationInventory",
+      "label": "Disposal Group, Including Discontinued Operation, Inventory (Deprecated 2014-01-31)"
+    },
+    {
+      "field_name": "DisposalGroupIncludingDiscontinuedOperationPropertyPlantAndEquipmentNet",
+      "label": "Disposal Group, Including Discontinued Operation, Property, Plant, and Equipment, Net (Deprecated 2014-01-31)"
+    },
+    {
+      "field_name": "LongLivedAssetsToBeAbandonedCarryingValueOfAsset",
+      "label": "Long-Lived Assets to be Abandoned, Carrying Value of Asset (Deprecated 2015-01-31)"
+    },
+    {
+      "field_name": "LossContingencySettlementAgreementConsideration1",
+      "label": "Loss Contingency, Settlement Agreement, Consideration (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "NotionalAmountOfForeignCurrencyDerivatives",
+      "label": "Notional Amount of Foreign Currency Derivatives (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "NotionalAmountOfInterestRateDerivatives",
+      "label": "Notional Amount of Interest Rate Derivatives (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "OtherComprehensiveIncomeAmortizationOfDefinedBenefitPlanNetPriorServiceCostRecognizedInNetPeriodicPensionCostTax",
+      "label": "Other Comprehensive Income (Loss), Amortization, Pension and Other Postretirement Benefit Plans, Net Prior Service Cost Recognized in Net Periodic Pension Cost, Tax (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "OtherComprehensiveIncomeLossAmortizationPensionAndOtherPostretirementBenefitPlansNetPriorServiceCostRecognizedInNetPeriodicPensionCostTaxEffect",
+      "label": "Other Comprehensive Income (Loss), Amortization, Pension and Other Postretirement Benefit Plans, Net Prior Service Cost Recognized in Net Periodic Pension Cost, Tax Effect (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "ProductLiabilityContingencyLossExposureInExcessOfAccrualLowEstimate",
+      "label": "Product Liability Contingency, Loss Exposure in Excess of Accrual, Low Estimate (Deprecated 2016-01-31)"
+    },
+    {
+      "field_name": "RestructuringAndRelatedCostCostIncurredToDate",
+      "label": "Restructuring and Related Cost, Cost Incurred to Date (Deprecated 2014-01-31)"
+    },
+    {
+      "field_name": "RestructuringAndRelatedCostExpectedCost",
+      "label": "Restructuring and Related Cost, Expected Cost (Deprecated 2014-01-31)"
+    },
+    {
+      "field_name": "RoyaltyRevenue",
+      "label": "Royalty Revenue (Deprecated 2018-01-31)"
+    },
+    {
+      "field_name": "ShareBasedCompensationArrangementByShareBasedPaymentAwardOptionsVestedAndExpectedToVestExercisableWeightedAverageRemainingContractualTerm",
+      "label": "Share-based Compensation Arrangement by Share-based Payment Award, Options, Vested and Expected to Vest, Exercisable, Weighted Average Remaining Contractual Term (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "TaxCutsAndJobsActOf2017IncompleteAccountingTransitionTaxForAccumulatedForeignEarningsProvisionalLiability",
+      "label": "Tax Cuts and Jobs Act, Incomplete Accounting, Transition Tax for Accumulated Foreign Earnings, Provisional Liability (Deprecated 2020-01-31)"
+    },
+    {
+      "field_name": "AccountsPayableAndAccruedLiabilities",
+      "label": "Accounts Payable and Accrued Liabilities (Deprecated 2009-01-31)"
+    },
+    {
+      "field_name": "AssetRetirementObligationForeignCurrencyTranslation",
+      "label": "Asset Retirement Obligation, Foreign Currency Translation (Deprecated 2016-01-31)"
+    },
+    {
+      "field_name": "AssetsHeldForSaleAtCarryingValue",
+      "label": "Assets Held-for-sale, at Carrying Value (Deprecated 2014-01-31)"
+    },
+    {
+      "field_name": "BusinessAcquisitionPurchasePriceAllocationCurrentAssets",
+      "label": "Business Acquisition, Purchase Price Allocation, Current Assets (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "BusinessAcquisitionPurchasePriceAllocationCurrentAssetsCashAndCashEquivalents",
+      "label": "Business Acquisition, Purchase Price Allocation, Current Assets, Cash and Cash Equivalents (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "BusinessAcquisitionPurchasePriceAllocationCurrentLiabilities",
+      "label": "Business Acquisition, Purchase Price Allocation, Current Liabilities (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "BusinessAcquisitionPurchasePriceAllocationProjectedBenefitObligationAsset",
+      "label": "Business Acquisition, Purchase Price Allocation, Projected Benefit Obligation (Asset) (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "BusinessCombinationConsiderationTransferred",
+      "label": "Business Combination, Consideration Transferred (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "CapitalizedExploratoryWellCostChargedToExpense",
+      "label": "Capitalized Exploratory Well Cost, Charged to Expense (Deprecated 2016-01-31)"
+    },
+    {
+      "field_name": "DefinedBenefitPlanGrossPrescriptionDrugSubsidyReceiptsReceived",
+      "label": "Defined Benefit Plan, Gross Prescription Drug Subsidy Receipts Received (Deprecated 2017-01-31)"
+    },
+    {
+      "field_name": "DerivativeAssetFairValueNet",
+      "label": "Derivative Asset, Fair Value, Net (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "DerivativeLiabilityFairValueNet",
+      "label": "Derivative Liability, Fair Value, Net (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "DerivativeLiabilityFairValueNet1",
+      "label": "Derivative Liability, Fair Value, Net (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "InventoryPartsAndComponents",
+      "label": "Inventory, Parts and Components (Deprecated 2009-01-31)"
+    },
+    {
+      "field_name": "LiabilitiesOfAssetsHeldForSale",
+      "label": "Liabilities of Assets Held-for-sale (Deprecated 2014-01-31)"
+    },
+    {
+      "field_name": "OtherComprehensiveIncomeDefinedBenefitPlanNetPriorServiceCostsArisingDuringPeriodTax",
+      "label": "Other Comprehensive Income (Loss), Pension and Other Postretirement Benefit Plans, Net Prior Service Costs Arising During Period ,Tax (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "OtherComprehensiveIncomeLossReclassificationPensionAndOtherPostretirementBenefitPlansNetGainLossRecognizedInNetPeriodicBenefitCostTax",
+      "label": "Other Comprehensive Income (Loss), Reclassification, Pension and Other Postretirement Benefit Plans, Net Gain (Loss) Recognized in Net Periodic Benefit Cost, Tax (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "OtherComprehensiveIncomeLossTaxPortionAttributableToParent",
+      "label": "Other Comprehensive Income (Loss), Tax, Portion Attributable to Parent (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "PensionAndOtherPostretirementDefinedBenefitPlansNoncurrentLiabilities",
+      "label": "Pension and Other Postretirement Defined Benefit Plans, Noncurrent Liabilities (Deprecated 2009-01-31)"
+    },
+    {
+      "field_name": "ShareBasedCompensationSharesAuthorizedUnderStockOptionPlansExercisePriceRangeExercisableOptionsWeightedAverageRemainingContractualTerm",
+      "label": "Share-based Compensation, Shares Authorized under Stock Option Plans, Exercise Price Range, Exercisable Options, Weighted Average Remaining Contractual Term (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "AccrualForTaxesOtherThanIncomeTaxes",
+      "label": "Accrual for Taxes Other than Income Taxes (Deprecated 2009-01-31)"
+    },
+    {
+      "field_name": "AccumulatedDepreciationDepletionAndAmortizationExpensePropertyPlantAndEquipmentCurrentCharge",
+      "label": "Accumulated Depreciation, Depletion and Amortization Expense, Property, Plant and Equipment, Current Charge (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "BusinessAcquisitionPurchasePriceAllocationProperty",
+      "label": "Business Acquisition, Purchase Price Allocation, Property (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "CostMethodInvestmentsAggregateCarryingAmount",
+      "label": "Cost-method Investments, Aggregate Carrying Amount (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "CostOfPurchasedOilAndGas",
+      "label": "Cost of Purchased Oil and Gas (Deprecated 2018-01-31)"
+    },
+    {
+      "field_name": "DebtInstrumentInterestRateAtPeriodEnd",
+      "label": "Debt Instrument, Interest Rate at Period End (Deprecated 2014-01-31)"
+    },
+    {
+      "field_name": "DefinedBenefitPlanEstimatedFutureEmployerContributionsInNextFiscalYear",
+      "label": "Defined Benefit Plan, Estimated Future Employer Contributions in Next Fiscal Year (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "DefinedBenefitPlanExpectedContributionsInCurrentFiscalYear",
+      "label": "Defined Benefit Plan, Expected Contributions in Current Fiscal Year (Deprecated 2017-01-31)"
+    },
+    {
+      "field_name": "DefinedBenefitPlansEstimatedFutureEmployerContributionsInCurrentFiscalYear",
+      "label": "Defined Benefit Plans, Estimated Future Employer Contributions in Current Fiscal Year (Deprecated 2017-01-31)"
+    },
+    {
+      "field_name": "DefinedBenefitPlansEstimatedFutureEmployerContributionsInNextFiscalYear",
+      "label": "Defined Benefit Plans, Estimated Future Employer Contributions in Next Fiscal Year (Deprecated 2017-01-31)"
+    },
+    {
+      "field_name": "DefinedBenefitPlanTargetAllocationPercentageOfAssetsOtherRangeMaximum",
+      "label": "Defined Benefit Plan, Target Allocation Percentage of Assets, Other, Range Maximum (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "DefinedBenefitPlanTargetAllocationPercentageOfAssetsOtherRangeMinimum",
+      "label": "Defined Benefit Plan, Target Allocation Percentage of Assets, Other, Range Minimum (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "DefinedBenefitPlanTargetAllocationPercentageOfAssetsRealEstateRangeMaximum",
+      "label": "Defined Benefit Plan, Target Allocation Percentage of Assets, Real Estate, Range Maximum (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "DefinedBenefitPlanTargetAllocationPercentageOfAssetsRealEstateRangeMinimum",
+      "label": "Defined Benefit Plan, Target Allocation Percentage of Assets, Real Estate, Range Minimum (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "DisposalGroupIncludingDiscontinuedOperationLongLivedAssetsNoncurrent",
+      "label": "Disposal Group, Including Discontinued Operation, Long Lived Assets, Noncurrent (Deprecated 2015-01-31)"
+    },
+    {
+      "field_name": "MinorityInterestInNetIncomeLossOfConsolidatedEntities",
+      "label": "Noncontrolling Interest in Net Income (Loss) of Consolidated Entities (Deprecated 2009-01-31)"
+    },
+    {
+      "field_name": "OilAndGasRevenue",
+      "label": "Oil and Gas Revenue (Deprecated 2018-01-31)"
+    },
+    {
+      "field_name": "OperatingLeasesRentExpenseSubleaseRentals",
+      "label": "Operating Leases, Rent Expense, Sublease Rentals (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "OtherComprehensiveIncomeAmortizationOfDefinedBenefitPlanNetPriorServiceCostRecognizedInNetPeriodicPensionCostNetOfTax",
+      "label": "Other Comprehensive Income (Loss), Amortization, Pension and Other Postretirement Benefit Plans, Net Prior Service Cost Recognized in Net Periodic Pension Cost, Net of Tax (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "ShareBasedCompensationArrangementByShareBasedPaymentAwardOptionsOtherShareIncreaseDecreaseInPeriodWeightedAverageExercisePrice",
+      "label": "Share-based Compensation Arrangement by Share-based Payment Award, Options, Other Share Increase (Decrease) in Period, Weighted Average Exercise Price (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "TaxCutsAndJobsActOf2017IncompleteAccountingExistingUndistributedAccumulatedEarningsOfForeignSubsidiary",
+      "label": "Tax Cuts and Jobs Act, Incomplete Accounting, Existing Undistributed Accumulated Earnings of Foreign Subsidiary (Deprecated 2020-01-31)"
+    },
+    {
+      "field_name": "TaxesOtherThanIncomeExciseProductionAndPropertyTaxes",
+      "label": "Taxes Other than Income, Excise, Production and Property Taxes (Deprecated 2009-01-31)"
+    },
+    {
+      "field_name": "AssetsOfDisposalGroupIncludingDiscontinuedOperationNoncurrent",
+      "label": "Assets of Disposal Group, Including Discontinued Operation, Noncurrent (Deprecated 2014-01-31)"
+    },
+    {
+      "field_name": "GainOnPurchaseOfBusiness",
+      "label": "Gain on Purchase of Business (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "IncreaseDecreaseInFairValueOfUnhedgedDerivativeInstruments",
+      "label": "Increase (Decrease) in Fair Value of Derivative Instruments, Not Designated as Hedging Instruments (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "MaximumPotentialFutureExposureOnCreditRiskDerivatives",
+      "label": "Maximum Potential Future Exposure on Credit Risk Derivatives (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "OtherComprehensiveIncomeReclassificationAdjustmentForWriteDownOfSecuritiesIncludedInNetIncomeBeforeTax",
+      "label": "Other Comprehensive Income (Loss), Reclassification Adjustment for Write-down of Securities Included in Net Income, before Tax (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "BusinessCombinationStepAcquisitionEquityInterestInAcquireeFairValue",
+      "label": "Business Combination, Step Acquisition, Equity Interest in Acquiree, Fair Value (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "CargoAndFreightRevenue",
+      "label": "Cargo and Freight Revenue (Deprecated 2018-01-31)"
+    },
+    {
+      "field_name": "DebtConversionConvertedInstrumentSharesIssued",
+      "label": "Debt Conversion, Converted Instrument, Shares Issued (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "DebtInstrumentIncreaseAdditionalBorrowings",
+      "label": "Debt Instrument, Increase, Additional Borrowings (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "DeferredTaxLiabilitiesPrepaidPensionCosts",
+      "label": "Deferred Tax Liabilities, Prepaid Pension Costs (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "DefinedBenefitPlanExpectedFutureBenefitPaymentsInYearFive",
+      "label": "Defined Benefit Plan, Expected Future Benefit Payments in Year Five (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "DefinedBenefitPlanExpectedFutureBenefitPaymentsInYearFour",
+      "label": "Defined Benefit Plan, Expected Future Benefit Payments in Year Four (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "DefinedBenefitPlanExpectedFutureBenefitPaymentsInYearOne",
+      "label": "Defined Benefit Plan, Expected Future Benefit Payments in Year One (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "DefinedBenefitPlanExpectedFutureBenefitPaymentsInYearThree",
+      "label": "Defined Benefit Plan, Expected Future Benefit Payments in Year Three (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "DefinedBenefitPlanExpectedFutureBenefitPaymentsInYearTwo",
+      "label": "Defined Benefit Plan, Expected Future Benefit Payments in Year Two (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "ForeignCurrencyExchangeRateTranslation",
+      "label": "Foreign Currency Exchange Rate, Translation (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "MineralExtractionProcessingAndMarketingCosts",
+      "label": "Mineral Extraction Processing and Marketing Costs (Deprecated 2018-01-31)"
+    },
+    {
+      "field_name": "OtherAssetsHeldForSaleCurrent",
+      "label": "Other Assets Held-for-sale, Current (Deprecated 2014-01-31)"
+    },
+    {
+      "field_name": "OtherSalesRevenueNet",
+      "label": "Other Revenue, Net (Deprecated 2018-01-31)"
+    },
+    {
+      "field_name": "PrepaidPensionCosts",
+      "label": "Prepaid Pension Costs (Deprecated 2017-01-31)"
+    },
+    {
+      "field_name": "RelatedPartyTransactionRevenuesFromTransactionsWithRelatedParty",
+      "label": "Related Party Transaction, Revenues from Transactions with Related Party (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "RevenueMineralSales",
+      "label": "Revenue Mineral Sales (Deprecated 2018-01-31)"
+    },
+    {
+      "field_name": "SegmentReportingInformationInvestments",
+      "label": "Segment Reporting Information, Investments (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "TemporaryEquityRedemptionValue",
+      "label": "Temporary Equity, Redemption Value (Deprecated 2014-01-31)"
+    },
+    {
+      "field_name": "AccretionOfDiscount",
+      "label": "Accretion of Discount (Deprecated 2016-01-31)"
+    },
+    {
+      "field_name": "AccrualForEnvironmentalLossContingenciesPayments",
+      "label": "Accrual for Environmental Loss Contingencies, Payments (Deprecated 2016-01-31)"
+    },
+    {
+      "field_name": "AccrualForEnvironmentalLossContingenciesProvisionForNewLosses",
+      "label": "Accrual for Environmental Loss Contingencies, Provision for New Losses (Deprecated 2016-01-31)"
+    },
+    {
+      "field_name": "ContributionsFromNoncontrollingInterests",
+      "label": "Contributions from Noncontrolling Interests (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "CostOfGoodsSoldDepreciationDepletionAndAmortization",
+      "label": "Cost of Goods Sold, Depreciation, Depletion and Amortization (Deprecated 2018-01-31)"
+    },
+    {
+      "field_name": "CostOfGoodsSoldExcludingDepreciationDepletionAndAmortization",
+      "label": "Cost of Goods Sold, Excluding Depreciation, Depletion, and Amortization (Deprecated 2019-01-31)"
+    },
+    {
+      "field_name": "DefinedBenefitPlanActuarialNetGainsLosses",
+      "label": "Defined Benefit Plan, Actuarial Net (Gains) Losses (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "DiscountedFutureNetCashFlowsRelatingToProvedOilAndGasReserves10PercentAnnualDiscountForEstimatedTimingOfCashFlows",
+      "label": "Discounted Future Net Cash Flows Relating to Proved Oil and Gas Reserves, 10 Percent Annual Discount for Estimated Timing of Cash Flows (Deprecated 2014-01-31)"
+    },
+    {
+      "field_name": "DiscountedFutureNetCashFlowsRelatingToProvedOilAndGasReservesFutureCashInflows",
+      "label": "Discounted Future Net Cash Flows Relating to Proved Oil and Gas Reserves, Future Cash Inflows (Deprecated 2014-01-31)"
+    },
+    {
+      "field_name": "DiscountedFutureNetCashFlowsRelatingToProvedOilAndGasReservesFutureDevelopmentCosts1",
+      "label": "Discounted Future Net Cash Flows Relating to Proved Oil and Gas Reserves, Future Development Costs (Deprecated 2014-01-31)"
+    },
+    {
+      "field_name": "DiscountedFutureNetCashFlowsRelatingToProvedOilAndGasReservesFutureIncomeTaxExpense1",
+      "label": "Discounted Future Net Cash Flows Relating to Proved Oil and Gas Reserves, Future Income Tax Expense (Deprecated 2014-01-31)"
+    },
+    {
+      "field_name": "DiscountedFutureNetCashFlowsRelatingToProvedOilAndGasReservesFutureNetCashFlows",
+      "label": "Discounted Future Net Cash Flows Relating to Proved Oil and Gas Reserves, Future Net Cash Flows (Deprecated 2014-01-31)"
+    },
+    {
+      "field_name": "DiscountedFutureNetCashFlowsRelatingToProvedOilAndGasReservesFutureProductionCosts1",
+      "label": "Discounted Future Net Cash Flows Relating to Proved Oil and Gas Reserves, Future Production Costs (Deprecated 2014-01-31)"
+    },
+    {
+      "field_name": "DiscountedFutureNetCashFlowsRelatingToProvedOilAndGasReservesStandardizedMeasure",
+      "label": "Discounted Future Net Cash Flows Relating to Proved Oil and Gas Reserves, Standardized Measure (Deprecated 2014-01-31)"
+    },
+    {
+      "field_name": "ExplorationExpenseMining",
+      "label": "Exploration Expense, Mining (Deprecated 2018-01-31)"
+    },
+    {
+      "field_name": "FairValueInputsDiscountRate",
+      "label": "Fair Value Inputs, Discount Rate (Deprecated 2018-01-31)"
+    },
+    {
+      "field_name": "PreferredStockAdditionalSeriesValue",
+      "label": "Preferred Stock, Additional Series, Value (Deprecated 2009-01-31)"
+    },
+    {
+      "field_name": "PreviouslyEstimatedDevelopmentCostsIncurredDuringPeriod",
+      "label": "Previously Estimated Development Costs Incurred During Period (Deprecated 2015-01-31)"
+    },
+    {
+      "field_name": "RestructuringReservePeriodExpense",
+      "label": "Restructuring Reserve, Period Expense (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "StockholdersEquityNoteStockSplitConversionRatio",
+      "label": "Stockholders' Equity Note, Stock Split, Conversion Ratio (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "UndistributedEarningsAllocatedToParticipatingSecurities",
+      "label": "Undistributed Earnings Allocated to Participating Securities (Deprecated 2014-01-31)"
+    },
+    {
+      "field_name": "WriteOffOfInventory",
+      "label": "Write-off of Inventory (Deprecated 2009-01-31)"
+    },
+    {
+      "field_name": "AcquiredIndefiniteLivedIntangibleAssetAmount",
+      "label": "Acquired Indefinite-lived Intangible Asset, Amount (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "AssetsHeldForSalePropertyPlantAndEquipment",
+      "label": "Assets Held-for-sale, Property, Plant and Equipment (Deprecated 2014-01-31)"
+    },
+    {
+      "field_name": "AvailableForSaleSecuritiesGrossUnrealizedGainLoss",
+      "label": "Available-for-sale Securities, Gross Unrealized Gain (Loss) (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "CashFlowHedgeGainLossReclassifiedToEarningsNet",
+      "label": "Cash Flow Hedge Gain (Loss) Reclassified to Earnings, Net (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "EffectOnOtherComprehensiveIncomeLossDueToChangeInMeasurementDateNetOfTax",
+      "label": "Effect on Other Comprehensive Income (Loss) Due to Change in Measurement Date, Net of Tax (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "EquityMethodInvestmentSummarizedFinancialInformationAssets",
+      "label": "Equity Method Investment, Summarized Financial Information, Assets (Deprecated 2020-01-31)"
+    },
+    {
+      "field_name": "EquityMethodInvestmentSummarizedFinancialInformationCostOfSales",
+      "label": "Equity Method Investment, Summarized Financial Information, Cost of Sales (Deprecated 2020-01-31)"
+    },
+    {
+      "field_name": "EquityMethodInvestmentSummarizedFinancialInformationCostOfSalesOrRevenue",
+      "label": "Equity Method Investment, Summarized Financial Information, Cost of Sales or Revenue (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "EquityMethodInvestmentSummarizedFinancialInformationEquityOrCapital",
+      "label": "Equity Method Investment, Summarized Financial Information, Equity Excluding Noncontrolling Interests (Deprecated 2020-01-31)"
+    },
+    {
+      "field_name": "EquityMethodInvestmentSummarizedFinancialInformationLiabilities",
+      "label": "Equity Method Investment, Summarized Financial Information, Liabilities (Deprecated 2020-01-31)"
+    },
+    {
+      "field_name": "EquityMethodInvestmentSummarizedFinancialInformationNetSalesOrGrossRevenue",
+      "label": "Equity Method Investment, Summarized Financial Information, Net Sales or Gross Revenue (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "FinancialServicesRevenue",
+      "label": "Financial Services Revenue (Deprecated 2018-01-31)"
+    },
+    {
+      "field_name": "FinancingReceivableAllowanceForCreditLossesProvisions",
+      "label": "Financing Receivable, Allowance for Credit Losses, Provisions (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "FinancingReceivableAllowanceForCreditLossesRecoveries",
+      "label": "Financing Receivable, Allowance for Credit Losses, Recoveries (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "IncreaseDecreaseInFairValueOfHedgedItemInInterestRateFairValueHedge",
+      "label": "Increase (Decrease) in Fair Value of Hedged Item in Interest Rate Fair Value Hedge (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "IncreaseDecreaseInFairValueOfInterestRateFairValueHedgingInstruments",
+      "label": "Increase (Decrease) in Fair Value of Interest Rate Fair Value Hedging Instruments (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "InventoriesPropertyHeldForSaleCurrent",
+      "label": "Disposal Group, Including Discontinued Operation, Inventory, Current (Deprecated 2015-01-31)"
+    },
+    {
+      "field_name": "LicensesRevenue",
+      "label": "Licenses Revenue (Deprecated 2018-01-31)"
+    },
+    {
+      "field_name": "LitigationSettlementAmount",
+      "label": "Litigation Settlement, Amount (Deprecated 2017-01-31)"
+    },
+    {
+      "field_name": "MinorityInterestInNetIncomeLossJointVenturePartners",
+      "label": "Net Income (Loss) Attributable to Noncontrolling Interest, Joint Venture Partners (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "OtherComprehensiveIncomeLossReclassificationPensionAndOtherPostretirementBenefitPlansNetTransitionAssetObligationRecognizedInNetPeriodicBenefitCostTax",
+      "label": "Other Comprehensive Income (Loss), Reclassification, Pension and Other Postretirement Benefit Plans, Net Transition Asset (Obligation), Recognized in Net Periodic Benefit Cost, Tax (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "OtherComprehensiveIncomeReclassificationOfDefinedBenefitPlanNetTransitionAssetObligationRecognizedInNetPeriodicBenefitCostNetOfTax",
+      "label": "Other Comprehensive Income (Loss), Reclassification, Pension and Other Postretirement Benefit Plans, Net Transition Asset (Obligation), Recognized in Net Periodic Benefit Cost, Net of Tax (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "OtherComprehensiveIncomeReclassificationOfDefinedBenefitPlantNetTransitionAssetObligationRecognizedInNetPeriodicBenefitCostTax",
+      "label": "Other Comprehensive Income (Loss), Reclassification, Pension and Other Postretirement Benefit Plans, Net Transition Asset (Obligation), Recognized in Net Periodic Benefit Cost, Tax (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "ReceivablesHeldForSaleNetAmount",
+      "label": "Receivables Held-for-sale, Net Amount (Deprecated 2014-01-31)"
+    },
+    {
+      "field_name": "VariableInterestEntityConsolidatedCarryingAmountAssets",
+      "label": "Variable Interest Entity, Consolidated, Carrying Amount, Assets (Deprecated 2020-01-31)"
+    },
+    {
+      "field_name": "CostOfServices",
+      "label": "Cost of Services (Deprecated 2018-01-31)"
+    },
+    {
+      "field_name": "DebtIssuanceCosts",
+      "label": "Debt Issuance Cost (Deprecated 2016-01-31)"
+    },
+    {
+      "field_name": "DefinedBenefitPlanCurrentAssets",
+      "label": "Defined Benefit Plan, Current Assets (Deprecated 2017-01-31)"
+    },
+    {
+      "field_name": "FairValueAssetsMeasuredOnRecurringBasisChangeInUnrealizedGainLossIncludedInInvestmentIncome",
+      "label": "Fair Value, Assets Measured on Recurring Basis, Change in Unrealized Gain (Loss) Included in Investment Income (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "IncomeLossFromDispositionOfDiscontinuedOperationsForOtherStockPerBasicShare",
+      "label": "Income (Loss) from Disposition of Discontinued Operations for Other Stock, Per Basic Share (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "IncreaseDecreaseInRetainedInterestInSecuritizedReceivables",
+      "label": "Increase (Decrease) in Retained Interest in Securitized Receivables (Deprecated 2015-01-31)"
+    },
+    {
+      "field_name": "InvestmentOwnedOtherThanSecuritiesLoanedForShortSalesAtFairValue",
+      "label": "Investment Owned, Other than Securities, Loaned for Short Sales, at Fair Value (Deprecated 2015-01-31)"
+    },
+    {
+      "field_name": "MinorityInterestPreferredStockAmount",
+      "label": "Noncontrolling Interest, Preferred Stock Amount (Deprecated 2016-01-31)"
+    },
+    {
+      "field_name": "OtherComprehensiveIncomeReclassificationAdjustmentForWriteDownOfSecuritiesIncludedInNetIncomeTax",
+      "label": "Other Comprehensive Income (Loss), Reclassification Adjustment for Write-down of Securities Included in Net Income, Tax (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "ProceedsFromLoanAndLeaseOriginationsAndPrincipalCollections",
+      "label": "Proceeds from Loan and Lease Originations and Principal Collections (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "RetainedEarningsCumulativeEffectOfChangeInAccountingPrincipleNetOfTax",
+      "label": "Retained Earnings, Cumulative Effect of Change in Accounting Principle, Net of Tax (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "SegmentReportingInformationAccountsReceivableNet",
+      "label": "Segment Reporting Information, Accounts Receivable, Net (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "SegmentReportingInformationAssets",
+      "label": "Segment Reporting Information, Assets (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "SegmentReportingInformationGoodwill",
+      "label": "Segment Reporting Information, Goodwill (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "SegmentReportingInformationInterestExpense",
+      "label": "Segment Reporting Information, Interest Expense (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "UnamortizedLoanCommitmentAndOriginationFeesAndUnamortizedDiscountsOrPremiumsOther",
+      "label": "Unamortized Loan Commitment and Origination Fees and Unamortized Discounts or Premiums, Other (Deprecated 2016-01-31)"
+    },
+    {
+      "field_name": "VariableInterestEntityCarryingAmountOfCollateralizedAssets",
+      "label": "Variable Interest Entity, Carrying Amount of Assets, Consolidated VIE (Deprecated 2009-01-31)"
+    },
+    {
+      "field_name": "VariableInterestEntityCarryingAmountOfLiabilitiesConsolidatedVIE",
+      "label": "Variable Interest Entity, Carrying Amount of Liabilities, Consolidated VIE (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "VariableInterestEntityNonconsolidatedCarryingAmountAssets",
+      "label": "Variable Interest Entity, Nonconsolidated, Carrying Amount, Assets (Deprecated 2020-01-31)"
+    },
+    {
+      "field_name": "VariableInterestEntityNonconsolidatedCarryingAmountAssetsAndLiabilitiesNet",
+      "label": "Variable Interest Entity, Nonconsolidated, Carrying Amount, Assets and Liabilities, Net (Deprecated 2020-01-31)"
+    },
+    {
+      "field_name": "BusinessAcquisitionPurchasePriceAllocationCurrentLiabilitiesLongTermDebt",
+      "label": "Business Acquisition, Purchase Price Allocation, Current Liabilities, Long-term Debt (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "ConcentrationRiskPercentage",
+      "label": "Concentration Risk, Percentage (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "DefinedBenefitPlanRecognizedNetGainLossDueToSettlements",
+      "label": "Defined Benefit Plan, Recognized Net (Gain) Loss Due to Settlements (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "DefinedBenefitPlanTargetAllocationPercentageOfAssetsOther",
+      "label": "Defined Benefit Plan, Target Allocation Percentage of Assets, Other (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "DefinedBenefitPlanTargetAllocationPercentageOfAssetsRealEstate",
+      "label": "Defined Benefit Plan, Target Allocation Percentage of Assets, Real Estate (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "DistributionMadeToMemberOrLimitedPartnerCashDistributionsDeclared",
+      "label": "Distribution Made to Member or Limited Partner, Cash Distributions Declared (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "DistributionMadeToMemberOrLimitedPartnerCashDistributionsPaid",
+      "label": "Distribution Made to Member or Limited Partner, Cash Distributions Paid (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "EquityMethodInvestmentSummarizedFinancialInformationIncomeLossFromContinuingOperationsBeforeExtraordinaryItemsAndCumulativeEffectOfChangeInAccountingPrinciple",
+      "label": "Equity Method Investment, Summarized Financial Information, Income (Loss) from Continuing Operations before Extraordinary Items and Cumulative Effect of Change in Accounting Principle (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "EquityMethodInvestmentSummarizedFinancialInformationLiabilitiesAndEquity",
+      "label": "Equity Method Investment, Summarized Financial Information, Liabilities and Equity (Deprecated 2020-01-31)"
+    },
+    {
+      "field_name": "LiabilitiesFairValueDisclosureRecurring",
+      "label": "Liabilities, Fair Value Disclosure, Recurring (Deprecated 2018-01-31)"
+    },
+    {
+      "field_name": "LineOfCreditFacilityDecreaseRepayments",
+      "label": "Line of Credit Facility, Decrease, Repayments (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "NotionalAmountOfInterestRateCashFlowHedgeDerivatives",
+      "label": "Notional Amount of Interest Rate Cash Flow Hedge Derivatives (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "PrescriptionDrugBenefitReductionInAccumulatedPostretirementBenefitObligationForSubsidy",
+      "label": "Prescription Drug Benefit, Reduction in Accumulated Postretirement Benefit Obligation for Subsidy (Deprecated 2017-01-31)"
+    },
+    {
+      "field_name": "SegmentReportingAssetReconcilingItemAmount",
+      "label": "Segment Reporting, Asset Reconciling Item, Amount (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "SegmentReportingInformationDepreciationExpense",
+      "label": "Segment Reporting Information, Depreciation Expense (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "SegmentReportingInformationNetAssets",
+      "label": "Segment Reporting Information, Net Assets (Deprecated 2013-01-31)"
+    },
+    {
+      "field_name": "SegmentReportingInformationPropertyPlantAndEquipmentNet",
+      "label": "Segment Reporting Information, Property, Plant, and Equipment, Net (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "SegmentReportingReconcilingItemsRevenue",
+      "label": "Segment Reporting, Reconciling Items, Revenue (Deprecated 2011-01-31)"
+    },
+    {
+      "field_name": "ShareBasedCompensationArrangementByShareBasedPaymentAwardFairValueAssumptionsExpectedTermMaximum",
+      "label": "Share-based Compensation Arrangement by Share-based Payment Award, Fair Value Assumptions, Expected Term, Maximum (Deprecated 2012-01-31)"
+    },
+    {
+      "field_name": "ShareBasedCompensationArrangementByShareBasedPaymentAwardFairValueAssumptionsExpectedTermMinimum",
+      "label": "Share-based Compensation Arrangement by Share-based Payment Award, Fair Value Assumptions, Expected Term, Minimum (Deprecated 2012-01-31)"
+    }
+  ],
+  "similar_field_groups": [
+    {
+      "concept": "Revenue",
+      "fields": [
+        {
+          "field_name": "Revenues",
+          "label": "Revenues",
+          "availability": 81.0
+        },
+        {
+          "field_name": "RevenueFromContractWithCustomerExcludingAssessedTax",
+          "label": "Revenue from Contract with Customer, Excluding Assessed Tax",
+          "availability": 61.9
+        },
+        {
+          "field_name": "RevenueFromContractWithCustomerIncludingAssessedTax",
+          "label": "Revenue from Contract with Customer, Including Assessed Tax",
+          "availability": 14.3
+        }
+      ]
+    },
+    {
+      "concept": "NetIncome",
+      "fields": [
+        {
+          "field_name": "NetIncomeLoss",
+          "label": "Net Income (Loss) Attributable to Parent",
+          "availability": 100.0
+        },
+        {
+          "field_name": "NetIncomeLossAvailableToCommonStockholdersBasic",
+          "label": "Net Income (Loss) Available to Common Stockholders, Basic",
+          "availability": 47.6
+        }
+      ]
+    },
+    {
+      "concept": "^Assets$",
+      "fields": [
+        {
+          "field_name": "AssetsCurrent",
+          "label": "Assets, Current",
+          "availability": 85.7
+        },
+        {
+          "field_name": "AssetsNoncurrent",
+          "label": "Assets, Noncurrent",
+          "availability": 9.5
+        }
+      ]
+    },
+    {
+      "concept": "Cash",
+      "fields": [
+        {
+          "field_name": "CashAndCashEquivalentsAtCarryingValue",
+          "label": "Cash and Cash Equivalents, at Carrying Value",
+          "availability": 95.2
+        },
+        {
+          "field_name": "CashCashEquivalentsRestrictedCashAndRestrictedCashEquivalents",
+          "label": "Cash, Cash Equivalents, Restricted Cash and Restricted Cash Equivalents",
+          "availability": 90.5
+        }
+      ]
+    },
+    {
+      "concept": "Debt",
+      "fields": [
+        {
+          "field_name": "LongTermDebt",
+          "label": "Long-term Debt",
+          "availability": 76.2
+        },
+        {
+          "field_name": "LongTermDebtNoncurrent",
+          "label": "Long-term Debt, Excluding Current Maturities",
+          "availability": 81.0
+        },
+        {
+          "field_name": "LongTermDebtCurrent",
+          "label": "Long-term Debt, Current Maturities",
+          "availability": 71.4
+        },
+        {
+          "field_name": "DebtInstrumentCarryingAmount",
+          "label": "Long-term Debt, Gross",
+          "availability": 47.6
+        }
+      ]
+    },
+    {
+      "concept": "SharesOutstanding",
+      "fields": [
+        {
+          "field_name": "CommonStockSharesOutstanding",
+          "label": "Common Stock, Shares, Outstanding",
+          "availability": 71.4
+        },
+        {
+          "field_name": "EntityCommonStockSharesOutstanding",
+          "label": "Entity Common Stock, Shares Outstanding",
+          "availability": 95.2
+        },
+        {
+          "field_name": "WeightedAverageNumberOfSharesOutstandingBasic",
+          "label": "Weighted Average Number of Shares Outstanding, Basic",
+          "availability": 100.0
+        }
+      ]
+    }
+  ],
+  "consolidation_recommendations": [
+    {
+      "concept": "Revenue",
+      "primary_field": "Revenues",
+      "primary_availability": 81.0,
+      "strategy": "Use primary field; fallback to alternatives in availability order"
+    },
+    {
+      "concept": "NetIncome",
+      "primary_field": "NetIncomeLoss",
+      "primary_availability": 100.0,
+      "strategy": "Use primary field; fallback to alternatives in availability order"
+    },
+    {
+      "concept": "^Assets$",
+      "primary_field": "AssetsCurrent",
+      "primary_availability": 85.7,
+      "strategy": "Use primary field; fallback to alternatives in availability order"
+    },
+    {
+      "concept": "Cash",
+      "primary_field": "CashAndCashEquivalentsAtCarryingValue",
+      "primary_availability": 95.2,
+      "strategy": "Use primary field; fallback to alternatives in availability order"
+    },
+    {
+      "concept": "Debt",
+      "primary_field": "LongTermDebtNoncurrent",
+      "primary_availability": 81.0,
+      "strategy": "Use primary field; fallback to alternatives in availability order"
+    },
+    {
+      "concept": "SharesOutstanding",
+      "primary_field": "WeightedAverageNumberOfSharesOutstandingBasic",
+      "primary_availability": 100.0,
+      "strategy": "Use primary field; fallback to alternatives in availability order"
+    }
+  ]
+}
