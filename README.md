@@ -10,12 +10,13 @@ A comprehensive system for extracting, normalizing, enriching, and storing publi
 - [Quick Start](#quick-start)
 - [Project Structure](#project-structure)
 - [Pipeline Components](#pipeline-components)
-  - [1. Enrichment Layer (enrich.py)](#1-enrichment-layer-enrichpy)
-  - [2. Data Extraction (SEC.py)](#2-data-extraction-secpy)
-  - [3. Field Analysis Pipeline (tasks/)](#3-field-analysis-pipeline-tasks)
-  - [4. Data Models (models.py)](#4-data-models-modelspy)
-  - [5. Database Layer (database.py)](#5-database-layer-databasepy)
-  - [6. Utilities (utils/)](#6-utilities-utils)
+  - [1. Pipeline Orchestrator (run_pipeline.sh)](#1-pipeline-orchestrator-run_pipelinesh)
+  - [2. Enrichment Layer (enrich.py)](#2-enrichment-layer-enrichpy)
+  - [3. Data Extraction (SEC.py)](#3-data-extraction-secpy)
+  - [4. Field Analysis Pipeline (tasks/)](#4-field-analysis-pipeline-tasks)
+  - [5. Data Models (models.py)](#5-data-models-modelspy)
+  - [6. Database Layer (database.py)](#6-database-layer-databasepy)
+  - [7. Utilities (utils/)](#7-utilities-utils)
 - [Database Schema](#database-schema)
 - [Data Entities](#data-entities)
 - [Company Universe](#company-universe)
@@ -63,13 +64,15 @@ A comprehensive system for extracting, normalizing, enriching, and storing publi
 
 ### Data Flow
 
-1. **`enrich.py`** fetches company metadata (SIC codes, entity names) from the SEC submissions endpoint and maps SIC codes to sectors/industries. Outputs `config/company_metadata.json` and writes to SQLite.
+1. **`run_pipeline.sh`** orchestrates the full pipeline — reads `input.txt` for the ticker list, then runs enrichment followed by SEC extraction. Supports CLI passthrough for `--tickers` and `--input-file`.
 
-2. **Field analysis pipeline** (`tasks/`) runs once to catalog, categorize, and prioritize all 4,148 XBRL fields across 21 companies. Outputs go to `reports/`.
+2. **`enrich.py`** fetches company metadata (SIC codes, entity names) from the SEC submissions endpoint and maps SIC codes to sectors/industries. Outputs `config/company_metadata.json` and writes to SQLite.
 
-3. **`SEC.py`** fetches XBRL company facts, normalizes temporal data, enriches with sector/industry tags, and writes to both Excel and SQLite.
+3. **Field analysis pipeline** (`tasks/`) runs once to catalog, categorize, and prioritize all 4,148 XBRL fields across the company universe. Outputs go to `reports/`.
 
-4. **`database.py`** provides the SQLite database layer. Can be populated standalone from existing JSON reports or written to incrementally by the pipeline scripts.
+4. **`SEC.py`** fetches XBRL company facts, normalizes temporal data, enriches with sector/industry tags, and writes to both Excel and SQLite.
+
+5. **`database.py`** provides the SQLite database layer. Can be populated standalone from existing JSON reports or written to incrementally by the pipeline scripts.
 
 ---
 
@@ -78,37 +81,54 @@ A comprehensive system for extracting, normalizing, enriching, and storing publi
 ### Prerequisites
 
 ```bash
-pip install requests pandas openpyxl beautifulsoup4 fake-useragent pydantic
+pip install requests pandas openpyxl beautifulsoup4 fake-useragent pydantic colorama
 ```
 
-### Step 1: Enrich company metadata
+### Option A: Run the full pipeline (recommended)
 
 ```bash
+# Edit input.txt to choose your tickers, then:
+./run_pipeline.sh
+```
+
+This runs enrichment + SEC extraction for all tickers in `input.txt` and writes to both Excel and SQLite.
+
+### Option B: Run individual steps
+
+```bash
+# Step 1: Enrich company metadata
 python enrich.py
-```
 
-This fetches SIC codes from SEC EDGAR for the 21 pipeline tickers and produces `config/company_metadata.json` with sector/industry classifications.
-
-### Step 2: Populate the database from existing reports
-
-```bash
+# Step 2: Populate database from existing JSON reports
 python database.py
-```
 
-This creates `data/financials.db` and loads all reference data (companies, field catalog, field categories, field priorities, point-in-time events, TTM metrics) from the JSON report files.
-
-### Step 3: Extract financial data
-
-```bash
+# Step 3: Extract financial data
 python SEC.py
+
+# Step 4: Query the database
+sqlite3 data/financials.db "SELECT ticker, sector, industry FROM companies ORDER BY sector;"
 ```
 
-This fetches XBRL data for the configured tickers, normalizes and enriches each record, and writes to both `data/EDGAR_FINANCIALS_*.xlsx` and the `financial_facts` table in SQLite.
+### Ticker Input
 
-### Step 4: Query the database
+Tickers are controlled via `input.txt` (one per line, `#` for comments):
+
+```
+# Technology
+AAPL
+MSFT
+NVDA
+
+# Finance
+JPM
+GS
+```
+
+Override from the command line:
 
 ```bash
-sqlite3 data/financials.db "SELECT ticker, sector, industry FROM companies ORDER BY sector;"
+./run_pipeline.sh --tickers AAPL MSFT JPM
+./run_pipeline.sh --input-file my_tickers.txt
 ```
 
 ---
@@ -118,63 +138,88 @@ sqlite3 data/financials.db "SELECT ticker, sector, industry FROM companies ORDER
 ```
 company_financials/
 |
-|-- SEC.py                          # Main data extraction and normalization
-|-- enrich.py                       # Company enrichment (SIC -> sector/industry)
-|-- database.py                     # SQLite database manager
-|-- models.py                       # Pydantic data models for all entities
-|-- equity.py                       # Volume analysis utilities (yfinance)
+|-- run_pipeline.sh                    # Bash orchestrator (enrich -> SEC)
+|-- SEC.py                             # Main data extraction and normalization
+|-- enrich.py                          # Company enrichment (SIC -> sector/industry)
+|-- database.py                        # SQLite database manager
+|-- models.py                          # Pydantic data models for all entities
+|-- equity.py                          # Volume analysis utilities (yfinance)
+|-- input.txt                          # Ticker list for pipeline runs
 |
 |-- config/
-|   |-- cik.json                    # Ticker -> CIK mapping (~13K entries)
-|   |-- company_metadata.json       # Enriched company profiles (21 companies)
-|   |-- sic_to_sector.json          # SIC code range -> sector/industry mapping
-|   |-- loggingConfig.json          # Logging configuration
+|   |-- cik.json                       # Ticker -> CIK mapping (~9,700 entries)
+|   |-- company_metadata.json          # Enriched company profiles (40 companies)
+|   |-- sic_to_sector.json             # SIC code range -> sector/industry mapping
+|   |-- loggingConfig.json             # Logging configuration
 |
 |-- data/
-|   |-- financials.db               # SQLite database (all entities)
-|   |-- EDGAR_FINANCIALS_*.xlsx     # Excel exports (per-run snapshots)
+|   |-- financials.db                  # SQLite database (all entities)
+|   |-- EDGAR_FINANCIALS_*.xlsx        # Excel exports (per-run snapshots)
 |
 |-- reports/
-|   |-- field_catalog.json          # 4,148 XBRL fields discovered
-|   |-- field_catalog_metadata.json # Catalog generation metadata
-|   |-- field_categories.json       # Field classification (statement type, temporal)
-|   |-- field_priority.json         # Field importance rankings
-|   |-- field_availability_report.json  # Cross-company field coverage
-|   |-- field_mapping.json          # Deprecated/synonym field mappings
-|   |-- fiscal_year_metadata.json   # Company fiscal calendar data
-|   |-- point_in_time_map.json      # Filing event timeline
-|   |-- ttm_metrics.json            # Trailing Twelve Month calculations
-|   |-- output_company_financials.json  # Aggregated company output
+|   |-- field_catalog.json             # 4,148 XBRL fields discovered
+|   |-- field_catalog_metadata.json    # Catalog generation metadata
+|   |-- field_categories.json          # Field classification (statement type, temporal)
+|   |-- field_priority.json            # Field importance rankings
+|   |-- field_availability_report.json # Cross-company field coverage
+|   |-- field_mapping.json             # Deprecated/synonym field mappings
+|   |-- fiscal_year_metadata.json      # Company fiscal calendar data
+|   |-- point_in_time_map.json         # Filing event timeline
+|   |-- ttm_metrics.json              # Trailing Twelve Month calculations
+|   |-- output_company_financials.json # Aggregated company output
 |
 |-- tasks/
-|   |-- field_analysis_pipeline.py  # Orchestrator for all 4 analysis phases
-|   |-- task1_field_catalog.py      # Phase 1: Build field catalog
-|   |-- task2_field_categorization.py   # Phase 2: Categorize fields
-|   |-- task2_fiscal_years.py       # Phase 2b: Determine fiscal year ends
-|   |-- task3_field_availability.py # Phase 3: Analyze field coverage
-|   |-- task3_pit_mapping.py        # Phase 3b: Point-in-time event mapping
-|   |-- task4_field_standardization.py  # Phase 4: Standardization rules
-|   |-- task4_ttm_calculator.py     # Phase 4b: TTM metric calculation
+|   |-- field_analysis_pipeline.py     # Orchestrator for all 4 analysis phases
+|   |-- task1_field_catalog.py         # Phase 1: Build field catalog
+|   |-- task2_field_categorization.py  # Phase 2: Categorize fields
+|   |-- task2_fiscal_years.py          # Phase 2b: Determine fiscal year ends
+|   |-- task3_field_availability.py    # Phase 3: Analyze field coverage
+|   |-- task3_pit_mapping.py           # Phase 3b: Point-in-time event mapping
+|   |-- task4_field_standardization.py # Phase 4: Standardization rules
+|   |-- task4_ttm_calculator.py        # Phase 4b: TTM metric calculation
 |
-|-- tasks_md/                       # Analysis documentation and summaries
+|-- tasks_md/                          # Analysis documentation and summaries
 |
 |-- utils/
 |   |-- __init__.py
-|   |-- session.py                  # HTTP session with rate limiting
-|   |-- excel_formatter.py          # Excel workbook formatting
+|   |-- session.py                     # HTTP session with rate limiting
+|   |-- excel_formatter.py             # Excel workbook formatting
+|   |-- log.py                         # Color-coded pipeline logging (colorama)
+|   |-- input_parser.py               # Ticker file parser (input.txt)
 |
 |-- logs/
-|   |-- app.log                     # Application log output
+|   |-- pipeline.log                   # Verbose DEBUG-level pipeline log
+|   |-- app.log                        # Application log output
 |
-|-- ENTITY_RELATIONSHIP.md          # Full entity-relationship schema reference
-|-- README.md                       # This file
+|-- ENTITY_RELATIONSHIP.md             # Full entity-relationship schema reference
+|-- README.md                          # This file
 ```
 
 ---
 
 ## Pipeline Components
 
-### 1. Enrichment Layer (`enrich.py`)
+### 1. Pipeline Orchestrator (`run_pipeline.sh`)
+
+Bash script that runs the full pipeline end-to-end: enrichment first, then SEC extraction. Both steps read from the same ticker source (defaulting to `input.txt`).
+
+**Features:**
+- Color-coded terminal output with timestamps
+- Forwards all CLI arguments to both `enrich.py` and `SEC.py`
+- Exits immediately on failure (`set -euo pipefail`)
+- Displays ticker count from `input.txt` before starting
+
+**Usage:**
+```bash
+./run_pipeline.sh                        # Process tickers from input.txt
+./run_pipeline.sh --tickers AAPL MSFT    # Process specific tickers
+./run_pipeline.sh --input-file my.txt    # Process from custom file
+./run_pipeline.sh --all                  # Process all ~9,700 tickers in cik.json (very slow)
+```
+
+---
+
+### 2. Enrichment Layer (`enrich.py`)
 
 Fetches company metadata from the SEC submissions endpoint and maps SIC codes to sectors and industries.
 
@@ -189,8 +234,9 @@ Fetches company metadata from the SEC submissions endpoint and maps SIC codes to
 
 **Usage:**
 ```bash
-python enrich.py                          # Enrich the 21 pipeline tickers
+python enrich.py                          # Enrich tickers from input.txt
 python enrich.py --tickers AAPL MSFT JPM  # Enrich specific tickers
+python enrich.py --input-file my.txt      # Enrich from custom file
 python enrich.py --all                    # Enrich every ticker in cik.json (slow)
 ```
 
@@ -208,14 +254,16 @@ The mapping covers ~70 SIC code ranges. When multiple ranges overlap (e.g., SIC 
 | 3570-3579 | Technology | Computer Hardware |
 | 3670-3679 | Technology | Semiconductors |
 | 4800-4899 | Telecom | Communications |
+| 4910-4941 | Utilities | Electric Services |
 | 5000-5999 | Retail | Wholesale/Retail Trade |
 | 6000-6299 | Finance | Banking, Brokers |
 | 6320-6329 | Healthcare | Health Insurance |
+| 6798-6798 | Finance | REITs |
 | 7370-7379 | Technology | Computer & Data Processing |
 
 ---
 
-### 2. Data Extraction (`SEC.py`)
+### 3. Data Extraction (`SEC.py`)
 
 The main extraction engine. Fetches XBRL company facts from SEC EDGAR, normalizes temporal data, enriches with sector/industry, and persists to Excel and SQLite.
 
@@ -226,8 +274,24 @@ The main extraction engine. Fetches XBRL company facts from SEC EDGAR, normalize
 2. Loads company enrichment metadata (`config/company_metadata.json`) — validated through Pydantic `Company` model
 3. Loads field categories and priorities from `reports/`
 4. For each ticker: fetches XBRL data, normalizes, enriches, collects records
-5. Saves aggregated data to Excel (multiple sheets by statement type and temporal type)
+5. Saves per-statement-type sheets to Excel (Balance Sheet, Income Statement, Cash Flow, etc.) plus a Ticker Summary sheet
 6. Writes all `FinancialFact` records to SQLite `financial_facts` table
+
+**Excel output:**
+
+The full dataset (1M+ rows at scale) goes exclusively to SQLite. Excel gets per-statement-type sheets which stay within the 1,048,576 row limit, plus a summary sheet:
+
+| Sheet | Description | Typical Size |
+|-------|-------------|-------------|
+| `Balance_Sheet` | Assets, liabilities (point-in-time) | ~150K rows |
+| `Income_Statement` | Revenue, expenses, earnings (period) | ~385K rows |
+| `Cash_Flow_Statement` | Operating, investing, financing flows | ~195K rows |
+| `Balance_Sheet_-_Equity` | Stockholders' equity detail | ~83K rows |
+| `Balance_Sheet_-_Assets` | Asset breakdown | ~147K rows |
+| `Balance_Sheet_-_Liabilities` | Liability breakdown | ~35K rows |
+| `Other_Footnotes` | Supplementary disclosures | ~89K rows |
+| `Document_&_Entity_Information` | Filing metadata (dei taxonomy) | ~7K rows |
+| `Ticker_Summary` | One row per ticker with record counts | 40 rows |
 
 **Key methods:**
 
@@ -238,8 +302,15 @@ The main extraction engine. Fetches XBRL company facts from SEC EDGAR, normalize
 | `get_field_metadata(field_name)` | Returns `(statement_type, temporal_nature, priority_score)` from analysis system |
 | `normalize_temporal_data(obj, temporal_nature)` | Returns `(period_start, period_end)` based on field type |
 | `get_company_enrichment(ticker)` | Returns `(sector, industry)` from enrichment data |
-| `save_aggregated_data()` | Writes to Excel with per-statement-type and per-temporal-type sheets |
+| `save_aggregated_data()` | Writes per-statement Excel sheets + ticker summary |
 | `save_to_database()` | Writes all collected facts to SQLite |
+
+**Usage:**
+```bash
+python SEC.py                              # Extract for tickers in input.txt
+python SEC.py --tickers AAPL MSFT JPM      # Extract for specific tickers
+python SEC.py --input-file my_tickers.txt  # Extract from custom file
+```
 
 **Output record fields:**
 
@@ -273,7 +344,7 @@ Each `FinancialFact` row contains:
 
 ---
 
-### 3. Field Analysis Pipeline (`tasks/`)
+### 4. Field Analysis Pipeline (`tasks/`)
 
 A 4-phase analysis system that catalogs, categorizes, and prioritizes all XBRL fields across the company universe. Run once to populate the `reports/` directory.
 
@@ -306,7 +377,7 @@ A 4-phase analysis system that catalogs, categorizes, and prioritizes all XBRL f
 
 ---
 
-### 4. Data Models (`models.py`)
+### 5. Data Models (`models.py`)
 
 Pydantic models that enforce type safety and provide a single source of truth for all entity schemas. Every entity from `ENTITY_RELATIONSHIP.md` has a corresponding model.
 
@@ -334,7 +405,7 @@ Pydantic models that enforce type safety and provide a single source of truth fo
 
 ---
 
-### 5. Database Layer (`database.py`)
+### 6. Database Layer (`database.py`)
 
 SQLite database manager providing relational storage for all pipeline entities. Uses Python's built-in `sqlite3` module — zero infrastructure required.
 
@@ -356,7 +427,7 @@ python database.py
 
 # Verify
 sqlite3 data/financials.db ".tables"
-sqlite3 data/financials.db "SELECT COUNT(*) FROM field_catalog;"
+sqlite3 data/financials.db "SELECT COUNT(*) FROM financial_facts;"
 ```
 
 **Programmatic:**
@@ -383,7 +454,35 @@ db.close()
 
 ---
 
-### 6. Utilities (`utils/`)
+### 7. Utilities (`utils/`)
+
+**`utils/log.py` — Color-coded pipeline logging**
+
+Provides consistent, color-coded console output across all pipeline scripts using `colorama`.
+
+| Function | Color | Purpose |
+|----------|-------|---------|
+| `log.header(msg)` | Cyan/Bold | Section headers with `===` borders |
+| `log.step(msg)` | Blue/Bold | Pipeline step announcements |
+| `log.info(msg)` | Dim timestamp | Informational messages |
+| `log.ok(msg)` | Green/Bold | Success messages |
+| `log.warn(msg)` | Yellow/Bold | Warnings |
+| `log.err(msg)` | Red/Bold | Errors |
+| `log.progress(i, n, ticker, msg)` | Magenta ticker | Progress lines like `[3/40] AAPL: ...` |
+| `log.summary_table(title, rows)` | Cyan header | Formatted key-value summary tables |
+
+Also provides `setup_verbose_logging(name)` which creates a Python logger with dual handlers:
+- **Console**: INFO+ level
+- **File**: DEBUG+ level to `logs/pipeline.log`
+
+**`utils/input_parser.py` — Ticker file parser**
+
+Reads ticker lists from text files. Supports `#` comments, blank lines, and inline comments.
+
+```python
+from utils.input_parser import parse_input_file, DEFAULT_INPUT_FILE
+tickers = parse_input_file()  # Reads from input.txt
+```
 
 **`utils/session.py` — `RequestSession`**
 
@@ -397,10 +496,9 @@ HTTP session wrapper with:
 
 Excel workbook builder with:
 - DataFrame-to-sheet conversion with auto-formatting
-- Auto-sized columns based on content width
+- Auto-sized columns (sampled from first 500 rows for performance)
 - Styled Excel tables (TableStyleMedium9)
 - Multi-sheet workbook support
-- Output directory creation
 
 ---
 
@@ -504,16 +602,16 @@ Excel workbook builder with:
                 +------------------------+
 ```
 
-**Row counts (as of initial population):**
+**Row counts (as of latest pipeline run — 40 tickers):**
 
 | Table | Rows | Notes |
 |-------|------|-------|
-| `companies` | 21 | From enrichment |
-| `fiscal_year_metadata` | 21 | From fiscal year analysis |
+| `companies` | 40 | From enrichment |
+| `fiscal_year_metadata` | 21 | From fiscal year analysis (original 21 tickers) |
 | `field_catalog` | 4,148 | All XBRL fields discovered |
 | `field_categories` | 4,148 | Classifications for each field |
 | `field_priorities` | 4,148 | Priority rankings |
-| `financial_facts` | ~100K+ per run | Populated by SEC.py |
+| `financial_facts` | 1,113,467 | Populated by SEC.py (40 tickers) |
 | `point_in_time_events` | 1,305 | Filing event timeline |
 | `ttm_metrics` | 2,269 | Revenue & NetIncome TTM |
 
@@ -551,28 +649,36 @@ Key entities:
 
 ## Company Universe
 
-21 companies across 8 sectors:
+40 companies across 10 sectors:
 
 | Sector | Tickers | SIC Examples |
 |--------|---------|--------------|
-| **Technology** | PLTR, MSFT, AAPL, NVDA | 7372 (Software), 3571 (Computers), 3674 (Semiconductors) |
-| **Finance** | JPM, BAC, WFC | 6021 (National Commercial Banks) |
-| **Retail** | WMT, AMZN, COST | 5331 (Variety Stores), 5961 (Catalog/Mail-Order) |
-| **Healthcare** | JNJ, UNH, PFE | 2834 (Pharmaceuticals), 6324 (Health Insurance) |
-| **Energy** | XOM, CVX | 2911 (Petroleum Refining) |
-| **Mining/Materials** | GOLD, VALE, FCX | 1040 (Gold Ores), 1000 (Metal Mining) |
-| **Industrial** | CAT, GE | 3531 (Construction Machinery), 3600 (Electrical Equipment) |
-| **Telecom** | VZ | 4813 (Telephone Communications) |
+| **Technology** (6) | PLTR, MSFT, AAPL, NVDA, GOOG, CRM | 7372 (Software), 3571 (Computers), 3674 (Semiconductors), 7370 (Data Processing) |
+| **Finance** (9) | JPM, BAC, WFC, GS, MS, AMT, PLD, SPG, O | 6021 (Banks), 6211 (Brokers), 6798 (REITs) |
+| **Retail** (5) | WMT, AMZN, COST, HD, DIS | 5331 (Variety Stores), 5961 (Mail-Order), 5211 (Building Materials), 7990 (Amusement) |
+| **Healthcare** (4) | JNJ, UNH, PFE, ABT | 2834 (Pharmaceuticals), 6324 (Health Insurance) |
+| **Energy** (3) | XOM, CVX, COP | 2911 (Petroleum Refining) |
+| **Mining/Materials** (4) | GOLD, VALE, FCX, SLB | 1040 (Gold Ores), 1000 (Metal Mining), 1389 (Oil Field Services) |
+| **Industrial** (2) | CAT, GE | 3531 (Construction Machinery), 3600 (Electrical Equipment) |
+| **Telecom** (2) | VZ, T | 4813 (Telephone Communications) |
+| **Utilities** (3) | NEE, DUK, SO | 4911 (Electric Services), 4931 (Combined Services) |
+| **Transportation** (2) | HON, LMT | 3724 (Aircraft Engines), 3760 (Guided Missiles) |
 
-**Fiscal year end months vary:**
+**Record distribution by sector:**
 
-| Month | Companies |
-|-------|-----------|
-| December | PLTR, JPM, BAC, WFC, AMZN, UNH, PFE, XOM, CVX, GOLD, VALE, FCX, CAT, GE, VZ |
-| September | AAPL |
-| June | MSFT |
-| January | NVDA, WMT, JNJ |
-| August | COST |
+| Sector | Companies | Financial Facts |
+|--------|-----------|-----------------|
+| Finance | 9 | 279,937 |
+| Technology | 6 | 122,183 |
+| Retail | 5 | 97,133 |
+| Healthcare | 4 | 95,795 |
+| Utilities | 3 | 77,282 |
+| Energy | 3 | 73,933 |
+| Mining/Materials | 4 | 72,265 |
+| Industrial | 2 | 69,712 |
+| Telecom | 2 | 51,701 |
+| Transportation | 2 | 45,068 |
+| **Total** | **40** | **1,113,467** |
 
 **Taxonomy notes:** GOLD and VALE use IFRS (502 unique fields). All others use US-GAAP (3,613 fields). Cross-taxonomy mapping is required for direct field-level comparison.
 
@@ -582,7 +688,7 @@ Key entities:
 
 ### `config/cik.json`
 
-Complete ticker-to-CIK mapping (~13,000 entries). Used to resolve any ticker to its SEC identifier.
+Complete ticker-to-CIK mapping (~9,700 entries). Used to resolve any ticker to its SEC identifier.
 
 ```json
 {"AAPL": "0000320193", "MSFT": "0000789019", "JPM": "0000019617", ...}
@@ -590,7 +696,7 @@ Complete ticker-to-CIK mapping (~13,000 entries). Used to resolve any ticker to 
 
 ### `config/company_metadata.json`
 
-Enriched company profiles for the 21 pipeline tickers. Generated by `enrich.py`.
+Enriched company profiles for the 40 pipeline tickers. Generated by `enrich.py`.
 
 ```json
 {
@@ -734,7 +840,7 @@ results = db.query(
 
 # Use the SEC extractor
 from SEC import SEC
-sec = SEC()  # Processes default tickers and writes to DB
+sec = SEC(tickers=["AAPL", "MSFT"])  # Processes specified tickers and writes to DB
 
 db.close()
 ```
@@ -779,6 +885,7 @@ These rules are critical for any downstream system consuming this data:
 | `openpyxl` | Excel file creation and formatting |
 | `beautifulsoup4` | HTML parsing |
 | `fake-useragent` | User agent rotation for SEC rate limits |
+| `colorama` | Cross-platform terminal color output |
 | `yfinance` | Market data (used in `equity.py`) |
 
 ### Standard Library
@@ -788,14 +895,16 @@ These rules are critical for any downstream system consuming this data:
 ### Install
 
 ```bash
-pip install pydantic requests pandas openpyxl beautifulsoup4 fake-useragent yfinance
+pip install pydantic requests pandas openpyxl beautifulsoup4 fake-useragent colorama yfinance
 ```
 
 ---
 
 ## Known Issues & Bugs
 
-- [ ] **`SEC.py` ticker list is hardcoded in `__init__`** — Currently defaults to `['PLTR', 'AAPL', 'JPM']`. Should accept tickers as a constructor parameter or CLI argument.
+- [x] ~~**`SEC.py` ticker list is hardcoded in `__init__`**~~ — Now accepts `--tickers` CLI arg, `--input-file`, or reads from `input.txt`
+- [x] ~~**No CLI for `SEC.py` or `enrich.py`**~~ — Both scripts now support `--tickers`, `--input-file`, and `enrich.py` also supports `--all`
+- [x] ~~**Excel blows up on large datasets**~~ — Fixed: full dataset (1M+ rows) goes to SQLite only; Excel gets per-statement sheets within row limits
 - [ ] **`equity.py` is standalone** — Volume analysis script is not integrated into the main pipeline. Ticker is hardcoded to `AAPL`.
 - [ ] **No incremental updates** — `SEC.py` re-fetches all data on every run. Should detect which periods are already in the DB and only fetch new filings.
 - [ ] **`ExcelFormatter` table name collision** — The `displayName` property deduplication can fail if two sheets produce the same sanitized name.
@@ -803,6 +912,9 @@ pip install pydantic requests pandas openpyxl beautifulsoup4 fake-useragent yfin
 - [ ] **IFRS cross-mapping not implemented** — `field_mapping.json` has placeholder structure for `gaap_ifrs_map` but no actual mappings. GOLD and VALE fields cannot be compared to US-GAAP companies.
 - [ ] **No `requirements.txt`** — Dependencies are not formally tracked in a requirements file.
 - [ ] **SIC mapping may miss edge cases** — Some SIC codes fall outside the defined ranges in `sic_to_sector.json` and will default to "Unknown".
+- [ ] **HON and LMT classified as Transportation** — SIC 3724 (Aircraft Engines) and 3760 (Guided Missiles) map to Transportation via broad SIC ranges, but these are arguably better classified as Industrial/Aerospace & Defense. Needs more granular SIC ranges.
+- [ ] **DIS classified as Retail** — SIC 7990 (Amusement & Recreation) maps to Retail. Could warrant a dedicated Media/Entertainment sector.
+- [ ] **Fiscal year metadata only covers original 21 tickers** — The 19 newly added tickers (GOOG, CRM, GS, MS, HD, ABT, COP, SLB, HON, LMT, T, DIS, NEE, DUK, SO, AMT, PLD, SPG, O) need fiscal year analysis re-run.
 
 ---
 
@@ -810,13 +922,29 @@ pip install pydantic requests pandas openpyxl beautifulsoup4 fake-useragent yfin
 
 ### Near Term
 - [ ] Add `requirements.txt` or `pyproject.toml` for dependency management
-- [ ] CLI arguments for `SEC.py` (custom tickers, output format)
 - [ ] Incremental data loading — only fetch new filings not already in the DB
 - [ ] Database backup/sync to Google Drive (rclone or API)
-- [ ] Parquet export for large-scale analytics (pandas/polars/DuckDB)
+- [ ] Re-run field analysis pipeline with full 40-ticker universe to update reports and fiscal year metadata
 
-### Medium Term
-- [ ] **Macro layer** — Sector-level aggregate tables (total revenue, median margins, etc.)
+### Medium Term — News & Sentiment Data Layer
+- [ ] **News data ingestion** — Pull financial news from public APIs (e.g., NewsAPI, Finnhub, Alpha Vantage news, SEC RSS feeds) for macro and micro trend analysis
+- [ ] **Macro trend analysis** — Aggregate news sentiment by sector/industry to identify sector-level momentum shifts, regulatory headwinds, and economic cycle signals
+- [ ] **Micro trend analysis** — Company-specific news tracking for earnings surprises, M&A activity, analyst upgrades/downgrades, insider trading signals, and event-driven trading catalysts
+- [ ] **Sentiment scoring** — NLP-based sentiment classification (positive/negative/neutral) with source credibility weighting
+- [ ] **News-to-financials linking** — Correlate news events with filing dates and financial metric changes to identify leading indicators
+- [ ] **News storage** — New `news_articles` and `sentiment_scores` tables in SQLite with full-text search support
+
+### Medium Term — Visualization Dashboard
+- [ ] **Streamlit dashboard** (or similar: Dash, Panel, Gradio) for interactive data exploration
+- [ ] **Sector overview page** — Heatmaps of sector performance, revenue/income comparisons, field coverage matrices
+- [ ] **Company deep-dive page** — Time series charts for key financial metrics, filing timeline, TTM trends, peer comparison
+- [ ] **Field explorer** — Browse the 4,148 XBRL fields with filtering by statement type, availability tier, and priority score
+- [ ] **News feed view** — Real-time news stream with sentiment indicators, filterable by sector/ticker
+- [ ] **Query builder** — SQL query interface against the SQLite database with result visualization
+- [ ] **Export controls** — Download filtered views as CSV, Excel, or JSON
+
+### Medium Term — Analytics & Signals
+- [ ] **Macro layer** — Sector-level aggregate tables (total revenue, median margins, sector growth rates)
 - [ ] **Signal layer** — Pre-computed derived metrics (YoY growth, net margin, ROA, debt/equity, sector rank)
 - [ ] Calendar quarter normalization for cross-company temporal alignment
 - [ ] IFRS-to-GAAP field mapping for GOLD and VALE
@@ -827,7 +955,7 @@ pip install pydantic requests pandas openpyxl beautifulsoup4 fake-useragent yfin
 - [ ] Support for additional SEC forms (8-K, DEF 14A, S-1)
 - [ ] Real-time filing monitoring via SEC EDGAR full-text search RSS
 - [ ] REST API layer for programmatic access
-- [ ] Web dashboard for visual exploration
+- [ ] Alerting system — notify on new filings, significant metric changes, or news sentiment shifts
 
 ---
 

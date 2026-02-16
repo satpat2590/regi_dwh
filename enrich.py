@@ -6,9 +6,10 @@ maps them to sectors/industries using sic_to_sector.json, and produces
 a persisted company_metadata.json for downstream consumers.
 
 Usage:
-    python enrich.py                          # Enrich the 21 pipeline tickers
-    python enrich.py --tickers AAPL MSFT JPM  # Enrich specific tickers
-    python enrich.py --all                    # Enrich every ticker in cik.json (slow)
+    python enrich.py                              # Enrich tickers from input.txt
+    python enrich.py --tickers AAPL MSFT JPM      # Enrich specific tickers
+    python enrich.py --input-file my_tickers.txt  # Enrich from custom file
+    python enrich.py --all                        # Enrich every ticker in cik.json (slow)
 """
 
 import argparse
@@ -21,27 +22,19 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).parent))
 
 from utils.session import RequestSession
+from utils.input_parser import parse_input_file, DEFAULT_INPUT_FILE
+from utils import log
 from models import Company, Sector
 from database import DatabaseManager
 
-
-# The 21 tickers used across the analysis pipeline
-PIPELINE_TICKERS = [
-    'PLTR', 'MSFT', 'AAPL', 'NVDA',   # Tech
-    'JPM', 'BAC', 'WFC',               # Finance
-    'WMT', 'AMZN', 'COST',             # Retail
-    'JNJ', 'UNH', 'PFE',              # Healthcare
-    'XOM', 'CVX',                       # Energy
-    'GOLD', 'VALE', 'FCX',            # Mining
-    'CAT', 'GE',                        # Industrial
-    'VZ'                                # Telecom
-]
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 CONFIG_DIR = os.path.join(BASE_DIR, "config")
 REPORTS_DIR = os.path.join(BASE_DIR, "reports")
 
 SUBMISSIONS_URL = "https://data.sec.gov/submissions/CIK{cik}.json"
+
+logger = log.setup_verbose_logging("enrich")
 
 
 class SICMapper:
@@ -52,6 +45,7 @@ class SICMapper:
         with open(path, 'r') as f:
             data = json.load(f)
         self.ranges = data["ranges"]
+        logger.debug(f"Loaded {len(self.ranges)} SIC ranges from sic_to_sector.json")
 
     def lookup(self, sic_code: str) -> tuple[str, str]:
         """
@@ -61,10 +55,9 @@ class SICMapper:
         try:
             code = int(sic_code)
         except (ValueError, TypeError):
+            logger.debug(f"Invalid SIC code: {sic_code}")
             return "Unknown", ""
 
-        # Ranges are checked in order; more specific ranges listed later
-        # take precedence (e.g., 7370-7379 overrides 7300-7389).
         best_match = None
         best_span = float('inf')
 
@@ -76,24 +69,30 @@ class SICMapper:
                     best_match = r
 
         if best_match:
+            logger.debug(f"SIC {sic_code} -> {best_match['sector']} / {best_match['industry_group']}")
             return best_match["sector"], best_match["industry_group"]
 
+        logger.debug(f"SIC {sic_code} has no matching range")
         return "Unknown", ""
 
 
 def load_cik_map() -> dict:
     path = os.path.join(CONFIG_DIR, "cik.json")
     with open(path, 'r') as f:
-        return json.load(f)
+        data = json.load(f)
+    logger.debug(f"Loaded {len(data)} CIK mappings")
+    return data
 
 
 def load_fiscal_year_metadata() -> dict:
     path = os.path.join(REPORTS_DIR, "fiscal_year_metadata.json")
     try:
         with open(path, 'r') as f:
-            return json.load(f)
+            data = json.load(f)
+        logger.debug(f"Loaded fiscal year metadata for {len(data)} tickers")
+        return data
     except FileNotFoundError:
-        print("Warning: fiscal_year_metadata.json not found, FYE data will be empty")
+        log.warn("fiscal_year_metadata.json not found, FYE data will be empty")
         return {}
 
 
@@ -102,7 +101,9 @@ def load_existing_metadata() -> dict:
     path = os.path.join(CONFIG_DIR, "company_metadata.json")
     try:
         with open(path, 'r') as f:
-            return json.load(f)
+            data = json.load(f)
+        logger.debug(f"Loaded existing metadata for {len(data)} tickers")
+        return data
     except FileNotFoundError:
         return {}
 
@@ -114,12 +115,12 @@ def fetch_company_info(reqsesh: RequestSession, cik: str) -> dict | None:
     """
     cik_padded = cik.zfill(10)
     url = SUBMISSIONS_URL.format(cik=cik_padded)
-    print(f"  Fetching: {url}")
+    logger.debug(f"Fetching submissions: {url}")
 
     res = reqsesh.get(url)
     if res is None or res.status_code != 200:
         status = res.status_code if res else "No response"
-        print(f"  Failed: {status}")
+        logger.debug(f"Submissions fetch failed: HTTP {status}")
         return None
 
     return res.json()
@@ -128,6 +129,9 @@ def fetch_company_info(reqsesh: RequestSession, cik: str) -> dict | None:
 def enrich_tickers(tickers: list[str]) -> None:
     """Main enrichment flow for a list of tickers."""
     start = datetime.datetime.now()
+
+    log.header("ENRICHMENT: Fetching Company Metadata from SEC EDGAR")
+    log.step(f"Enriching {len(tickers)} tickers")
 
     cik_map = load_cik_map()
     fye_metadata = load_fiscal_year_metadata()
@@ -140,11 +144,10 @@ def enrich_tickers(tickers: list[str]) -> None:
     fetched = 0
     failed = 0
 
-    print(f"\nEnriching {len(tickers)} tickers...\n")
-
     for i, ticker in enumerate(tickers, 1):
         if ticker not in cik_map:
-            print(f"[{i}/{len(tickers)}] {ticker}: NOT in cik.json, skipping")
+            log.progress(i, len(tickers), ticker, f"{log.C.ERR}NOT in cik.json, skipping")
+            logger.warning(f"{ticker} not found in cik.json")
             failed += 1
             continue
 
@@ -152,9 +155,9 @@ def enrich_tickers(tickers: list[str]) -> None:
 
         # Use cached data if already enriched with SIC code
         if ticker in existing and existing[ticker].get("sic_code"):
-            print(f"[{i}/{len(tickers)}] {ticker}: Using cached metadata")
+            log.progress(i, len(tickers), ticker, f"{log.C.DIM}cached{log.C.RESET}")
+            logger.debug(f"{ticker}: using cached metadata (SIC {existing[ticker]['sic_code']})")
             results[ticker] = existing[ticker]
-            # Update FYE if available
             if ticker in fye_metadata:
                 results[ticker]["fye_month"] = fye_metadata[ticker].get("fiscal_year_end_month", "")
             skipped += 1
@@ -163,7 +166,7 @@ def enrich_tickers(tickers: list[str]) -> None:
         # Fetch from SEC
         info = fetch_company_info(reqsesh, cik)
         if not info:
-            print(f"[{i}/{len(tickers)}] {ticker}: Fetch failed")
+            log.progress(i, len(tickers), ticker, f"{log.C.ERR}fetch failed")
             failed += 1
             continue
 
@@ -192,29 +195,42 @@ def enrich_tickers(tickers: list[str]) -> None:
 
         results[ticker] = company.model_dump()
         fetched += 1
-        print(f"[{i}/{len(tickers)}] {ticker}: {entity_name} | SIC {sic_code} -> {sector_name} / {company.industry}")
+        log.progress(
+            i, len(tickers), ticker,
+            f"{entity_name} | SIC {log.C.VALUE}{sic_code}{log.C.RESET} -> "
+            f"{log.C.SECTOR}{sector_name}{log.C.RESET} / {company.industry}"
+        )
+        logger.info(f"{ticker}: {entity_name} | SIC {sic_code} -> {sector_name} / {company.industry}")
 
     # Save results to JSON
+    log.step("Saving enrichment data...")
     output_path = os.path.join(CONFIG_DIR, "company_metadata.json")
     with open(output_path, 'w') as f:
         json.dump(results, f, indent=2)
+    log.info(f"JSON: {output_path}")
 
     # Save results to SQLite
     db = DatabaseManager()
     companies = [Company(**data) for data in results.values()]
     db.upsert_companies(companies)
     db.close()
+    log.info(f"DB:   {db.db_path} ({len(companies)} companies)")
 
     elapsed = datetime.datetime.now() - start
-    print(f"\nEnrichment complete in {elapsed}")
-    print(f"  Fetched: {fetched} | Cached: {skipped} | Failed: {failed}")
-    print(f"  Output:  {output_path}")
-    print(f"  DB:      {db.db_path} ({len(companies)} companies)")
+    log.summary_table("Enrichment Summary", [
+        ("Fetched", str(fetched)),
+        ("Cached", str(skipped)),
+        ("Failed", str(failed)),
+        ("Total", str(len(results))),
+        ("Elapsed", str(elapsed)),
+    ])
+    log.ok(f"Enrichment complete")
 
 
 def main():
     parser = argparse.ArgumentParser(description="Enrich company metadata with SEC SIC codes")
     parser.add_argument("--tickers", nargs="+", help="Specific tickers to enrich")
+    parser.add_argument("--input-file", type=str, help="Path to file with ticker list (default: input.txt)")
     parser.add_argument("--all", action="store_true", help="Enrich ALL tickers in cik.json (slow)")
     args = parser.parse_args()
 
@@ -223,8 +239,16 @@ def main():
         tickers = list(cik_map.keys())
     elif args.tickers:
         tickers = [t.upper() for t in args.tickers]
+    elif args.input_file:
+        tickers = parse_input_file(args.input_file)
     else:
-        tickers = PIPELINE_TICKERS
+        # Default: read from input.txt if it exists, otherwise use pipeline tickers
+        if os.path.exists(DEFAULT_INPUT_FILE):
+            tickers = parse_input_file()
+            log.info(f"Reading tickers from {DEFAULT_INPUT_FILE}")
+        else:
+            from enrich import PIPELINE_TICKERS
+            tickers = PIPELINE_TICKERS
 
     enrich_tickers(tickers)
 

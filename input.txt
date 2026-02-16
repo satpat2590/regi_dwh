@@ -1,0 +1,62 @@
+# Tickers to process — one per line, comments with #
+# 40 tickers across 10 industries
+
+# Technology (6)
+PLTR
+MSFT
+AAPL
+NVDA
+GOOG
+CRM
+
+# Finance (5)
+JPM
+BAC
+WFC
+GS
+MS
+
+# Retail / Consumer Discretionary (4)
+WMT
+AMZN
+COST
+HD
+
+# Healthcare (4)
+JNJ
+UNH
+PFE
+ABT
+
+# Energy (4)
+XOM
+CVX
+COP
+SLB
+
+# Mining / Materials (3)
+GOLD
+VALE
+FCX
+
+# Industrial / Manufacturing (4)
+CAT
+GE
+HON
+LMT
+
+# Telecom / Media (3)
+VZ
+T
+DIS
+
+# Utilities (3)
+NEE
+DUK
+SO
+
+# Real Estate / REITs (4)
+AMT
+PLD
+SPG
+O

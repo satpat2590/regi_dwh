@@ -1,4 +1,17 @@
-import json, csv, os, sys, re 
+"""
+SEC EDGAR Financial Data Extractor
+
+Fetches XBRL company facts from SEC EDGAR, normalizes temporal data,
+enriches with sector/industry tags, and persists to Excel and SQLite.
+
+Usage:
+    python SEC.py                              # Extract for tickers in input.txt
+    python SEC.py --tickers AAPL MSFT JPM      # Extract for specific tickers
+    python SEC.py --input-file my_tickers.txt  # Extract from custom file
+"""
+
+import argparse
+import json, csv, os, sys, re
 import datetime
 from bs4 import BeautifulSoup
 from fake_useragent import UserAgent, FakeUserAgent
@@ -12,18 +25,17 @@ sys.path.append(str(Path(__file__).parent))
 
 from utils.session import RequestSession
 from utils.excel_formatter import ExcelFormatter
+from utils.input_parser import parse_input_file, DEFAULT_INPUT_FILE
+from utils import log
 from models import Company, FinancialFact
 from database import DatabaseManager
 
+logger = log.setup_verbose_logging("sec")
+
 
 def save_json(spath: str, data: Dict) -> None:
-    """
-    Save the data in some JSON file specified by spath
-
-    :param spath: The path to the json file in which the data will be stored
-    :param data: The json data to store into a file
-    """
-    print(f"\n[OMNI] - {datetime.datetime.now()} - Saving data in {spath}...\n")
+    """Save the data in some JSON file specified by spath."""
+    log.info(f"Saving JSON: {spath}")
     with open(spath, 'w+') as f:
         json.dump(data, f, indent=4)
 
@@ -31,7 +43,7 @@ def save_json(spath: str, data: Dict) -> None:
 class SEC():
     """
     Enhanced SEC data extractor with temporal normalization and field categorization.
-    
+
     Features:
     - Integrates with field analysis pipeline for intelligent categorization
     - Distinguishes point-in-time vs period metrics
@@ -39,8 +51,10 @@ class SEC():
     - Supports multiple statement types (Balance Sheet, Income Statement, Cash Flow)
     """
 
-    def __init__(self):
+    def __init__(self, tickers: list[str] = None):
         self.start = datetime.datetime.now()
+
+        log.header("SEC EXTRACTION: Fetching XBRL Company Facts")
 
         # Configuration
         self.reqsesh = RequestSession()
@@ -51,11 +65,13 @@ class SEC():
         self.base_dir = os.path.dirname(os.path.abspath(__file__))
         self.data_dir = os.path.join(self.base_dir, "data")
         self.reports_dir = os.path.join(self.base_dir, "reports")
-        
+
         # Load CIK mapping
+        log.step("Loading configuration...")
         jpath = os.path.join(self.base_dir, "config/cik.json")
         with open(jpath, 'r') as f:
             self.cik_map = json.load(f)
+        logger.debug(f"Loaded {len(self.cik_map)} CIK mappings")
 
         # Load company enrichment metadata (sector, industry, SIC)
         self.company_metadata = self._load_company_metadata()
@@ -63,36 +79,45 @@ class SEC():
         # Load field intelligence from task analysis system
         self.field_categories = self._load_field_categories()
         self.field_priority = self._load_field_priority()
-        
-        print(f"Loaded {len(self.company_metadata)} company profiles")
-        print(f"Loaded {len(self.field_categories)} field categories")
-        print(f"Loaded {len(self.field_priority)} field priorities")
+
+        log.summary_table("Loaded Resources", [
+            ("Company profiles", str(len(self.company_metadata))),
+            ("Field categories", str(len(self.field_categories))),
+            ("Field priorities", str(len(self.field_priority))),
+            ("CIK mappings", str(len(self.cik_map))),
+        ])
 
         # Tickers to process
-        self.tickers = ['PLTR', 'AAPL', 'JPM']
-        print(f"\nProcessing the following tickers: {self.tickers}\n")
-        
+        self.tickers = tickers if tickers else ['PLTR', 'AAPL', 'JPM']
+        log.step(f"Processing {len(self.tickers)} tickers: {', '.join(self.tickers)}")
+
         # Store all ticker data
         self.all_ticker_data = []
-        
-        for ticker in self.tickers:
-            gaap_record = self.fetch_sec_filing(ticker)
+
+        for i, ticker in enumerate(self.tickers, 1):
+            gaap_record = self.fetch_sec_filing(ticker, i, len(self.tickers))
             if gaap_record:
-                gaap_record_cleaned = gaap_record.json() 
-                self.clean_facts(gaap_record_cleaned, ticker)
-            print("\n")
+                gaap_record_cleaned = gaap_record.json()
+                self.clean_facts(gaap_record_cleaned, ticker, i, len(self.tickers))
 
         # Save aggregated output
+        log.step("Saving outputs...")
         self.save_aggregated_data()
-        self.ef.save(
-            f"EDGAR_FINANCIALS_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx",
-            self.data_dir
-        )
+
+        xlsx_name = f"EDGAR_FINANCIALS_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
+        self.ef.save(xlsx_name, self.data_dir)
+        log.info(f"Excel: {os.path.join(self.data_dir, xlsx_name)}")
 
         # Write to SQLite database
         self.save_to_database()
 
-        print(f"\n✓ Processing complete in {datetime.datetime.now() - self.start}")
+        elapsed = datetime.datetime.now() - self.start
+        log.summary_table("Extraction Summary", [
+            ("Tickers processed", str(len(self.tickers))),
+            ("Total records", str(len(self.all_ticker_data))),
+            ("Elapsed", str(elapsed)),
+        ])
+        log.ok("SEC extraction complete")
 
     def _load_company_metadata(self) -> Dict:
         """Load enriched company metadata (sector, industry, SIC code)"""
@@ -100,13 +125,13 @@ class SEC():
             path = os.path.join(self.base_dir, "config/company_metadata.json")
             with open(path, 'r') as f:
                 raw = json.load(f)
-            # Validate each entry through Pydantic
             validated = {}
             for ticker, data in raw.items():
                 validated[ticker] = Company(**data)
+            logger.debug(f"Loaded company metadata for {len(validated)} tickers")
             return validated
         except FileNotFoundError:
-            print("Warning: config/company_metadata.json not found. Run enrich.py first.")
+            log.warn("config/company_metadata.json not found. Run enrich.py first.")
             return {}
 
     def get_company_enrichment(self, ticker: str) -> Tuple[str, str]:
@@ -121,9 +146,11 @@ class SEC():
         try:
             path = os.path.join(self.reports_dir, "field_categories.json")
             with open(path, 'r') as f:
-                return json.load(f)
+                data = json.load(f)
+            logger.debug(f"Loaded {len(data)} field categories")
+            return data
         except FileNotFoundError:
-            print("Warning: field_categories.json not found. Using basic categorization.")
+            log.warn("field_categories.json not found. Using basic categorization.")
             return {}
 
     def _load_field_priority(self) -> Dict:
@@ -131,37 +158,33 @@ class SEC():
         try:
             path = os.path.join(self.reports_dir, "field_priority.json")
             with open(path, 'r') as f:
-                return json.load(f)
+                data = json.load(f)
+            logger.debug(f"Loaded {len(data)} field priorities")
+            return data
         except FileNotFoundError:
-            print("Warning: field_priority.json not found. Using default priorities.")
+            log.warn("field_priority.json not found. Using default priorities.")
             return {}
 
     def get_field_metadata(self, field_name: str) -> Tuple[str, str, float]:
-        """
-        Get field metadata from the analysis system.
-        
-        Returns:
-            (statement_type, temporal_nature, priority_score)
-        """
+        """Get field metadata from the analysis system."""
         if field_name in self.field_categories:
             cat = self.field_categories[field_name]
             statement_type = cat.get("statement_type", "Other")
             temporal_nature = cat.get("temporal_nature", "Unknown")
         else:
-            # Fallback to basic categorization
             statement_type = self._basic_categorize_statement(field_name)
             temporal_nature = self._basic_categorize_temporal(field_name)
-        
+
         priority_score = 0.0
         if field_name in self.field_priority:
             priority_score = self.field_priority[field_name].get("priority_score", 0.0)
-        
+
         return statement_type, temporal_nature, priority_score
 
     def _basic_categorize_statement(self, field_name: str) -> str:
         """Basic statement categorization fallback"""
         field_lower = field_name.lower()
-        
+
         if any(x in field_lower for x in ['cash flow', 'operating activities', 'investing activities', 'financing activities']):
             return "Cash Flow Statement"
         elif any(x in field_lower for x in ['revenue', 'income', 'expense', 'profit', 'loss', 'earnings']):
@@ -176,35 +199,22 @@ class SEC():
     def _basic_categorize_temporal(self, field_name: str) -> str:
         """Basic temporal categorization fallback"""
         field_lower = field_name.lower()
-        
-        # Period indicators
+
         if any(x in field_lower for x in ['revenue', 'income', 'expense', 'flow', 'during']):
             return "Period"
-        # Point-in-time indicators
         elif any(x in field_lower for x in ['asset', 'liability', 'equity', 'balance', 'outstanding']):
             return "Point-in-Time"
         else:
-            return "Period"  # Default to period
+            return "Period"
 
     def normalize_temporal_data(self, obj: Dict, temporal_nature: str) -> Tuple[Optional[str], Optional[str]]:
-        """
-        Normalize temporal data based on field type.
-        
-        For Point-in-Time fields: period_start = None, period_end = end date
-        For Period fields: period_start = start date (if available), period_end = end date
-        
-        Returns:
-            (period_start, period_end)
-        """
+        """Normalize temporal data based on field type."""
         end_date = obj.get("end")
-        start_date = obj.get("start")  # Not always available in SEC data
-        
+        start_date = obj.get("start")
+
         if temporal_nature == "Point-in-Time":
-            # Balance sheet items - snapshot at a point in time
             return None, end_date
         else:
-            # Period metrics - income statement, cash flow
-            # If start date not available, infer from fiscal period
             if not start_date and end_date:
                 start_date = self._infer_period_start(end_date, obj.get("fp"))
             return start_date, end_date
@@ -213,74 +223,61 @@ class SEC():
         """Infer period start date from end date and fiscal period"""
         if not end_date:
             return None
-        
+
         try:
             end_dt = datetime.datetime.strptime(end_date, '%Y-%m-%d')
-            
+
             if fiscal_period == 'FY':
-                # Annual period - go back 12 months
                 start_dt = end_dt - datetime.timedelta(days=365)
             elif fiscal_period in ['Q1', 'Q2', 'Q3', 'Q4']:
-                # Quarterly period - go back 3 months
                 start_dt = end_dt - datetime.timedelta(days=90)
             else:
-                # Unknown period
                 return None
-            
+
             return start_dt.strftime('%Y-%m-%d')
         except:
             return None
 
-    def clean_facts(self, json_data: Dict, ticker: str) -> None:
-        """
-        Extract and normalize company facts with temporal and statement categorization.
-        
-        :param json_data: JSON data from SEC XBRL API
-        :param ticker: Stock ticker symbol
-        """
+    def clean_facts(self, json_data: Dict, ticker: str, idx: int = 0, total: int = 0) -> None:
+        """Extract and normalize company facts with temporal and statement categorization."""
         cik = json_data.get("cik")
         if not cik:
-            print(f"No CIK for {ticker}")
+            log.err(f"No CIK for {ticker}")
             return
 
         entity = json_data.get("entityName")
         if not entity:
-            print(f"No entityName for {ticker}")
-            return 
+            log.err(f"No entityName for {ticker}")
+            return
 
         facts = json_data.get("facts")
         if not facts:
-            print(f"No facts for {entity}")
-            return 
+            log.err(f"No facts for {entity}")
+            return
 
-        print(f"Processing {ticker} ({entity})...")
-
-        # Get sector/industry enrichment
         sector, industry = self.get_company_enrichment(ticker)
+        logger.debug(f"{ticker}: enrichment -> {sector} / {industry}")
 
+        # Count taxonomies and fields for verbose logging
+        taxonomy_counts = {}
         cfacts = []
         for taxonomy, fields in facts.items():
+            taxonomy_counts[taxonomy] = len(fields)
             for field_name, field_data in fields.items():
-                # Get field metadata from analysis system
                 statement_type, temporal_nature, priority_score = self.get_field_metadata(field_name)
-                
-                # Get field label and description
+
                 field_label = field_data.get("label", "")
                 field_description = field_data.get("description", "")
-                
-                # Process units
+
                 units = field_data.get("units", {})
                 for unit_type, unit_list in units.items():
                     for obj in unit_list:
-                        # Normalize temporal data
                         period_start, period_end = self.normalize_temporal_data(obj, temporal_nature)
-                        
-                        # Extract filing information
+
                         filing_date = obj.get("filed")
                         form = obj.get("form", "")
                         is_amended = "/A" in form if form else False
-                        
-                        # Create normalized record
+
                         row = {
                             'Ticker': ticker,
                             'CIK': cik,
@@ -296,7 +293,7 @@ class SEC():
                             'Value': obj.get("val"),
                             'Unit': unit_type,
                             'FilingDate': filing_date,
-                            'DataAvailableDate': filing_date,  # For backtesting - when data became known
+                            'DataAvailableDate': filing_date,
                             'FiscalYear': obj.get("fy"),
                             'FiscalPeriod': obj.get("fp"),
                             'Form': form,
@@ -307,84 +304,115 @@ class SEC():
                             'Frame': obj.get("frame")
                         }
                         cfacts.append(row)
-        
-        # Store and display
+
         self.all_ticker_data.extend(cfacts)
-        print(f"  ✓ Processed {len(cfacts)} records")
+
+        # Verbose per-taxonomy breakdown
+        tax_detail = ", ".join(f"{k}: {v} fields" for k, v in taxonomy_counts.items())
+        log.progress(
+            idx, total, ticker,
+            f"{log.C.OK}{len(cfacts):,} records{log.C.RESET} | "
+            f"{log.C.SECTOR}{sector}{log.C.RESET} | {tax_detail}"
+        )
+        logger.info(f"{ticker} ({entity}): {len(cfacts)} records, taxonomies: {tax_detail}")
 
     def save_aggregated_data(self):
-        """Save aggregated data with statement-type separation"""
+        """Save aggregated data with statement-type separation.
+
+        The full ALL_DATA set goes only to SQLite (via save_to_database).
+        Excel gets per-statement and per-ticker sheets which are more
+        practical sizes and won't OOM openpyxl.
+        """
+        EXCEL_MAX_ROWS = 1_048_576 - 1  # minus header row
+
         if not self.all_ticker_data:
-            print("No data to save")
+            log.warn("No data to save")
             return
-        
+
         df = pd.DataFrame(self.all_ticker_data)
-        
-        # Save complete dataset
-        self.ef.add_to_sheet(df, sheet_name="ALL_DATA")
-        
-        # Save by statement type
+
+        # Skip ALL_DATA sheet for Excel — full dataset goes to SQLite only
+        log.info(f"Total records: {len(df):,} (full dataset -> SQLite only)")
+
+        # Per-statement-type sheets
         for stmt_type in df['StatementType'].unique():
             if stmt_type == "Other":
                 continue
-            
+
             stmt_df = df[df['StatementType'] == stmt_type].copy()
-            # Sanitize sheet name - remove invalid Excel characters
             sheet_name = stmt_type.replace(" ", "_").replace("/", "_").replace("\\", "_")
-            sheet_name = re.sub(r'[:\*\?\[\]]', '', sheet_name)[:31]  # Excel limit
+            sheet_name = re.sub(r'[:\*\?\[\]]', '', sheet_name)[:31]
+            if len(stmt_df) > EXCEL_MAX_ROWS:
+                log.warn(f"{sheet_name}: {len(stmt_df):,} rows exceeds Excel limit, skipping")
+                continue
             self.ef.add_to_sheet(stmt_df, sheet_name=sheet_name)
-            print(f"  Added sheet: {sheet_name} ({len(stmt_df)} records)")
-        
-        # Save by temporal type
-        for temp_type in df['TemporalType'].unique():
-            temp_df = df[df['TemporalType'] == temp_type].copy()
-            sheet_name = f"Temporal_{temp_type}"[:31]
-            self.ef.add_to_sheet(temp_df, sheet_name=sheet_name)
+            log.info(f"Sheet: {sheet_name} ({len(stmt_df):,} records)")
+
+        # Per-ticker summary sheet (one row per ticker with record counts)
+        summary = df.groupby(['Ticker', 'Sector', 'Industry', 'EntityName']).agg(
+            Records=('Value', 'size'),
+            Fields=('Field', 'nunique'),
+            MinYear=('FiscalYear', 'min'),
+            MaxYear=('FiscalYear', 'max'),
+        ).reset_index()
+        self.ef.add_to_sheet(summary, sheet_name="Ticker_Summary")
+        log.info(f"Sheet: Ticker_Summary ({len(summary):,} tickers)")
 
     def save_to_database(self):
         """Write all collected financial facts to the SQLite database."""
         if not self.all_ticker_data:
-            print("No data to write to database")
+            log.warn("No data to write to database")
             return
 
         db = DatabaseManager()
         n = db.upsert_financial_facts(self.all_ticker_data)
         db.close()
-        print(f"  Wrote {n} records to {db.db_path}")
+        log.ok(f"Database: {n:,} records written to {db.db_path}")
 
-    def fetch_sec_filing(self, ticker: str) -> Optional[requests.Response]:
-        """
-        Fetch SEC filing data for a ticker.
-        
-        :param ticker: Stock ticker symbol
-        :return: Response object or None
-        """
+    def fetch_sec_filing(self, ticker: str, idx: int = 0, total: int = 0) -> Optional[requests.Response]:
+        """Fetch SEC filing data for a ticker."""
         if ticker not in self.cik_map:
-            print(f"Ticker {ticker} not found in CIK map")
+            log.progress(idx, total, ticker, f"{log.C.ERR}NOT in CIK map, skipping")
+            logger.warning(f"{ticker} not found in CIK map")
             return None
-        
-        cik = self.cik_map[ticker]
-        return self.extract_data(cik)
 
-    def extract_data(self, cik: str) -> Optional[requests.Response]:
-        """
-        Extract data from SEC XBRL API.
-        
-        :param cik: Central Index Key (CIK)
-        :return: Response object or None
-        """
+        cik = self.cik_map[ticker]
+        return self.extract_data(cik, ticker)
+
+    def extract_data(self, cik: str, ticker: str = "") -> Optional[requests.Response]:
+        """Extract data from SEC XBRL API."""
         cik_padded = cik.zfill(10)
         url = self.url_xbrl.replace('##########', cik_padded)
-        
-        print(f"  Fetching: {url}")
+
+        logger.debug(f"Fetching XBRL: {url}")
         res = self.reqsesh.get(url)
-        
-        if res.status_code != 200:
-            print(f"  Failed: HTTP {res.status_code}")
+
+        if res is None or res.status_code != 200:
+            status = res.status_code if res else "No response"
+            log.err(f"{ticker}: XBRL fetch failed (HTTP {status})")
             return None
-        
+
         return res
 
 
+def main():
+    parser = argparse.ArgumentParser(description="Extract SEC EDGAR financial data")
+    parser.add_argument("--tickers", nargs="+", help="Specific tickers to process")
+    parser.add_argument("--input-file", type=str, help="Path to file with ticker list (default: input.txt)")
+    args = parser.parse_args()
+
+    if args.tickers:
+        tickers = [t.upper() for t in args.tickers]
+    elif args.input_file:
+        tickers = parse_input_file(args.input_file)
+    elif os.path.exists(DEFAULT_INPUT_FILE):
+        tickers = parse_input_file()
+        log.info(f"Reading tickers from {DEFAULT_INPUT_FILE}")
+    else:
+        tickers = None  # Will use default in SEC.__init__
+
+    sec = SEC(tickers=tickers)
+
+
 if __name__ == "__main__":
-    sec = SEC()
+    main()

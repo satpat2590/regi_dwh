@@ -33,8 +33,8 @@ class ExcelFormatter:
         """
 
         ws = self.wb.active
-     # Check if the default sheet is empty
-        is_empty = all([cell.value is None for row in ws.iter_rows() for cell in row])
+     # Check if the default sheet is empty (only check first cell to avoid iterating millions of rows)
+        is_empty = ws.max_row <= 1 and ws.cell(1, 1).value is None
 
         if is_empty:
          # Use the default sheet
@@ -75,10 +75,12 @@ class ExcelFormatter:
         ws.add_table(table)
 
      # Format the column widths according to the size of the data in the rows
+     # Sample up to 500 rows to avoid slow iteration on large DataFrames
+        sample = df.head(500)
         for i, col in enumerate(df.columns, start=1):
             col_letter = get_column_letter(i)
-            max_len = max(len(str(cell)) for cell in [col] + df[col].astype(str).tolist())
-            ws.column_dimensions[col_letter].width = max_len + 4
+            max_len = max(len(str(cell)) for cell in [col] + sample[col].astype(str).tolist())
+            ws.column_dimensions[col_letter].width = min(max_len + 4, 60)
 
     def save(self, filename: str, location: str = None) -> None:
         """

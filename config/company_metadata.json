@@ -39,6 +39,26 @@
     "fye_month": "January",
     "market_cap_tier": "large"
   },
+  "GOOG": {
+    "ticker": "GOOG",
+    "cik": "0001652044",
+    "entity_name": "Alphabet Inc.",
+    "sector": "Technology",
+    "industry": "Services-Computer Programming, Data Processing, Etc.",
+    "sic_code": "7370",
+    "fye_month": "",
+    "market_cap_tier": "large"
+  },
+  "CRM": {
+    "ticker": "CRM",
+    "cik": "0001108524",
+    "entity_name": "Salesforce, Inc.",
+    "sector": "Technology",
+    "industry": "Services-Prepackaged Software",
+    "sic_code": "7372",
+    "fye_month": "",
+    "market_cap_tier": "large"
+  },
   "JPM": {
     "ticker": "JPM",
     "cik": "0000019617",
@@ -67,6 +87,26 @@
     "industry": "National Commercial Banks",
     "sic_code": "6021",
     "fye_month": "December",
+    "market_cap_tier": "large"
+  },
+  "GS": {
+    "ticker": "GS",
+    "cik": "0000886982",
+    "entity_name": "GOLDMAN SACHS GROUP INC",
+    "sector": "Finance",
+    "industry": "Security Brokers, Dealers & Flotation Companies",
+    "sic_code": "6211",
+    "fye_month": "",
+    "market_cap_tier": "large"
+  },
+  "MS": {
+    "ticker": "MS",
+    "cik": "0000895421",
+    "entity_name": "MORGAN STANLEY",
+    "sector": "Finance",
+    "industry": "Security Brokers, Dealers & Flotation Companies",
+    "sic_code": "6211",
+    "fye_month": "",
     "market_cap_tier": "large"
   },
   "WMT": {
@@ -99,6 +139,16 @@
     "fye_month": "August",
     "market_cap_tier": "large"
   },
+  "HD": {
+    "ticker": "HD",
+    "cik": "0000354950",
+    "entity_name": "HOME DEPOT, INC.",
+    "sector": "Retail",
+    "industry": "Retail-Lumber & Other Building Materials Dealers",
+    "sic_code": "5211",
+    "fye_month": "",
+    "market_cap_tier": "large"
+  },
   "JNJ": {
     "ticker": "JNJ",
     "cik": "0000200406",
@@ -129,6 +179,16 @@
     "fye_month": "December",
     "market_cap_tier": "large"
   },
+  "ABT": {
+    "ticker": "ABT",
+    "cik": "0000001800",
+    "entity_name": "ABBOTT LABORATORIES",
+    "sector": "Healthcare",
+    "industry": "Pharmaceutical Preparations",
+    "sic_code": "2834",
+    "fye_month": "",
+    "market_cap_tier": "large"
+  },
   "XOM": {
     "ticker": "XOM",
     "cik": "0000034088",
@@ -147,6 +207,26 @@
     "industry": "Petroleum Refining",
     "sic_code": "2911",
     "fye_month": "December",
+    "market_cap_tier": "large"
+  },
+  "COP": {
+    "ticker": "COP",
+    "cik": "0001163165",
+    "entity_name": "CONOCOPHILLIPS",
+    "sector": "Energy",
+    "industry": "Petroleum Refining",
+    "sic_code": "2911",
+    "fye_month": "",
+    "market_cap_tier": "large"
+  },
+  "SLB": {
+    "ticker": "SLB",
+    "cik": "0000087347",
+    "entity_name": "SLB LIMITED/NV",
+    "sector": "Mining/Materials",
+    "industry": "Oil & Gas Field Services, NEC",
+    "sic_code": "1389",
+    "fye_month": "",
     "market_cap_tier": "large"
   },
   "GOLD": {
@@ -199,6 +279,26 @@
     "fye_month": "December",
     "market_cap_tier": "large"
   },
+  "HON": {
+    "ticker": "HON",
+    "cik": "0000773840",
+    "entity_name": "HONEYWELL INTERNATIONAL INC",
+    "sector": "Transportation",
+    "industry": "Aircraft Engines & Engine Parts",
+    "sic_code": "3724",
+    "fye_month": "",
+    "market_cap_tier": "large"
+  },
+  "LMT": {
+    "ticker": "LMT",
+    "cik": "0000936468",
+    "entity_name": "LOCKHEED MARTIN CORP",
+    "sector": "Transportation",
+    "industry": "Guided Missiles & Space Vehicles & Parts",
+    "sic_code": "3760",
+    "fye_month": "",
+    "market_cap_tier": "large"
+  },
   "VZ": {
     "ticker": "VZ",
     "cik": "0000732712",
@@ -207,6 +307,96 @@
     "industry": "Telephone Communications (No Radiotelephone)",
     "sic_code": "4813",
     "fye_month": "December",
+    "market_cap_tier": "large"
+  },
+  "T": {
+    "ticker": "T",
+    "cik": "0000732717",
+    "entity_name": "AT&T INC.",
+    "sector": "Telecom",
+    "industry": "Telephone Communications (No Radiotelephone)",
+    "sic_code": "4813",
+    "fye_month": "",
+    "market_cap_tier": "large"
+  },
+  "DIS": {
+    "ticker": "DIS",
+    "cik": "0001744489",
+    "entity_name": "Walt Disney Co",
+    "sector": "Retail",
+    "industry": "Services-Miscellaneous Amusement & Recreation",
+    "sic_code": "7990",
+    "fye_month": "",
+    "market_cap_tier": "large"
+  },
+  "NEE": {
+    "ticker": "NEE",
+    "cik": "0000753308",
+    "entity_name": "NEXTERA ENERGY INC",
+    "sector": "Utilities",
+    "industry": "Electric Services",
+    "sic_code": "4911",
+    "fye_month": "",
+    "market_cap_tier": "large"
+  },
+  "DUK": {
+    "ticker": "DUK",
+    "cik": "0001326160",
+    "entity_name": "Duke Energy CORP",
+    "sector": "Utilities",
+    "industry": "Electric & Other Services Combined",
+    "sic_code": "4931",
+    "fye_month": "",
+    "market_cap_tier": "large"
+  },
+  "SO": {
+    "ticker": "SO",
+    "cik": "0000092122",
+    "entity_name": "SOUTHERN CO",
+    "sector": "Utilities",
+    "industry": "Electric Services",
+    "sic_code": "4911",
+    "fye_month": "",
+    "market_cap_tier": "large"
+  },
+  "AMT": {
+    "ticker": "AMT",
+    "cik": "0001053507",
+    "entity_name": "AMERICAN TOWER CORP /MA/",
+    "sector": "Finance",
+    "industry": "Real Estate Investment Trusts",
+    "sic_code": "6798",
+    "fye_month": "",
+    "market_cap_tier": "large"
+  },
+  "PLD": {
+    "ticker": "PLD",
+    "cik": "0001045609",
+    "entity_name": "Prologis, Inc.",
+    "sector": "Finance",
+    "industry": "Real Estate Investment Trusts",
+    "sic_code": "6798",
+    "fye_month": "",
+    "market_cap_tier": "large"
+  },
+  "SPG": {
+    "ticker": "SPG",
+    "cik": "0001063761",
+    "entity_name": "SIMON PROPERTY GROUP INC.",
+    "sector": "Finance",
+    "industry": "Real Estate Investment Trusts",
+    "sic_code": "6798",
+    "fye_month": "",
+    "market_cap_tier": "large"
+  },
+  "O": {
+    "ticker": "O",
+    "cik": "0000726728",
+    "entity_name": "REALTY INCOME CORP",
+    "sector": "Finance",
+    "industry": "Real Estate Investment Trusts",
+    "sic_code": "6798",
+    "fye_month": "",
     "market_cap_tier": "large"
   }
 }
