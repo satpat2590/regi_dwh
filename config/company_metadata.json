@@ -1,0 +1,212 @@
+{
+  "PLTR": {
+    "ticker": "PLTR",
+    "cik": "0001321655",
+    "entity_name": "Palantir Technologies Inc.",
+    "sector": "Technology",
+    "industry": "Services-Prepackaged Software",
+    "sic_code": "7372",
+    "fye_month": "December",
+    "market_cap_tier": "large"
+  },
+  "MSFT": {
+    "ticker": "MSFT",
+    "cik": "0000789019",
+    "entity_name": "MICROSOFT CORP",
+    "sector": "Technology",
+    "industry": "Services-Prepackaged Software",
+    "sic_code": "7372",
+    "fye_month": "June",
+    "market_cap_tier": "large"
+  },
+  "AAPL": {
+    "ticker": "AAPL",
+    "cik": "0000320193",
+    "entity_name": "Apple Inc.",
+    "sector": "Technology",
+    "industry": "Electronic Computers",
+    "sic_code": "3571",
+    "fye_month": "September",
+    "market_cap_tier": "large"
+  },
+  "NVDA": {
+    "ticker": "NVDA",
+    "cik": "0001045810",
+    "entity_name": "NVIDIA CORP",
+    "sector": "Technology",
+    "industry": "Semiconductors & Related Devices",
+    "sic_code": "3674",
+    "fye_month": "January",
+    "market_cap_tier": "large"
+  },
+  "JPM": {
+    "ticker": "JPM",
+    "cik": "0000019617",
+    "entity_name": "JPMORGAN CHASE & CO",
+    "sector": "Finance",
+    "industry": "National Commercial Banks",
+    "sic_code": "6021",
+    "fye_month": "December",
+    "market_cap_tier": "large"
+  },
+  "BAC": {
+    "ticker": "BAC",
+    "cik": "0000070858",
+    "entity_name": "BANK OF AMERICA CORP /DE/",
+    "sector": "Finance",
+    "industry": "National Commercial Banks",
+    "sic_code": "6021",
+    "fye_month": "December",
+    "market_cap_tier": "large"
+  },
+  "WFC": {
+    "ticker": "WFC",
+    "cik": "0000072971",
+    "entity_name": "WELLS FARGO & COMPANY/MN",
+    "sector": "Finance",
+    "industry": "National Commercial Banks",
+    "sic_code": "6021",
+    "fye_month": "December",
+    "market_cap_tier": "large"
+  },
+  "WMT": {
+    "ticker": "WMT",
+    "cik": "0000104169",
+    "entity_name": "Walmart Inc.",
+    "sector": "Retail",
+    "industry": "Retail-Variety Stores",
+    "sic_code": "5331",
+    "fye_month": "January",
+    "market_cap_tier": "large"
+  },
+  "AMZN": {
+    "ticker": "AMZN",
+    "cik": "0001018724",
+    "entity_name": "AMAZON COM INC",
+    "sector": "Retail",
+    "industry": "Retail-Catalog & Mail-Order Houses",
+    "sic_code": "5961",
+    "fye_month": "December",
+    "market_cap_tier": "large"
+  },
+  "COST": {
+    "ticker": "COST",
+    "cik": "0000909832",
+    "entity_name": "COSTCO WHOLESALE CORP /NEW",
+    "sector": "Retail",
+    "industry": "Retail-Variety Stores",
+    "sic_code": "5331",
+    "fye_month": "August",
+    "market_cap_tier": "large"
+  },
+  "JNJ": {
+    "ticker": "JNJ",
+    "cik": "0000200406",
+    "entity_name": "JOHNSON & JOHNSON",
+    "sector": "Healthcare",
+    "industry": "Pharmaceutical Preparations",
+    "sic_code": "2834",
+    "fye_month": "January",
+    "market_cap_tier": "large"
+  },
+  "UNH": {
+    "ticker": "UNH",
+    "cik": "0000731766",
+    "entity_name": "UNITEDHEALTH GROUP INC",
+    "sector": "Healthcare",
+    "industry": "Hospital & Medical Service Plans",
+    "sic_code": "6324",
+    "fye_month": "December",
+    "market_cap_tier": "large"
+  },
+  "PFE": {
+    "ticker": "PFE",
+    "cik": "0000078003",
+    "entity_name": "PFIZER INC",
+    "sector": "Healthcare",
+    "industry": "Pharmaceutical Preparations",
+    "sic_code": "2834",
+    "fye_month": "December",
+    "market_cap_tier": "large"
+  },
+  "XOM": {
+    "ticker": "XOM",
+    "cik": "0000034088",
+    "entity_name": "EXXON MOBIL CORP",
+    "sector": "Energy",
+    "industry": "Petroleum Refining",
+    "sic_code": "2911",
+    "fye_month": "December",
+    "market_cap_tier": "large"
+  },
+  "CVX": {
+    "ticker": "CVX",
+    "cik": "0000093410",
+    "entity_name": "CHEVRON CORP",
+    "sector": "Energy",
+    "industry": "Petroleum Refining",
+    "sic_code": "2911",
+    "fye_month": "December",
+    "market_cap_tier": "large"
+  },
+  "GOLD": {
+    "ticker": "GOLD",
+    "cik": "0000756894",
+    "entity_name": "BARRICK MINING CORP",
+    "sector": "Mining/Materials",
+    "industry": "Gold and Silver Ores",
+    "sic_code": "1040",
+    "fye_month": "December",
+    "market_cap_tier": "large"
+  },
+  "VALE": {
+    "ticker": "VALE",
+    "cik": "0000917851",
+    "entity_name": "Vale S.A.",
+    "sector": "Mining/Materials",
+    "industry": "Metal Mining",
+    "sic_code": "1000",
+    "fye_month": "December",
+    "market_cap_tier": "large"
+  },
+  "FCX": {
+    "ticker": "FCX",
+    "cik": "0000831259",
+    "entity_name": "FREEPORT-MCMORAN INC",
+    "sector": "Mining/Materials",
+    "industry": "Metal Mining",
+    "sic_code": "1000",
+    "fye_month": "December",
+    "market_cap_tier": "large"
+  },
+  "CAT": {
+    "ticker": "CAT",
+    "cik": "0000018230",
+    "entity_name": "CATERPILLAR INC",
+    "sector": "Industrial",
+    "industry": "Construction Machinery & Equip",
+    "sic_code": "3531",
+    "fye_month": "December",
+    "market_cap_tier": "large"
+  },
+  "GE": {
+    "ticker": "GE",
+    "cik": "0000040545",
+    "entity_name": "GENERAL ELECTRIC CO",
+    "sector": "Industrial",
+    "industry": "Electronic & Other Electrical Equipment (No Computer Equip)",
+    "sic_code": "3600",
+    "fye_month": "December",
+    "market_cap_tier": "large"
+  },
+  "VZ": {
+    "ticker": "VZ",
+    "cik": "0000732712",
+    "entity_name": "VERIZON COMMUNICATIONS INC",
+    "sector": "Telecom",
+    "industry": "Telephone Communications (No Radiotelephone)",
+    "sic_code": "4813",
+    "fye_month": "December",
+    "market_cap_tier": "large"
+  }
+}

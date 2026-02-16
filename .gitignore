@@ -1,3 +1,7 @@
 logs/
 data/
+reports/
 utils/__pycache__
+.claude/
+.claude 
+__pycache__

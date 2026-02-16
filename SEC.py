@@ -12,6 +12,8 @@ sys.path.append(str(Path(__file__).parent))
 
 from utils.session import RequestSession
 from utils.excel_formatter import ExcelFormatter
+from models import Company, FinancialFact
+from database import DatabaseManager
 
 
 def save_json(spath: str, data: Dict) -> None:
@@ -55,10 +57,14 @@ class SEC():
         with open(jpath, 'r') as f:
             self.cik_map = json.load(f)
 
+        # Load company enrichment metadata (sector, industry, SIC)
+        self.company_metadata = self._load_company_metadata()
+
         # Load field intelligence from task analysis system
         self.field_categories = self._load_field_categories()
         self.field_priority = self._load_field_priority()
         
+        print(f"Loaded {len(self.company_metadata)} company profiles")
         print(f"Loaded {len(self.field_categories)} field categories")
         print(f"Loaded {len(self.field_priority)} field priorities")
 
@@ -79,11 +85,36 @@ class SEC():
         # Save aggregated output
         self.save_aggregated_data()
         self.ef.save(
-            f"EDGAR_FINANCIALS_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx", 
+            f"EDGAR_FINANCIALS_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx",
             self.data_dir
         )
-        
+
+        # Write to SQLite database
+        self.save_to_database()
+
         print(f"\n✓ Processing complete in {datetime.datetime.now() - self.start}")
+
+    def _load_company_metadata(self) -> Dict:
+        """Load enriched company metadata (sector, industry, SIC code)"""
+        try:
+            path = os.path.join(self.base_dir, "config/company_metadata.json")
+            with open(path, 'r') as f:
+                raw = json.load(f)
+            # Validate each entry through Pydantic
+            validated = {}
+            for ticker, data in raw.items():
+                validated[ticker] = Company(**data)
+            return validated
+        except FileNotFoundError:
+            print("Warning: config/company_metadata.json not found. Run enrich.py first.")
+            return {}
+
+    def get_company_enrichment(self, ticker: str) -> Tuple[str, str]:
+        """Return (sector, industry) for a ticker from enrichment data."""
+        if ticker in self.company_metadata:
+            c = self.company_metadata[ticker]
+            return c.sector.value, c.industry
+        return "", ""
 
     def _load_field_categories(self) -> Dict:
         """Load field categorization from task analysis system"""
@@ -223,7 +254,10 @@ class SEC():
             return 
 
         print(f"Processing {ticker} ({entity})...")
-        
+
+        # Get sector/industry enrichment
+        sector, industry = self.get_company_enrichment(ticker)
+
         cfacts = []
         for taxonomy, fields in facts.items():
             for field_name, field_data in fields.items():
@@ -251,6 +285,8 @@ class SEC():
                             'Ticker': ticker,
                             'CIK': cik,
                             'EntityName': entity,
+                            'Sector': sector,
+                            'Industry': industry,
                             'Field': field_name,
                             'FieldLabel': field_label,
                             'StatementType': statement_type,
@@ -304,6 +340,17 @@ class SEC():
             temp_df = df[df['TemporalType'] == temp_type].copy()
             sheet_name = f"Temporal_{temp_type}"[:31]
             self.ef.add_to_sheet(temp_df, sheet_name=sheet_name)
+
+    def save_to_database(self):
+        """Write all collected financial facts to the SQLite database."""
+        if not self.all_ticker_data:
+            print("No data to write to database")
+            return
+
+        db = DatabaseManager()
+        n = db.upsert_financial_facts(self.all_ticker_data)
+        db.close()
+        print(f"  Wrote {n} records to {db.db_path}")
 
     def fetch_sec_filing(self, ticker: str) -> Optional[requests.Response]:
         """

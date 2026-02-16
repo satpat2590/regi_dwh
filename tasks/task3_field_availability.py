@@ -45,23 +45,17 @@ def analyze_field_availability():
         "very_rare": []       # <10% of companies
     }
     
-    # Sector mapping (from our ticker selection)
-    sector_map = {
-        "Technology": ["PLTR", "MSFT", "AAPL", "NVDA"],
-        "Finance": ["JPM", "BAC", "WFC"],
-        "Retail": ["WMT", "AMZN", "COST"],
-        "Healthcare": ["JNJ", "UNH", "PFE"],
-        "Energy": ["XOM", "CVX"],
-        "Mining": ["GOLD", "VALE", "FCX"],
-        "Industrial": ["CAT", "GE"],
-        "Telecom": ["VZ"]
-    }
-    
-    # Reverse mapping: ticker -> sector
+    # Load sector mapping from enrichment data
+    company_metadata_path = os.path.join(os.path.dirname(base_dir), "config", "company_metadata.json")
     ticker_to_sector = {}
-    for sector, tickers in sector_map.items():
-        for ticker in tickers:
-            ticker_to_sector[ticker] = sector
+    try:
+        with open(company_metadata_path, 'r') as f:
+            company_metadata = json.load(f)
+        for ticker, meta in company_metadata.items():
+            ticker_to_sector[ticker] = meta.get("sector", "Unknown")
+    except FileNotFoundError:
+        print("Warning: config/company_metadata.json not found. Run enrich.py first. Using empty sector map.")
+
     
     # Analyze each field
     field_analysis = {}
