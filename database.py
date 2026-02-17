@@ -227,6 +227,56 @@ CREATE TABLE IF NOT EXISTS crypto_info (
 );
 
 CREATE INDEX IF NOT EXISTS idx_cp_symbol_date ON crypto_prices(symbol, date);
+
+-- News Articles
+CREATE TABLE IF NOT EXISTS news_articles (
+    id              INTEGER PRIMARY KEY AUTOINCREMENT,
+    provider        TEXT NOT NULL,
+    source_name     TEXT DEFAULT '',
+    title           TEXT NOT NULL,
+    description     TEXT DEFAULT '',
+    url             TEXT NOT NULL,
+    published_at    TEXT NOT NULL,
+    fetched_at      TEXT NOT NULL,
+    category        TEXT DEFAULT '',
+    sentiment       REAL,
+    image_url       TEXT DEFAULT '',
+    UNIQUE(url)
+);
+
+CREATE TABLE IF NOT EXISTS news_article_topics (
+    id              INTEGER PRIMARY KEY AUTOINCREMENT,
+    article_id      INTEGER NOT NULL REFERENCES news_articles(id),
+    topic           TEXT NOT NULL,
+    UNIQUE(article_id, topic)
+);
+
+CREATE INDEX IF NOT EXISTS idx_na_published ON news_articles(published_at);
+CREATE INDEX IF NOT EXISTS idx_na_provider ON news_articles(provider);
+CREATE INDEX IF NOT EXISTS idx_na_category ON news_articles(category);
+CREATE INDEX IF NOT EXISTS idx_nat_topic ON news_article_topics(topic);
+
+-- FRED Macro Economic Indicators
+CREATE TABLE IF NOT EXISTS fred_series_meta (
+    series_id       TEXT PRIMARY KEY,
+    title           TEXT DEFAULT '',
+    units           TEXT DEFAULT '',
+    frequency       TEXT DEFAULT '',
+    seasonal_adj    TEXT DEFAULT '',
+    last_updated    TEXT DEFAULT '',
+    notes           TEXT DEFAULT ''
+);
+
+CREATE TABLE IF NOT EXISTS fred_observations (
+    id              INTEGER PRIMARY KEY AUTOINCREMENT,
+    series_id       TEXT NOT NULL REFERENCES fred_series_meta(series_id),
+    date            TEXT NOT NULL,
+    value           REAL,
+    UNIQUE(series_id, date)
+);
+
+CREATE INDEX IF NOT EXISTS idx_fo_series_date ON fred_observations(series_id, date);
+CREATE INDEX IF NOT EXISTS idx_fo_date ON fred_observations(date);
 """
 
 
@@ -244,6 +294,15 @@ class DatabaseManager:
 
     def _create_schema(self):
         self.conn.executescript(SCHEMA_SQL)
+        # Add sentiment enrichment columns (safe to re-run — ALTER TABLE IF NOT EXISTS pattern)
+        for col, typedef in [
+            ("sentiment_label", "TEXT DEFAULT ''"),
+            ("sentiment_source", "TEXT DEFAULT ''"),
+        ]:
+            try:
+                self.conn.execute(f"ALTER TABLE news_articles ADD COLUMN {col} {typedef}")
+            except sqlite3.OperationalError:
+                pass  # column already exists
         self.conn.commit()
 
     def close(self):
@@ -621,6 +680,126 @@ class DatabaseManager:
         cur = self.conn.execute(
             "SELECT MAX(timestamp) AS latest FROM crypto_prices WHERE symbol = ? AND interval = ?",
             (symbol, interval),
+        )
+        row = cur.fetchone()
+        return row["latest"] if row and row["latest"] else None
+
+    # ------------------------------------------------------------------
+    # News Articles
+    # ------------------------------------------------------------------
+
+    def upsert_news_articles(self, articles: list[dict]) -> int:
+        """Insert news articles. Skips duplicates via UNIQUE(url). Also inserts topics."""
+        sql = """
+            INSERT OR IGNORE INTO news_articles
+                (provider, source_name, title, description, url,
+                 published_at, fetched_at, category, sentiment, image_url,
+                 sentiment_label, sentiment_source)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """
+        count = 0
+        for a in articles:
+            cur = self.conn.execute(sql, (
+                a.get("provider", ""),
+                a.get("source_name", ""),
+                a.get("title", ""),
+                a.get("description", ""),
+                a.get("url", ""),
+                a.get("published_at", ""),
+                a.get("fetched_at", ""),
+                a.get("category", ""),
+                a.get("sentiment"),
+                a.get("image_url", ""),
+                a.get("sentiment_label", ""),
+                a.get("sentiment_source", ""),
+            ))
+            if cur.rowcount > 0:
+                count += 1
+                article_id = cur.lastrowid
+                topics = a.get("topics", [])
+                if topics:
+                    self.conn.executemany(
+                        "INSERT OR IGNORE INTO news_article_topics (article_id, topic) VALUES (?, ?)",
+                        [(article_id, t) for t in topics],
+                    )
+        self.conn.commit()
+        return count
+
+    def get_unenriched_articles(self, limit: int | None = None, force: bool = False) -> list[dict]:
+        """Return articles that haven't been sentiment-enriched yet.
+
+        Args:
+            limit: Max rows to return (None = all).
+            force: If True, return ALL articles (for re-scoring).
+        """
+        if force:
+            sql = "SELECT id, title, description, provider, sentiment_source FROM news_articles"
+        else:
+            sql = "SELECT id, title, description, provider, sentiment_source FROM news_articles WHERE sentiment_source = ''"
+        if limit:
+            sql += f" LIMIT {int(limit)}"
+        cur = self.conn.execute(sql)
+        return [dict(r) for r in cur.fetchall()]
+
+    def update_article_sentiment(self, article_id: int, sentiment: float, label: str, source: str) -> None:
+        """Update sentiment fields for a single article."""
+        self.conn.execute(
+            "UPDATE news_articles SET sentiment = ?, sentiment_label = ?, sentiment_source = ? WHERE id = ?",
+            (sentiment, label, source, article_id),
+        )
+
+    def get_news_latest_fetch(self, provider: str) -> str | None:
+        """Return the most recent fetched_at timestamp for a provider, or None."""
+        cur = self.conn.execute(
+            "SELECT MAX(fetched_at) AS latest FROM news_articles WHERE provider = ?",
+            (provider,),
+        )
+        row = cur.fetchone()
+        return row["latest"] if row and row["latest"] else None
+
+    # ------------------------------------------------------------------
+    # FRED Economic Data
+    # ------------------------------------------------------------------
+
+    def upsert_fred_series_meta(self, meta: dict) -> int:
+        """Insert or replace FRED series metadata."""
+        sql = """
+            INSERT OR REPLACE INTO fred_series_meta
+                (series_id, title, units, frequency, seasonal_adj, last_updated, notes)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        """
+        self.conn.execute(sql, (
+            meta.get("series_id", ""),
+            meta.get("title", ""),
+            meta.get("units", ""),
+            meta.get("frequency", ""),
+            meta.get("seasonal_adj", ""),
+            meta.get("last_updated", ""),
+            meta.get("notes", ""),
+        ))
+        self.conn.commit()
+        return 1
+
+    def upsert_fred_observations(self, observations: list[dict]) -> int:
+        """Insert FRED observations. Skips duplicates via UNIQUE(series_id, date)."""
+        sql = """
+            INSERT OR IGNORE INTO fred_observations
+                (series_id, date, value)
+            VALUES (?, ?, ?)
+        """
+        params = [
+            (o.get("series_id", ""), o.get("date", ""), o.get("value"))
+            for o in observations
+        ]
+        self.conn.executemany(sql, params)
+        self.conn.commit()
+        return len(params)
+
+    def get_fred_latest_observation(self, series_id: str) -> str | None:
+        """Return the most recent observation date for a FRED series, or None."""
+        cur = self.conn.execute(
+            "SELECT MAX(date) AS latest FROM fred_observations WHERE series_id = ?",
+            (series_id,),
         )
         row = cur.fetchone()
         return row["latest"] if row and row["latest"] else None

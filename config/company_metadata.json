@@ -1,11 +1,21 @@
 {
-  "DKS": {
-    "ticker": "DKS",
-    "cik": "0001089063",
-    "entity_name": "DICK'S SPORTING GOODS, INC.",
-    "sector": "Retail",
-    "industry": "Retail-Miscellaneous Shopping Goods Stores",
-    "sic_code": "5940",
+  "OKTA": {
+    "ticker": "OKTA",
+    "cik": "0001660134",
+    "entity_name": "Okta, Inc.",
+    "sector": "Technology",
+    "industry": "Services-Prepackaged Software",
+    "sic_code": "7372",
+    "fye_month": "",
+    "market_cap_tier": "large"
+  },
+  "CRWD": {
+    "ticker": "CRWD",
+    "cik": "0001535527",
+    "entity_name": "CrowdStrike Holdings, Inc.",
+    "sector": "Technology",
+    "industry": "Services-Prepackaged Software",
+    "sic_code": "7372",
     "fye_month": "",
     "market_cap_tier": "large"
   }

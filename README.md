@@ -1,6 +1,6 @@
 # Company Financials Data Warehouse
 
-A comprehensive multi-asset data pipeline for extracting, normalizing, enriching, and storing financial data. Combines **SEC EDGAR fundamentals** (XBRL filings), **equity market data** (prices, dividends, splits, valuation ratios), and **cryptocurrency market data** (OHLCV, coin info) in a unified SQLite database. Designed for downstream use in sector/industry profiling, fundamental analysis, trading signal generation, and backtesting.
+A comprehensive multi-asset data pipeline for extracting, normalizing, enriching, and storing financial data. Combines **SEC EDGAR fundamentals** (XBRL filings), **equity market data** (prices, dividends, splits, valuation ratios), **cryptocurrency market data** (OHLCV, coin info), **news aggregation** (NewsAPI, Finnhub, GDELT), and **FRED macro economic indicators** (GDP, CPI, unemployment, rates) in a unified SQLite database. Designed for downstream use in sector/industry profiling, fundamental analysis, macro research, trading signal generation, and backtesting.
 
 ---
 
@@ -15,10 +15,12 @@ A comprehensive multi-asset data pipeline for extracting, normalizing, enriching
   - [3. SEC EDGAR Extraction (SEC.py)](#3-sec-edgar-extraction-secpy)
   - [4. Equity Market Data (Equity.py)](#4-equity-market-data-equitypy)
   - [5. Crypto Market Data (Crypto.py)](#5-crypto-market-data-cryptopy)
-  - [6. Field Analysis Pipeline (tasks/)](#6-field-analysis-pipeline-tasks)
-  - [7. Data Models (models.py)](#7-data-models-modelspy)
-  - [8. Database Layer (database.py)](#8-database-layer-databasepy)
-  - [9. Utilities (utils/)](#9-utilities-utils)
+  - [6. News Aggregation (News.py)](#6-news-aggregation-newspy)
+  - [7. FRED Macro Economic Data (Fred.py)](#7-fred-macro-economic-data-fredpy)
+  - [8. Field Analysis Pipeline (tasks/)](#8-field-analysis-pipeline-tasks)
+  - [9. Data Models (models.py)](#9-data-models-modelspy)
+  - [10. Database Layer (database.py)](#10-database-layer-databasepy)
+  - [11. Utilities (utils/)](#11-utilities-utils)
 - [Database Schema](#database-schema)
 - [Data Entities](#data-entities)
 - [Company Universe](#company-universe)
@@ -37,44 +39,47 @@ A comprehensive multi-asset data pipeline for extracting, normalizing, enriching
 ## Architecture Overview
 
 ```
-   SEC EDGAR API              Yahoo Finance API         Binance/Coinbase API
-        |                            |                          |
-        +-------------+   +----------+          +---------------+
-        |             |   |                     |
-   /submissions/ /api/xbrl/    yfinance     get_klines() get_ticker()
-   CIK*.json     companyfacts/ (prices,     (OHLCV)      (coin info)
-                 CIK*.json     divs,splits)
-        |             |   |                     |
-        v             v   v                     v
-   +-----------+  +-----------+  +----------+  +--------------+
-   | enrich.py |  |  SEC.py   |  |Equity.py |  |  Crypto.py   |
-   +-----------+  +-----------+  +----------+  +--------------+
-        |              |              |               |
-        v              v              v               v
-   company_     financial_facts  equity_prices   crypto_prices
-   metadata     ttm_metrics      equity_divs     crypto_info
-                pit_events       equity_splits
-                                 equity_info
-        |              |              |               |
-        +--------+-----+-----+--------+---------------+
-                 |           |
-                 v           v
-          data/financials.db    Excel exports
-          (unified SQLite)      (*.xlsx snapshots)
-                 |
-                 v
-        Downstream Consumers
-   (sector profiling, trading signals,
-    backtesting, valuation models)
+   SEC EDGAR API        Yahoo Finance API    Binance/Coinbase   NewsAPI/Finnhub/GDELT  FRED API
+        |                      |                    |                    |                |
+        +----------+   +-------+       +------------+       +----------+     +----------+
+        |          |   |               |                    |                |
+   /submissions/ /api/xbrl/ yfinance  get_klines()   REST APIs        /fred/series/
+   CIK*.json   companyfacts/ (prices, (OHLCV)        (articles)       observations
+               CIK*.json   divs,splits)
+        |          |   |               |                    |                |
+        v          v   v               v                    v                v
+   +---------+ +-------+ +--------+ +----------+  +-----------+  +-----------+
+   |enrich.py| |SEC.py | |Equity  | | Crypto   |  |  News     |  |  Fred     |
+   +---------+ +-------+ +--------+ +----------+  | Pipeline  |  | Pipeline  |
+        |          |         |            |        +-----------+  +-----------+
+        v          v         v            v              |              |
+   company_  financial_ equity_     crypto_         news_         fred_series_
+   metadata  facts      prices      prices         articles      meta
+             ttm_metrics equity_divs crypto_info    article_      fred_
+             pit_events  equity_info                topics        observations
+        |          |         |            |              |              |
+        +-----+----+---------+------------+--------------+--------------+
+              |           |
+              v           v
+       data/financials.db    Excel exports
+       (unified SQLite)      (*.xlsx snapshots)
+              |
+              v
+       Downstream Consumers
+  (sector profiling, trading signals,
+   macro research, backtesting)
 ```
 
 ### Data Flow
 
-1. **`run_pipeline.sh`** orchestrates the full 4-step pipeline — reads `input.txt` for the ticker list, then runs:
+1. **`run_pipeline.sh`** orchestrates the full pipeline — reads `input.txt` for the ticker list, then runs:
    - Step 1: Company enrichment (SIC → sector/industry)
    - Step 2: SEC EDGAR XBRL fundamentals
    - Step 3: Equity market data (optional, requires API key)
    - Step 4: Cryptocurrency market data (Binance/Coinbase)
+   - Step 5: News aggregation (NewsAPI/Finnhub/GDELT)
+   - Step 5.5: NLP sentiment enrichment (VADER)
+   - Step 6: FRED macro economic indicators
 
 2. **`enrich.py`** fetches company metadata (SIC codes, entity names) from the SEC submissions endpoint and maps SIC codes to sectors/industries. Outputs `config/company_metadata.json` and writes to SQLite.
 
@@ -86,7 +91,11 @@ A comprehensive multi-asset data pipeline for extracting, normalizing, enriching
 
 6. **`Crypto.py`** (sources/crypto/pipeline.py) fetches cryptocurrency OHLCV data and coin information from Binance (US) or Coinbase. Writes to SQLite and Excel.
 
-7. **`database.py`** provides the SQLite database layer. Can be populated standalone from existing JSON reports or written to incrementally by the pipeline scripts.
+7. **`News.py`** (sources/news/pipeline.py) aggregates macro-focused news articles from NewsAPI.org, Finnhub, and GDELT. Deduplicates by URL and stores with topic tags and sentiment scores.
+
+8. **`Fred.py`** (sources/fred/pipeline.py) fetches economic indicator time series from the FRED API (GDP, CPI, unemployment, interest rates, etc.). Supports incremental updates.
+
+9. **`database.py`** provides the SQLite database layer. Can be populated standalone from existing JSON reports or written to incrementally by the pipeline scripts.
 
 ---
 
@@ -95,7 +104,7 @@ A comprehensive multi-asset data pipeline for extracting, normalizing, enriching
 ### Prerequisites
 
 ```bash
-pip install requests pandas openpyxl beautifulsoup4 fake-useragent pydantic colorama yfinance
+pip install requests pandas openpyxl beautifulsoup4 fake-useragent pydantic colorama yfinance python-dotenv
 ```
 
 ### Option A: Run the full pipeline (recommended)
@@ -105,7 +114,7 @@ pip install requests pandas openpyxl beautifulsoup4 fake-useragent pydantic colo
 ./run_pipeline.sh
 ```
 
-This runs all 4 steps (enrichment → SEC fundamentals → equity market data → crypto data) for tickers in `input.txt` and writes to both Excel and SQLite.
+This runs all pipeline steps (enrichment → SEC fundamentals → equity market data → crypto data → news → sentiment enrichment → FRED) for tickers in `input.txt` and writes to both Excel and SQLite.
 
 ### Option B: Run individual steps
 
@@ -122,10 +131,19 @@ python sources/equity/pipeline.py
 # Step 4: Extract crypto market data
 python sources/crypto/pipeline.py
 
-# Step 5: Populate database from existing JSON reports
+# Step 5: Fetch news articles (GDELT needs no key; NewsAPI/Finnhub need keys)
+python sources/news/pipeline.py --provider gdelt --days 3
+
+# Step 5.5: Enrich news articles with VADER sentiment
+python sources/news/enrich_sentiment.py
+
+# Step 6: Fetch FRED macro economic data (requires FRED_API_KEY)
+python sources/fred/pipeline.py --series GDP UNRATE --days 365
+
+# Step 7: Populate database from existing JSON reports
 python database.py
 
-# Step 6: Query the database
+# Step 8: Query the database
 sqlite3 data/financials.db "SELECT ticker, sector, industry FROM companies ORDER BY sector;"
 ```
 
@@ -149,7 +167,9 @@ Override from the command line:
 ```bash
 ./run_pipeline.sh --tickers AAPL MSFT JPM
 ./run_pipeline.sh --input-file my_tickers.txt
-./run_pipeline.sh --force  # Bypass cache, re-fetch all data
+./run_pipeline.sh --force                                    # Bypass cache, re-fetch all data
+./run_pipeline.sh --news-provider gdelt --news-days 3        # Customize news step
+./run_pipeline.sh --fred-series GDP UNRATE --fred-days 365   # Customize FRED step
 ```
 
 ---
@@ -159,7 +179,7 @@ Override from the command line:
 ```
 company_financials/
 |
-|-- run_pipeline.sh                    # Bash orchestrator (enrich → SEC → Equity → Crypto)
+|-- run_pipeline.sh                    # Bash orchestrator (enrich → SEC → Equity → Crypto → News → FRED)
 |-- database.py                        # SQLite database manager
 |-- models.py                          # Pydantic data models for all entities
 |-- input.txt                          # Ticker list for pipeline runs
@@ -183,19 +203,37 @@ company_financials/
 |   |   |-- data/                      # Equity Excel exports
 |   |
 |   |-- crypto/                        # Crypto market data pipeline
+|   |   |-- __init__.py
+|   |   |-- pipeline.py                # Multi-provider crypto data extractor
+|   |   |-- providers/                 # Crypto exchange implementations
+|   |   |   |-- base.py                # Base provider interface
+|   |   |   |-- binance_provider.py    # Binance exchange
+|   |   |   |-- coinbase_provider.py   # Coinbase exchange
+|   |   |-- data/                      # Crypto Excel exports
+|   |
+|   |-- news/                          # News aggregation pipeline
+|   |   |-- __init__.py
+|   |   |-- pipeline.py                # Multi-provider news orchestrator
+|   |   |-- enrich_sentiment.py        # VADER sentiment enrichment (post-ingest)
+|   |   |-- providers/                 # News provider implementations
+|   |       |-- __init__.py
+|   |       |-- base.py                # NewsDataProvider ABC + exceptions
+|   |       |-- newsapi_provider.py    # NewsAPI.org (100 req/day, 1mo lookback)
+|   |       |-- finnhub_provider.py    # Finnhub (60 calls/min, sentiment)
+|   |       |-- gdelt_provider.py      # GDELT (unlimited, no key needed)
+|   |
+|   |-- fred/                          # FRED macro economic data pipeline
 |       |-- __init__.py
-|       |-- pipeline.py                # Multi-provider crypto data extractor
-|       |-- providers/                 # Crypto exchange implementations
-|       |   |-- base.py                # Base provider interface
-|       |   |-- binance_provider.py    # Binance exchange
-|       |   |-- coinbase_provider.py   # Coinbase exchange
-|       |-- data/                      # Crypto Excel exports
+|       |-- pipeline.py                # FRED pipeline orchestrator
+|       |-- provider.py                # Single FRED API provider
 |
 |-- config/
 |   |-- cik.json                       # Ticker → CIK mapping (~9,700 entries)
 |   |-- company_metadata.json          # Enriched company profiles
 |   |-- sic_to_sector.json             # SIC code range → sector/industry mapping
 |   |-- crypto_watchlist.json          # Default crypto symbols to fetch
+|   |-- news_watchlist.json           # Macro-focused news search queries
+|   |-- fred_series.json              # FRED series IDs to track (GDP, CPI, etc.)
 |   |-- loggingConfig.json             # Logging configuration
 |
 |-- data/
@@ -235,27 +273,32 @@ company_financials/
 
 ### 1. Pipeline Orchestrator (`run_pipeline.sh`)
 
-Bash script that runs the full 4-step pipeline end-to-end:
+Bash script that runs the full pipeline end-to-end:
 1. Company enrichment (SIC → sector/industry)
 2. SEC EDGAR XBRL fundamentals
 3. Equity market data (optional, graceful failure if no API key)
 4. Cryptocurrency market data (Binance/Coinbase)
+5. News aggregation (NewsAPI/Finnhub/GDELT) — non-fatal
+5.5. NLP sentiment enrichment (VADER) — non-fatal
+6. FRED macro economic indicators — non-fatal
 
-All steps read from the same ticker source (defaulting to `input.txt`).
+Steps 1-4 use stock/crypto ticker sources. Steps 5-6 use their own config files and have separate CLI args namespaced with `--news-*` and `--fred-*` prefixes to avoid conflicts. Step 5.5 automatically scores unenriched articles after ingest.
 
 **Features:**
 - Color-coded terminal output with timestamps
-- Forwards all CLI arguments to all 4 pipeline scripts
-- Exits immediately on failure (`set -euo pipefail`)
-- Graceful handling of equity failures (continues to crypto step)
+- Smart arg routing: stock args, crypto args, news args, and FRED args are split and forwarded to their respective pipelines
+- Exits immediately on core failures (`set -euo pipefail`)
+- Graceful handling of equity/news/FRED failures (warns and continues)
 - Displays ticker count from `input.txt` before starting
 
 **Usage:**
 ```bash
-./run_pipeline.sh                        # Process tickers from input.txt
-./run_pipeline.sh --tickers AAPL MSFT    # Process specific tickers
-./run_pipeline.sh --input-file my.txt    # Process from custom file
-./run_pipeline.sh --force                # Bypass cache, re-fetch all data
+./run_pipeline.sh                                            # Process tickers from input.txt
+./run_pipeline.sh --tickers AAPL MSFT                        # Process specific tickers
+./run_pipeline.sh --input-file my.txt                        # Process from custom file
+./run_pipeline.sh --force                                    # Bypass cache, re-fetch all data
+./run_pipeline.sh --news-provider gdelt --news-days 3        # Customize news step
+./run_pipeline.sh --fred-series GDP UNRATE --fred-days 365   # Customize FRED step
 ```
 
 ---
@@ -517,7 +560,113 @@ python sources/crypto/pipeline.py --force                      # Bypass cache
 
 ---
 
-### 6. Field Analysis Pipeline (`tasks/`)
+### 6. News Aggregation (`News.py`)
+
+Aggregates macro-focused news articles from multiple providers and stores them with topic tags and sentiment scores. Follows the same multi-provider pattern as Crypto.
+
+**Class: `NewsPipeline`**
+
+**Constructor workflow:**
+1. Loads search queries from CLI args or `config/news_watchlist.json`
+2. Initializes available providers (skips those without API keys)
+3. Checks cache freshness per provider (6-hour window)
+4. For each provider × query: fetches articles, deduplicates by URL
+5. Saves to SQLite (`news_articles`, `news_article_topics` tables)
+
+**Providers:**
+
+| Provider | API Key Required | Rate Limit | Features |
+|----------|-----------------|------------|----------|
+| `gdelt` | No | Unlimited | Sentiment scores, free access |
+| `newsapi` | Yes (`NEWSAPI_KEY`) | 100 req/day | 1 month lookback (free tier) |
+| `finnhub` | Yes (`FINNHUB_KEY`) | 60 calls/min | Market-focused news |
+
+**Caching:** Providers with data less than 6 hours old are skipped unless `--force` is passed.
+
+**Usage:**
+```bash
+python sources/news/pipeline.py                                    # Default watchlist, all providers
+python sources/news/pipeline.py --queries "inflation" "GDP growth" # Specific queries
+python sources/news/pipeline.py --provider gdelt --days 3          # GDELT only (no key needed)
+python sources/news/pipeline.py --provider all --days 7 --force    # All providers, force refresh
+```
+
+**Default watchlist (`config/news_watchlist.json`):**
+- "federal reserve interest rates", "inflation CPI", "GDP economic growth"
+- "unemployment jobs report", "treasury yields bonds", "stock market S&P 500"
+- "oil prices energy", "trade deficit tariffs", "housing market real estate"
+- "earnings season corporate profits"
+
+**Notes:**
+- NewsAPI free tier has a **1 month lookback** — the provider automatically clamps `from_date` and logs a warning
+- GDELT uses `YYYYMMDDHHMMSS` date format — handled transparently by the provider
+- Articles are deduplicated by URL (`INSERT OR IGNORE` on `UNIQUE(url)`)
+
+#### Sentiment Enrichment (`enrich_sentiment.py`)
+
+A post-ingest step that scores all unenriched articles with VADER sentiment analysis. Runs automatically as Step 5.5 in the pipeline, after news ingest.
+
+- **Input**: `title + " " + description` concatenated
+- **Output**: `sentiment` (compound score, -1 to +1), `sentiment_label` ("positive"/"negative"/"neutral"), `sentiment_source` ("vader")
+- **Thresholds**: compound >= 0.05 = positive, <= -0.05 = negative, else neutral
+- **GDELT articles**: Already scored at ingest (tone normalized to -1..+1, `sentiment_source = "gdelt_tone"`); skipped by enrichment unless `--force`
+
+```bash
+python sources/news/enrich_sentiment.py                  # Enrich all unenriched articles
+python sources/news/enrich_sentiment.py --limit 1000     # Batch limit
+python sources/news/enrich_sentiment.py --force           # Re-score all (including GDELT)
+```
+
+---
+
+### 7. FRED Macro Economic Data (`Fred.py`)
+
+Fetches economic indicator time series from the Federal Reserve Economic Data (FRED) API. Single provider (no ABC needed — FRED is the sole source).
+
+**Class: `FredPipeline`**
+
+**Constructor workflow:**
+1. Loads series IDs from CLI args or `config/fred_series.json`
+2. Initializes FRED provider with API key
+3. Queries DB for latest observation dates (incremental updates)
+4. For each series: fetches metadata + observations
+5. Saves to SQLite (`fred_series_meta`, `fred_observations` tables)
+
+**Data fetched:**
+
+| Dataset | Description | Typical Size |
+|---------|-------------|-------------|
+| **Series Metadata** | Title, units, frequency, seasonal adjustment, notes | 1 row per series |
+| **Observations** | Date + value time series | ~40-2,600 rows per series (depending on frequency) |
+
+**Default series (`config/fred_series.json`):**
+
+| Category | Series |
+|----------|--------|
+| Output | GDP, GDPC1 (Real GDP) |
+| Inflation | CPIAUCSL, CPILFESL (Core CPI), PCEPI |
+| Labor | UNRATE, PAYEMS (Nonfarm Payrolls), ICSA (Jobless Claims) |
+| Rates | FEDFUNDS, DGS10, DGS2, T10Y2Y (Yield Curve) |
+| Other | DEXUSEU (USD/EUR), VIXCLS (VIX), HOUST (Housing Starts), UMCSENT (Consumer Sentiment), M2SL (Money Supply) |
+
+**Caching:** Series with observations from the current day are skipped unless `--force` is passed. Cache freshness is 24 hours.
+
+**Usage:**
+```bash
+python sources/fred/pipeline.py                              # Default series from config
+python sources/fred/pipeline.py --series GDP UNRATE          # Specific series
+python sources/fred/pipeline.py --days 3650                  # 10 years of history
+python sources/fred/pipeline.py --force                      # Ignore cache
+```
+
+**Notes:**
+- Requires `FRED_API_KEY` environment variable. Get a free key at https://fred.stlouisfed.org/docs/api/api_key.html
+- FRED uses `"."` for missing values — the provider converts these to `None`
+- Incremental: only fetches observations newer than `MAX(date)` per series
+
+---
+
+### 8. Field Analysis Pipeline (`tasks/`)
 
 A 4-phase analysis system that catalogs, categorizes, and prioritizes all XBRL fields across the company universe. Run once to populate the `reports/` directory.
 
@@ -550,7 +699,7 @@ A 4-phase analysis system that catalogs, categorizes, and prioritizes all XBRL f
 
 ---
 
-### 7. Data Models (`models.py`)
+### 9. Data Models (`models.py`)
 
 Pydantic models that enforce type safety and provide a single source of truth for all entity schemas. Every entity from `ENTITY_RELATIONSHIP.md` has a corresponding model.
 
@@ -579,10 +728,13 @@ Pydantic models that enforce type safety and provide a single source of truth fo
 | `EquityDividend` | composite | Dividend payment event |
 | `EquitySplit` | composite | Stock split event |
 | `EquityInfo` | composite | Market data and valuation ratios snapshot |
+| `NewsArticle` | `url` | A news article from a provider |
+| `FredSeriesMeta` | `series_id` | Metadata for a FRED economic series |
+| `FredObservation` | composite | A single FRED data point |
 
 ---
 
-### 8. Database Layer (`database.py`)
+### 10. Database Layer (`database.py`)
 
 SQLite database manager providing relational storage for all pipeline entities. Uses Python's built-in `sqlite3` module — zero infrastructure required.
 
@@ -647,9 +799,26 @@ db.close()
 | `upsert_crypto_info(info)` | Insert or update crypto coin info |
 | `get_crypto_latest_price(symbol, interval)` | Returns most recent timestamp for cache checks |
 
+**News data methods:**
+
+| Method | Description |
+|--------|-------------|
+| `upsert_news_articles(articles)` | Insert articles + topics (skips duplicate URLs) |
+| `get_news_latest_fetch(provider)` | Returns most recent fetched_at for cache checks |
+| `get_unenriched_articles(limit, force)` | Returns articles missing sentiment scores |
+| `update_article_sentiment(id, sentiment, label, source)` | Updates sentiment fields for an article |
+
+**FRED economic data methods:**
+
+| Method | Description |
+|--------|-------------|
+| `upsert_fred_series_meta(meta)` | Insert or replace series metadata |
+| `upsert_fred_observations(obs)` | Insert observations (skips duplicates) |
+| `get_fred_latest_observation(series_id)` | Returns most recent date for incremental fetch |
+
 ---
 
-### 9. Utilities (`utils/`)
+### 11. Utilities (`utils/`)
 
 **`utils/log.py` — Color-coded pipeline logging**
 
@@ -840,6 +1009,36 @@ Excel workbook builder with:
 | exchange         |
 | last_updated     |
 +------------------+
+
++------------------------+       +------------------------+
+|   news_articles        |       | news_article_topics    |
++------------------------+       +------------------------+
+| id           [PK,AUTO] |<------| id           [PK,AUTO] |
+| provider               |       | article_id        [FK] |
+| source_name            |       | topic                  |
+| title                  |       | UNIQUE(article_id,     |
+| description            |       |   topic)               |
+| url           [UNIQUE] |       +------------------------+
+| published_at           |
+| fetched_at             |
+| category               |
+| sentiment              |
+| sentiment_label        |
+| sentiment_source       |
+| image_url              |
++------------------------+
+
++------------------------+       +------------------------+
+|  fred_series_meta      |       |  fred_observations     |
++------------------------+       +------------------------+
+| series_id    [PK]      |<------| id           [PK,AUTO] |
+| title                  |       | series_id         [FK] |
+| units                  |       | date                   |
+| frequency              |       | value                  |
+| seasonal_adj           |       | UNIQUE(series_id,date) |
+| last_updated           |       +------------------------+
+| notes                  |
++------------------------+
 ```
 
 **Row counts (as of latest pipeline run — 42 companies + 3 crypto symbols):**
@@ -860,6 +1059,10 @@ Excel workbook builder with:
 | `equity_info` | 0 | Valuation ratios snapshot (requires API key) |
 | `crypto_prices` | 1,095 | OHLCV candlesticks (3 symbols × 365 days) |
 | `crypto_info` | 3 | Coin metadata (BTC, ETH, BNB) |
+| `news_articles` | 337 | News articles with VADER sentiment (GDELT) |
+| `news_article_topics` | 337 | Article → topic associations |
+| `fred_series_meta` | 0 | FRED series metadata (populated by FRED pipeline) |
+| `fred_observations` | 0 | FRED data points (populated by FRED pipeline) |
 
 **Indexes:**
 
@@ -876,6 +1079,12 @@ Excel workbook builder with:
 | `idx_es_ticker` | `(ticker)` | Split history |
 | `idx_ei_ticker` | `(ticker, fetched_date)` | Info snapshots |
 | `idx_cp_symbol_date` | `(symbol, date)` | Crypto price time series |
+| `idx_na_published` | `(published_at)` | News article date filtering |
+| `idx_na_provider` | `(provider)` | News provider filtering |
+| `idx_na_category` | `(category)` | News category filtering |
+| `idx_nat_topic` | `(topic)` | News topic lookups |
+| `idx_fo_series_date` | `(series_id, date)` | FRED series time series |
+| `idx_fo_date` | `(date)` | FRED cross-series date queries |
 
 ---
 
@@ -901,6 +1110,9 @@ Key entities:
 | **EquityInfo** | Market cap, P/E, beta, valuation ratios | Equity provider → SQLite |
 | **CryptoPrice** | Cryptocurrency OHLCV candlestick | Crypto exchange → SQLite |
 | **CryptoInfo** | Coin metadata (name, base/quote asset) | Crypto exchange → SQLite |
+| **NewsArticle** | News article with provider, sentiment (VADER/GDELT), topics | News providers → SQLite → VADER enrichment |
+| **FredSeriesMeta** | FRED series metadata (title, units, frequency) | FRED API → SQLite |
+| **FredObservation** | Single data point from a FRED series | FRED API → SQLite |
 
 ---
 
@@ -972,6 +1184,34 @@ Default cryptocurrency symbols to fetch. Includes symbol, name, and category (la
   "symbols": [
     {"symbol": "BTCUSDT", "name": "Bitcoin", "category": "large_cap"},
     {"symbol": "ETHUSDT", "name": "Ethereum", "category": "large_cap"}
+  ]
+}
+```
+
+### `config/news_watchlist.json`
+
+Macro-focused news search queries with category tags. Used by the news pipeline when no `--queries` argument is given.
+
+```json
+{
+  "queries": [
+    {"query": "federal reserve interest rates", "category": "monetary_policy"},
+    {"query": "inflation CPI", "category": "inflation"},
+    {"query": "GDP economic growth", "category": "output"}
+  ]
+}
+```
+
+### `config/fred_series.json`
+
+FRED economic data series to track. Used by the FRED pipeline when no `--series` argument is given.
+
+```json
+{
+  "series": [
+    {"id": "GDP", "category": "output", "description": "Gross Domestic Product"},
+    {"id": "UNRATE", "category": "labor", "description": "Unemployment Rate"},
+    {"id": "FEDFUNDS", "category": "rates", "description": "Federal Funds Effective Rate"}
   ]
 }
 ```
@@ -1064,6 +1304,50 @@ ORDER BY date DESC
 LIMIT 10;
 ```
 
+**Recent news articles by category:**
+```sql
+SELECT provider, title, published_at, category, sentiment, sentiment_label, sentiment_source
+FROM news_articles
+WHERE published_at >= date('now', '-7 days')
+ORDER BY published_at DESC
+LIMIT 20;
+```
+
+**Sentiment distribution by category:**
+```sql
+SELECT category,
+       COUNT(*) AS total,
+       SUM(CASE WHEN sentiment_label = 'positive' THEN 1 ELSE 0 END) AS positive,
+       SUM(CASE WHEN sentiment_label = 'negative' THEN 1 ELSE 0 END) AS negative,
+       SUM(CASE WHEN sentiment_label = 'neutral' THEN 1 ELSE 0 END) AS neutral,
+       ROUND(AVG(sentiment), 3) AS avg_sentiment
+FROM news_articles
+GROUP BY category
+ORDER BY total DESC;
+```
+
+**FRED: latest GDP and unemployment:**
+```sql
+SELECT m.series_id, m.title, o.date, o.value, m.units
+FROM fred_observations o
+JOIN fred_series_meta m ON o.series_id = m.series_id
+WHERE o.series_id IN ('GDP', 'UNRATE')
+  AND o.date = (
+    SELECT MAX(o2.date) FROM fred_observations o2
+    WHERE o2.series_id = o.series_id
+  );
+```
+
+**FRED: yield curve history (10Y-2Y spread):**
+```sql
+SELECT date, value AS spread
+FROM fred_observations
+WHERE series_id = 'T10Y2Y'
+  AND value IS NOT NULL
+ORDER BY date DESC
+LIMIT 30;
+```
+
 **Companies by sector:**
 ```sql
 SELECT sector, GROUP_CONCAT(ticker) as tickers, COUNT(*) as n
@@ -1125,6 +1409,18 @@ equity = Equity(tickers=["AAPL", "MSFT"], force=False, provider_name="alpha_vant
 from sources.crypto.pipeline import CryptoPipeline
 crypto = CryptoPipeline(symbols=["BTCUSDT", "ETHUSDT"], provider_name="binance")
 
+# Use the News extractor (GDELT needs no API key)
+from sources.news.pipeline import NewsPipeline
+news = NewsPipeline(queries=["inflation CPI"], provider_name="gdelt", days=3)
+
+# Use the FRED extractor
+from sources.fred.pipeline import FredPipeline
+fred = FredPipeline(series_ids=["GDP", "UNRATE"], days=365)
+
+# Query news and FRED data
+latest_news = db.query("SELECT title, published_at FROM news_articles ORDER BY published_at DESC LIMIT 5")
+gdp = db.query("SELECT date, value FROM fred_observations WHERE series_id = 'GDP' ORDER BY date DESC LIMIT 4")
+
 db.close()
 ```
 
@@ -1158,6 +1454,16 @@ These rules are critical for any downstream system consuming this data:
 
 12. **Crypto intervals are exchange-specific.** Binance supports 1m, 5m, 15m, 1h, 4h, 1d, 1w. Coinbase may have different intervals.
 
+13. **NewsAPI free tier has a 1-month lookback.** Requests for older articles are automatically clamped. GDELT has no lookback limit.
+
+14. **FRED missing values are `None`, not `0`.** FRED uses `"."` for missing observations — the provider converts these to `None`. Do not treat null FRED values as zero.
+
+15. **FRED series have different frequencies.** GDP is quarterly, UNRATE is monthly, DGS10 is daily. Always check `fred_series_meta.frequency` before aggregating or comparing series.
+
+16. **News articles are deduplicated by URL.** The same story from different providers will only appear once. The first provider to insert it wins.
+
+17. **All sentiment scores are on a -1 to +1 scale.** GDELT tone (~-100 to +100) is normalized by dividing by 100 and clamping. VADER compound scores are natively -1 to +1. Check `sentiment_source` to distinguish between `"gdelt_tone"` and `"vader"` scoring methods.
+
 ---
 
 ## Dependencies
@@ -1174,6 +1480,8 @@ These rules are critical for any downstream system consuming this data:
 | `fake-useragent` | User agent rotation for SEC rate limits |
 | `colorama` | Cross-platform terminal color output |
 | `yfinance` | Equity market data (optional, not currently used) |
+| `python-dotenv` | Load API keys from `.env` file |
+| `vaderSentiment` | NLP sentiment analysis for news articles |
 
 ### Standard Library
 
@@ -1182,7 +1490,7 @@ These rules are critical for any downstream system consuming this data:
 ### Install
 
 ```bash
-pip install pydantic requests pandas openpyxl beautifulsoup4 fake-useragent colorama yfinance
+pip install pydantic requests pandas openpyxl beautifulsoup4 fake-useragent colorama yfinance python-dotenv vaderSentiment
 ```
 
 ---
@@ -1195,6 +1503,9 @@ pip install pydantic requests pandas openpyxl beautifulsoup4 fake-useragent colo
 - **SIC mapping may miss edge cases**: Some SIC codes fall outside the defined ranges in `sic_to_sector.json` and will default to "Unknown".
 - **Fiscal year metadata only covers original 21 tickers**: The 19 newly added tickers need fiscal year analysis re-run.
 - **Rate limiting on crypto exchanges**: Binance and Coinbase have rate limits. Use cache (`--force` flag) to avoid hitting limits.
+- **NewsAPI free tier limitations**: 100 requests/day, 1 month lookback. Provider auto-clamps dates. GDELT is unlimited and needs no key.
+- **Finnhub client-side filtering**: Finnhub general news endpoint doesn't support free-text search, so the provider fetches general news and filters client-side by query terms. Results may be less precise than NewsAPI.
+- **FRED API key required**: FRED pipeline requires `FRED_API_KEY` environment variable. Get a free key at https://fred.stlouisfed.org/docs/api/api_key.html
 
 ---
 
@@ -1205,10 +1516,14 @@ pip install pydantic requests pandas openpyxl beautifulsoup4 fake-useragent colo
 - [x] ~~Incremental data loading — only fetch new filings not already in the DB~~
 - [x] ~~Integrate equity market data pipeline~~
 - [x] ~~Integrate cryptocurrency market data pipeline~~
+- [x] ~~News aggregation pipeline (NewsAPI, Finnhub, GDELT)~~
+- [x] ~~FRED macro economic indicator pipeline~~
 - [ ] Database backup/sync to cloud storage
 - [ ] Re-run field analysis pipeline with full company universe to update reports and fiscal year metadata
 - [ ] Add more equity data providers (Polygon.io, Tiingo, IEX Cloud)
 - [ ] Add more crypto exchanges (Kraken, Gemini, KuCoin)
+- [ ] Add more news providers (Reuters, Bloomberg RSS, Reddit sentiment)
+- [x] ~~NLP sentiment analysis on news articles (beyond GDELT tone scores)~~
 
 ### Medium Term — Analytics & Signals
 - [ ] **Macro layer** — Sector-level aggregate tables (total revenue, median margins, sector growth rates)
@@ -1255,11 +1570,20 @@ financial_facts       1017741 rows
 equity_prices               0 rows
 crypto_prices            1095 rows
 crypto_info                 3 rows
+news_articles             337 rows
+news_article_topics       337 rows
+fred_series_meta            0 rows
+fred_observations           0 rows
 
 === Sample Crypto Data ===
 BTCUSDT    2026-02-15 19:00:00 $ 68,700.00
 ETHUSDT    2026-02-15 19:00:00 $  1,995.00
 BNBUSDT    2026-02-15 19:00:00 $    625.38
+
+=== News Sentiment Distribution ===
+neutral     204 articles  (avg  0.000)
+negative     90 articles  (avg -0.374)
+positive     43 articles  (avg  0.407)
 
 === DKS Company Data ===
 Ticker: DKS
@@ -1274,3 +1598,6 @@ SIC: 5940
 - ✅ Step 2: SEC EDGAR fundamentals — Success (19,377 records)
 - ⚠️ Step 3: Equity data — Skipped (requires API key)
 - ✅ Step 4: Crypto data — Success (1,095 records, 3 symbols)
+- ✅ Step 5: News aggregation — Success (337 articles via GDELT)
+- ✅ Step 5.5: Sentiment enrichment — Success (337 articles scored with VADER)
+- ⏳ Step 6: FRED macro data — Awaiting first run (requires FRED_API_KEY)

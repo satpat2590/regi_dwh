@@ -214,3 +214,46 @@ class EquityInfo(BaseModel):
     average_volume: Optional[int] = None
     sector: str = ""
     industry: str = ""
+
+
+# ---------------------------------------------------------------------------
+# News Articles
+# ---------------------------------------------------------------------------
+
+class NewsArticle(BaseModel):
+    """A news article fetched from a news data provider."""
+    provider: str
+    source_name: str = ""
+    title: str
+    description: str = ""
+    url: str
+    published_at: str
+    fetched_at: str = ""
+    category: str = ""
+    sentiment: Optional[float] = None
+    sentiment_label: str = ""
+    sentiment_source: str = ""
+    image_url: str = ""
+    topics: list[str] = []
+
+
+# ---------------------------------------------------------------------------
+# FRED Macro Economic Indicators
+# ---------------------------------------------------------------------------
+
+class FredSeriesMeta(BaseModel):
+    """Metadata for a FRED economic data series."""
+    series_id: str
+    title: str = ""
+    units: str = ""
+    frequency: str = ""
+    seasonal_adj: str = ""
+    last_updated: str = ""
+    notes: str = ""
+
+
+class FredObservation(BaseModel):
+    """A single observation (data point) from a FRED series."""
+    series_id: str
+    date: str
+    value: Optional[float] = None

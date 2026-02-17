@@ -1,0 +1,44 @@
+{
+  "queries": [
+    {
+      "query": "federal reserve interest rates",
+      "category": "monetary_policy"
+    },
+    {
+      "query": "inflation CPI",
+      "category": "inflation"
+    },
+    {
+      "query": "GDP economic growth",
+      "category": "output"
+    },
+    {
+      "query": "unemployment jobs report",
+      "category": "labor"
+    },
+    {
+      "query": "treasury yields bonds",
+      "category": "fixed_income"
+    },
+    {
+      "query": "stock market S&P 500",
+      "category": "equities"
+    },
+    {
+      "query": "oil prices energy",
+      "category": "commodities"
+    },
+    {
+      "query": "trade deficit tariffs",
+      "category": "trade"
+    },
+    {
+      "query": "housing market real estate",
+      "category": "housing"
+    },
+    {
+      "query": "earnings season corporate profits",
+      "category": "earnings"
+    }
+  ]
+}

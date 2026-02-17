@@ -10,3 +10,6 @@ python-binance
 coinbase-advanced-py
 fastapi
 uvicorn
+pytest
+python-dotenv
+vaderSentiment

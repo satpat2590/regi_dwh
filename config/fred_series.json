@@ -1,0 +1,21 @@
+{
+  "series": [
+    {"id": "GDP", "category": "output", "description": "Gross Domestic Product"},
+    {"id": "GDPC1", "category": "output", "description": "Real Gross Domestic Product"},
+    {"id": "CPIAUCSL", "category": "inflation", "description": "Consumer Price Index (All Urban)"},
+    {"id": "CPILFESL", "category": "inflation", "description": "Core CPI (Less Food & Energy)"},
+    {"id": "PCEPI", "category": "inflation", "description": "Personal Consumption Expenditures Price Index"},
+    {"id": "UNRATE", "category": "labor", "description": "Unemployment Rate"},
+    {"id": "PAYEMS", "category": "labor", "description": "Nonfarm Payrolls"},
+    {"id": "ICSA", "category": "labor", "description": "Initial Jobless Claims"},
+    {"id": "FEDFUNDS", "category": "rates", "description": "Federal Funds Effective Rate"},
+    {"id": "DGS10", "category": "rates", "description": "10-Year Treasury Yield"},
+    {"id": "DGS2", "category": "rates", "description": "2-Year Treasury Yield"},
+    {"id": "T10Y2Y", "category": "rates", "description": "10Y-2Y Treasury Yield Spread"},
+    {"id": "DEXUSEU", "category": "fx", "description": "USD/EUR Exchange Rate"},
+    {"id": "VIXCLS", "category": "volatility", "description": "CBOE Volatility Index (VIX)"},
+    {"id": "HOUST", "category": "housing", "description": "Housing Starts"},
+    {"id": "UMCSENT", "category": "sentiment", "description": "Consumer Sentiment (UMich)"},
+    {"id": "M2SL", "category": "money_supply", "description": "M2 Money Supply"}
+  ]
+}
