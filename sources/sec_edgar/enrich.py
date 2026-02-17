@@ -19,7 +19,7 @@ import sys
 import datetime
 from pathlib import Path
 
-sys.path.append(str(Path(__file__).parent))
+sys.path.append(str(Path(__file__).parent.parent.parent))
 
 from utils.session import RequestSession
 from utils.input_parser import parse_input_file, DEFAULT_INPUT_FILE
@@ -28,7 +28,7 @@ from models import Company, Sector
 from database import DatabaseManager
 
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 CONFIG_DIR = os.path.join(BASE_DIR, "config")
 REPORTS_DIR = os.path.join(BASE_DIR, "reports")
 

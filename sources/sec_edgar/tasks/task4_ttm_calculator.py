@@ -6,7 +6,7 @@ from collections import defaultdict
 from datetime import datetime, timedelta
 
 # Add modules from base repo
-sys.path.append(str(Path(__file__).parent))
+sys.path.append(str(Path(__file__).parent.parent.parent.parent))
 
 from utils.session import RequestSession
 
@@ -32,9 +32,10 @@ class TrailingMetricsCalculator:
     
     def __init__(self):
         self.base_dir = os.path.dirname(os.path.abspath(__file__))
-        self.config_path = os.path.join(self.base_dir, "config/cik.json")
-        self.pit_path = os.path.join(self.base_dir, "point_in_time_map.json")
-        self.output_path = os.path.join(self.base_dir, "ttm_metrics.json")
+        self.root_dir = str(Path(self.base_dir).parent.parent.parent)
+        self.config_path = os.path.join(self.root_dir, "config/cik.json")
+        self.pit_path = os.path.join(self.root_dir, "reports/point_in_time_map.json")
+        self.output_path = os.path.join(self.root_dir, "reports/ttm_metrics.json")
         self.reqsesh = RequestSession()
         
     def run(self):

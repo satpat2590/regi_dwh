@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # ============================================================================
-# SEC EDGAR Financial Data Pipeline
+# Regi DWH — Data Pipeline
 #
 # Orchestrates the full extraction pipeline:
-#   1. Enrich companies with sector/industry metadata (enrich.py)
-#   2. Fetch XBRL financial facts from EDGAR (SEC.py)
+#   1. Enrich companies with sector/industry metadata
+#   2. Fetch XBRL financial facts from SEC EDGAR
 #
 # Usage:
 #   ./run_pipeline.sh                        # Process tickers from input.txt
@@ -31,7 +31,7 @@ ts() { date +"%H:%M:%S"; }
 
 echo ""
 echo -e "${CYAN}============================================================${RESET}"
-echo -e "${CYAN}  SEC EDGAR Financial Data Pipeline${RESET}"
+echo -e "${CYAN}  Regi DWH — Data Pipeline${RESET}"
 echo -e "${CYAN}============================================================${RESET}"
 echo ""
 
@@ -54,11 +54,11 @@ echo ""
 
 # ---- Step 1: Enrichment ----
 echo -e "${CYAN}──────────────────────────────────────────────────────────${RESET}"
-echo -e "${BLUE}[$(ts)] >> Step 1/2: Company Enrichment${RESET}"
+echo -e "${BLUE}[$(ts)] >> Step 1/3: Company Enrichment${RESET}"
 echo -e "${CYAN}──────────────────────────────────────────────────────────${RESET}"
 echo ""
 
-if python3 enrich.py "${ARGS[@]}"; then
+if python3 sources/sec_edgar/enrich.py "${ARGS[@]}"; then
     echo ""
     echo -e "${GREEN}[$(ts)] OK Enrichment complete${RESET}"
 else
@@ -71,16 +71,51 @@ echo ""
 
 # ---- Step 2: SEC XBRL Extraction ----
 echo -e "${CYAN}──────────────────────────────────────────────────────────${RESET}"
-echo -e "${BLUE}[$(ts)] >> Step 2/2: SEC XBRL Financial Facts Extraction${RESET}"
+echo -e "${BLUE}[$(ts)] >> Step 2/3: SEC XBRL Financial Facts Extraction${RESET}"
 echo -e "${CYAN}──────────────────────────────────────────────────────────${RESET}"
 echo ""
 
-if python3 SEC.py "${ARGS[@]}"; then
+if python3 sources/sec_edgar/pipeline.py "${ARGS[@]}"; then
     echo ""
     echo -e "${GREEN}[$(ts)] OK SEC extraction complete${RESET}"
 else
     echo ""
     echo -e "${RED}[$(ts)] ERR SEC extraction failed (exit code $?)${RESET}"
+    exit 1
+fi
+
+echo ""
+
+# ---- Step 3: Equity Market Data ----
+echo -e "${CYAN}──────────────────────────────────────────────────────────${RESET}"
+echo -e "${BLUE}[$(ts)] >> Step 3/3: Equity Market Data (yfinance)${RESET}"
+echo -e "${CYAN}──────────────────────────────────────────────────────────${RESET}"
+echo ""
+
+if python3 sources/equity/pipeline.py "${ARGS[@]}"; then
+    echo ""
+    echo -e "${GREEN}[$(ts)] OK Equity extraction complete${RESET}"
+else
+    echo ""
+    echo -e "${RED}[$(ts)] ERR Equity extraction failed (exit code $?)${RESET}"
+    # Continue even if equity fails (since it's paused/optional)
+    echo -e "${YELLOW}[$(ts)] WARN Continuing despite equity failure${RESET}"
+fi
+
+echo ""
+
+# ---- Step 4: Crypto Market Data ----
+echo -e "${CYAN}──────────────────────────────────────────────────────────${RESET}"
+echo -e "${BLUE}[$(ts)] >> Step 4/4: Crypto Market Data (Binance/Coinbase)${RESET}"
+echo -e "${CYAN}──────────────────────────────────────────────────────────${RESET}"
+echo ""
+
+if python3 sources/crypto/pipeline.py; then
+    echo ""
+    echo -e "${GREEN}[$(ts)] OK Crypto extraction complete${RESET}"
+else
+    echo ""
+    echo -e "${RED}[$(ts)] ERR Crypto extraction failed (exit code $?)${RESET}"
     exit 1
 fi
 

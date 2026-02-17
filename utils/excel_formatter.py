@@ -21,6 +21,7 @@ class ExcelFormatter:
     def __init__(self):
      # Create a reference to an empty Excel workbook
         self.wb = Workbook()
+        self._table_names = set()
      
 
     def add_to_sheet(self, df: pd.DataFrame, sheet_name: str, transform_fn = None) -> None:
@@ -62,8 +63,15 @@ class ExcelFormatter:
         num_cols = ws.max_column
         table_ref = f"A1:{get_column_letter(num_cols)}{num_rows}"
 
-     # Create and style table
-        table = Table(displayName="".join(sheet_name.split(" ")), ref=table_ref)
+     # Create and style table with unique displayName
+        display_name = "".join(sheet_name.split(" "))
+        base_name = display_name
+        counter = 2
+        while display_name in self._table_names:
+            display_name = f"{base_name}_{counter}"
+            counter += 1
+        self._table_names.add(display_name)
+        table = Table(displayName=display_name, ref=table_ref)
         style = TableStyleInfo(
             name="TableStyleMedium9",
             showFirstColumn=False,
@@ -149,3 +157,4 @@ class ExcelFormatter:
     def __reset_workbook(self):
         print(f"Resetting the Excel workbook...")
         self.wb = Workbook()
+        self._table_names = set()

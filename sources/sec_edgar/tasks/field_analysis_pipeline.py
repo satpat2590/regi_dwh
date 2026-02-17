@@ -7,14 +7,14 @@ from collections import defaultdict
 from difflib import SequenceMatcher
 
 # Add modules from base repo
-sys.path.append(str(Path(__file__).parent.parent))
+sys.path.append(str(Path(__file__).parent.parent.parent.parent))
 
 from utils.session import RequestSession
 
 class FieldAnalysisPipeline:
     def __init__(self):
         self.base_dir = os.path.dirname(os.path.abspath(__file__))
-        self.root_dir = os.path.dirname(self.base_dir)
+        self.root_dir = str(Path(self.base_dir).parent.parent.parent)
         self.config_path = os.path.join(self.root_dir, "config/cik.json")
         self.output_files = {
             "catalog": os.path.join(self.root_dir, "reports/field_catalog.json"),
@@ -188,7 +188,7 @@ class FieldAnalysisPipeline:
         total_companies = metadata["total_companies"]
         
         # Load sector mapping from enrichment data
-        company_metadata_path = os.path.join(os.path.dirname(self.base_dir), "config", "company_metadata.json")
+        company_metadata_path = os.path.join(self.root_dir, "config", "company_metadata.json")
         ticker_to_sector = {}
         try:
             with open(company_metadata_path, 'r') as f:

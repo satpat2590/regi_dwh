@@ -11,6 +11,7 @@ Usage:
 """
 
 import argparse
+import calendar
 import json, csv, os, sys, re
 import datetime
 from bs4 import BeautifulSoup
@@ -20,8 +21,8 @@ import pandas as pd
 from typing import Dict, Optional, Tuple
 from pathlib import Path
 
-# Add modules from base repo
-sys.path.append(str(Path(__file__).parent))
+# Add project root to path
+sys.path.append(str(Path(__file__).parent.parent.parent))
 
 from utils.session import RequestSession
 from utils.excel_formatter import ExcelFormatter
@@ -51,8 +52,12 @@ class SEC():
     - Supports multiple statement types (Balance Sheet, Income Statement, Cash Flow)
     """
 
-    def __init__(self, tickers: list[str] = None):
+    # Number of days before a ticker's cached data is considered stale
+    CACHE_FRESHNESS_DAYS = 30
+
+    def __init__(self, tickers: list[str] = None, force: bool = False):
         self.start = datetime.datetime.now()
+        self.force = force
 
         log.header("SEC EXTRACTION: Fetching XBRL Company Facts")
 
@@ -62,7 +67,7 @@ class SEC():
         self.url_template = "https://data.sec.gov/submissions/CIK##########.json"
         self.url_xbrl_acc_payable = "https://data.sec.gov/api/xbrl/companyconcept/CIK##########/us-gaap/AccountsPayableCurrent.json"
         self.url_xbrl = "https://data.sec.gov/api/xbrl/companyfacts/CIK##########.json"
-        self.base_dir = os.path.dirname(os.path.abspath(__file__))
+        self.base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
         self.data_dir = os.path.join(self.base_dir, "data")
         self.reports_dir = os.path.join(self.base_dir, "reports")
 
@@ -94,7 +99,25 @@ class SEC():
         # Store all ticker data
         self.all_ticker_data = []
 
+        # Query DB for latest filing dates to support incremental updates
+        self._db_for_cache = DatabaseManager()
+        self._ticker_latest = {}
+        for t in self.tickers:
+            self._ticker_latest[t] = self._db_for_cache.get_ticker_latest_filing(t)
+        self._db_for_cache.close()
+
         for i, ticker in enumerate(self.tickers, 1):
+            # Skip tickers with recent data unless --force
+            if not self.force and self._ticker_latest.get(ticker):
+                latest = datetime.datetime.strptime(self._ticker_latest[ticker], '%Y-%m-%d')
+                age = (datetime.datetime.now() - latest).days
+                if age <= self.CACHE_FRESHNESS_DAYS:
+                    log.progress(
+                        i, len(self.tickers), ticker,
+                        f"{log.C.DIM}cached (latest filing {self._ticker_latest[ticker]}, {age}d ago){log.C.RESET}"
+                    )
+                    continue
+
             gaap_record = self.fetch_sec_filing(ticker, i, len(self.tickers))
             if gaap_record:
                 gaap_record_cleaned = gaap_record.json()
@@ -219,6 +242,15 @@ class SEC():
                 start_date = self._infer_period_start(end_date, obj.get("fp"))
             return start_date, end_date
 
+    @staticmethod
+    def _subtract_months(dt: datetime.datetime, months: int) -> datetime.datetime:
+        """Subtract months from a date with proper day-of-month clamping."""
+        month = dt.month - months
+        year = dt.year + (month - 1) // 12
+        month = (month - 1) % 12 + 1
+        day = min(dt.day, calendar.monthrange(year, month)[1])
+        return dt.replace(year=year, month=month, day=day)
+
     def _infer_period_start(self, end_date: str, fiscal_period: str) -> Optional[str]:
         """Infer period start date from end date and fiscal period"""
         if not end_date:
@@ -228,9 +260,9 @@ class SEC():
             end_dt = datetime.datetime.strptime(end_date, '%Y-%m-%d')
 
             if fiscal_period == 'FY':
-                start_dt = end_dt - datetime.timedelta(days=365)
+                start_dt = self._subtract_months(end_dt, 12)
             elif fiscal_period in ['Q1', 'Q2', 'Q3', 'Q4']:
-                start_dt = end_dt - datetime.timedelta(days=90)
+                start_dt = self._subtract_months(end_dt, 3)
             else:
                 return None
 
@@ -399,6 +431,7 @@ def main():
     parser = argparse.ArgumentParser(description="Extract SEC EDGAR financial data")
     parser.add_argument("--tickers", nargs="+", help="Specific tickers to process")
     parser.add_argument("--input-file", type=str, help="Path to file with ticker list (default: input.txt)")
+    parser.add_argument("--force", action="store_true", help="Force re-fetch all tickers, ignoring cached data")
     args = parser.parse_args()
 
     if args.tickers:
@@ -411,7 +444,7 @@ def main():
     else:
         tickers = None  # Will use default in SEC.__init__
 
-    sec = SEC(tickers=tickers)
+    sec = SEC(tickers=tickers, force=args.force)
 
 
 if __name__ == "__main__":

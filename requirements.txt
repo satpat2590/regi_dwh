@@ -1,0 +1,12 @@
+requests
+pandas
+openpyxl
+beautifulsoup4
+fake-useragent
+pydantic
+colorama
+yfinance
+python-binance
+coinbase-advanced-py
+fastapi
+uvicorn

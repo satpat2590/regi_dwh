@@ -1,5 +1,6 @@
 import json
 import os
+from pathlib import Path
 from collections import defaultdict
 import re
 from difflib import SequenceMatcher
@@ -17,9 +18,10 @@ def analyze_field_standardization():
     Output: field_mapping.json, field_priority.json
     """
     base_dir = os.path.dirname(os.path.abspath(__file__))
-    catalog_path = os.path.join(base_dir, "field_catalog.json")
-    categories_path = os.path.join(base_dir, "field_categories.json")
-    availability_path = os.path.join(base_dir, "field_availability_report.json")
+    root_dir = str(Path(base_dir).parent.parent.parent)
+    catalog_path = os.path.join(root_dir, "reports/field_catalog.json")
+    categories_path = os.path.join(root_dir, "reports/field_categories.json")
+    availability_path = os.path.join(root_dir, "reports/field_availability_report.json")
     
     # Load data
     with open(catalog_path, 'r') as f:
@@ -58,8 +60,8 @@ def analyze_field_standardization():
     }
     
     # Save outputs
-    mapping_path = os.path.join(base_dir, "field_mapping.json")
-    priority_path = os.path.join(base_dir, "field_priority.json")
+    mapping_path = os.path.join(root_dir, "reports/field_mapping.json")
+    priority_path = os.path.join(root_dir, "reports/field_priority.json")
     
     with open(mapping_path, 'w') as f:
         json.dump(standardization_rules, f, indent=2)

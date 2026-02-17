@@ -6,7 +6,7 @@ from collections import defaultdict
 from datetime import datetime, timedelta
 
 # Add modules from base repo
-sys.path.append(str(Path(__file__).parent))
+sys.path.append(str(Path(__file__).parent.parent.parent.parent))
 
 from utils.session import RequestSession
 
@@ -30,9 +30,10 @@ class PointInTimeMapper:
     
     def __init__(self):
         self.base_dir = os.path.dirname(os.path.abspath(__file__))
-        self.config_path = os.path.join(self.base_dir, "config/cik.json")
-        self.fye_path = os.path.join(self.base_dir, "fiscal_year_metadata.json")
-        self.output_path = os.path.join(self.base_dir, "point_in_time_map.json")
+        self.root_dir = str(Path(self.base_dir).parent.parent.parent)
+        self.config_path = os.path.join(self.root_dir, "config/cik.json")
+        self.fye_path = os.path.join(self.root_dir, "reports/fiscal_year_metadata.json")
+        self.output_path = os.path.join(self.root_dir, "reports/point_in_time_map.json")
         self.reqsesh = RequestSession()
         
     def run(self):

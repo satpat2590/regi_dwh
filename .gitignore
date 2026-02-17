@@ -1,7 +1,11 @@
 logs/
 data/
 reports/
-utils/__pycache__
+misc/
+__pycache__/
+*/__pycache__/
+*/*/__pycache__/
+*/*/*/__pycache__/
 .claude/
-.claude 
-__pycache__
+.claude
+.env

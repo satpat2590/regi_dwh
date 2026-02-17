@@ -1,5 +1,6 @@
 import json
 import os
+from pathlib import Path
 from collections import defaultdict
 
 def analyze_field_availability():
@@ -15,9 +16,10 @@ def analyze_field_availability():
     Output: field_availability_report.json
     """
     base_dir = os.path.dirname(os.path.abspath(__file__))
-    catalog_path = os.path.join(base_dir, "field_catalog.json")
-    categories_path = os.path.join(base_dir, "field_categories.json")
-    metadata_path = os.path.join(base_dir, "field_catalog_metadata.json")
+    root_dir = str(Path(base_dir).parent.parent.parent)
+    catalog_path = os.path.join(root_dir, "reports/field_catalog.json")
+    categories_path = os.path.join(root_dir, "reports/field_categories.json")
+    metadata_path = os.path.join(root_dir, "reports/field_catalog_metadata.json")
     
     # Load data
     with open(catalog_path, 'r') as f:
@@ -46,7 +48,7 @@ def analyze_field_availability():
     }
     
     # Load sector mapping from enrichment data
-    company_metadata_path = os.path.join(os.path.dirname(base_dir), "config", "company_metadata.json")
+    company_metadata_path = os.path.join(root_dir, "config", "company_metadata.json")
     ticker_to_sector = {}
     try:
         with open(company_metadata_path, 'r') as f:
@@ -153,7 +155,7 @@ def analyze_field_availability():
         "field_analysis": field_analysis
     }
     
-    output_path = os.path.join(base_dir, "field_availability_report.json")
+    output_path = os.path.join(root_dir, "reports/field_availability_report.json")
     with open(output_path, 'w') as f:
         json.dump(output, f, indent=2)
     

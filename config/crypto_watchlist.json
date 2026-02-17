@@ -1,0 +1,21 @@
+{
+  "description": "Default cryptocurrency watchlist for the data pipeline",
+  "last_updated": "2026-02-16",
+  "symbols": [
+    {
+      "symbol": "BTCUSDT",
+      "name": "Bitcoin",
+      "category": "large_cap"
+    },
+    {
+      "symbol": "ETHUSDT",
+      "name": "Ethereum",
+      "category": "large_cap"
+    },
+    {
+      "symbol": "BNBUSDT",
+      "name": "Binance Coin",
+      "category": "large_cap"
+    }
+  ]
+}

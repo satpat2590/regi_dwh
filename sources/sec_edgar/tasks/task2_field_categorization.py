@@ -1,6 +1,7 @@
 import json
 import os
 import re
+from pathlib import Path
 from collections import defaultdict
 
 def categorize_fields():
@@ -18,7 +19,7 @@ def categorize_fields():
     Output: field_categories.json
     """
     base_dir = os.path.dirname(os.path.abspath(__file__))
-    root_dir = os.path.dirname(base_dir)
+    root_dir = str(Path(base_dir).parent.parent.parent)
     catalog_path = os.path.join(root_dir, "reports/field_catalog.json")
     
     with open(catalog_path, 'r') as f:

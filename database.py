@@ -151,6 +151,82 @@ CREATE INDEX IF NOT EXISTS idx_ff_sector ON financial_facts(sector);
 CREATE INDEX IF NOT EXISTS idx_ff_filing_date ON financial_facts(filing_date);
 CREATE INDEX IF NOT EXISTS idx_pit_ticker_fd ON point_in_time_events(ticker, filing_date);
 CREATE INDEX IF NOT EXISTS idx_ttm_ticker_metric ON ttm_metrics(ticker, metric_name, as_of_date);
+
+-- Equity market data (yfinance)
+CREATE TABLE IF NOT EXISTS equity_prices (
+    id      INTEGER PRIMARY KEY AUTOINCREMENT,
+    ticker  TEXT NOT NULL,
+    date    TEXT NOT NULL,
+    open    REAL,
+    high    REAL,
+    low     REAL,
+    close   REAL,
+    volume  INTEGER,
+    UNIQUE(ticker, date)
+);
+
+CREATE TABLE IF NOT EXISTS equity_dividends (
+    id      INTEGER PRIMARY KEY AUTOINCREMENT,
+    ticker  TEXT NOT NULL,
+    date    TEXT NOT NULL,
+    amount  REAL NOT NULL,
+    UNIQUE(ticker, date)
+);
+
+CREATE TABLE IF NOT EXISTS equity_splits (
+    id      INTEGER PRIMARY KEY AUTOINCREMENT,
+    ticker  TEXT NOT NULL,
+    date    TEXT NOT NULL,
+    ratio   REAL NOT NULL,
+    UNIQUE(ticker, date)
+);
+
+CREATE TABLE IF NOT EXISTS equity_info (
+    id                    INTEGER PRIMARY KEY AUTOINCREMENT,
+    ticker                TEXT NOT NULL,
+    fetched_date          TEXT NOT NULL,
+    market_cap            REAL,
+    trailing_pe           REAL,
+    forward_pe            REAL,
+    price_to_book         REAL,
+    dividend_yield        REAL,
+    beta                  REAL,
+    fifty_two_week_high   REAL,
+    fifty_two_week_low    REAL,
+    average_volume        INTEGER,
+    sector                TEXT DEFAULT '',
+    industry              TEXT DEFAULT '',
+    UNIQUE(ticker, fetched_date)
+);
+
+CREATE INDEX IF NOT EXISTS idx_ei_ticker ON equity_info(ticker, fetched_date);
+
+-- Crypto Market Data
+CREATE TABLE IF NOT EXISTS crypto_prices (
+    symbol      TEXT NOT NULL,
+    timestamp   INTEGER NOT NULL,
+    date        TEXT NOT NULL,
+    interval    TEXT NOT NULL,
+    open        REAL,
+    high        REAL,
+    low         REAL,
+    close       REAL,
+    volume      REAL,
+    quote_volume REAL,
+    trades      INTEGER,
+    PRIMARY KEY (symbol, timestamp, interval)
+);
+
+CREATE TABLE IF NOT EXISTS crypto_info (
+    symbol              TEXT PRIMARY KEY,
+    name                TEXT,
+    base_asset          TEXT,
+    quote_asset         TEXT,
+    exchange            TEXT,
+    last_updated        TEXT
+);
+
+CREATE INDEX IF NOT EXISTS idx_cp_symbol_date ON crypto_prices(symbol, date);
 """
 
 
@@ -414,6 +490,140 @@ class DatabaseManager:
         self.conn.executemany(sql, rows)
         self.conn.commit()
         return len(rows)
+
+    # ------------------------------------------------------------------
+    # Incremental update helpers
+    # ------------------------------------------------------------------
+
+    def get_ticker_latest_filing(self, ticker: str) -> str | None:
+        """Return the most recent filing_date for a ticker, or None if no data."""
+        cur = self.conn.execute(
+            "SELECT MAX(filing_date) AS latest FROM financial_facts WHERE ticker = ?",
+            (ticker,),
+        )
+        row = cur.fetchone()
+        return row["latest"] if row and row["latest"] else None
+
+    # ------------------------------------------------------------------
+    # Equity Market Data
+    # ------------------------------------------------------------------
+
+    def upsert_equity_prices(self, rows: list[dict]) -> int:
+        """Insert equity price rows. Skips duplicates via UNIQUE constraint."""
+        sql = """
+            INSERT OR IGNORE INTO equity_prices
+                (ticker, date, open, high, low, close, volume)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        """
+        params = [
+            (r["ticker"], r["date"], r.get("open"), r.get("high"),
+             r.get("low"), r.get("close"), r.get("volume"))
+            for r in rows
+        ]
+        self.conn.executemany(sql, params)
+        self.conn.commit()
+        return len(params)
+
+    def upsert_equity_dividends(self, rows: list[dict]) -> int:
+        """Insert equity dividend rows. Skips duplicates."""
+        sql = """
+            INSERT OR IGNORE INTO equity_dividends
+                (ticker, date, amount)
+            VALUES (?, ?, ?)
+        """
+        params = [(r["ticker"], r["date"], r["amount"]) for r in rows]
+        self.conn.executemany(sql, params)
+        self.conn.commit()
+        return len(params)
+
+    def upsert_equity_splits(self, rows: list[dict]) -> int:
+        """Insert equity split rows. Skips duplicates."""
+        sql = """
+            INSERT OR IGNORE INTO equity_splits
+                (ticker, date, ratio)
+            VALUES (?, ?, ?)
+        """
+        params = [(r["ticker"], r["date"], r["ratio"]) for r in rows]
+        self.conn.executemany(sql, params)
+        self.conn.commit()
+        return len(params)
+
+    def upsert_equity_info(self, rows: list[dict]) -> int:
+        """Insert equity info snapshots. Skips duplicates."""
+        sql = """
+            INSERT OR IGNORE INTO equity_info
+                (ticker, fetched_date, market_cap, trailing_pe, forward_pe,
+                 price_to_book, dividend_yield, beta, fifty_two_week_high,
+                 fifty_two_week_low, average_volume, sector, industry)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """
+        params = [
+            (r["ticker"], r["fetched_date"], r.get("market_cap"),
+             r.get("trailing_pe"), r.get("forward_pe"), r.get("price_to_book"),
+             r.get("dividend_yield"), r.get("beta"), r.get("fifty_two_week_high"),
+             r.get("fifty_two_week_low"), r.get("average_volume"),
+             r.get("sector", ""), r.get("industry", ""))
+            for r in rows
+        ]
+        self.conn.executemany(sql, params)
+        self.conn.commit()
+        return len(params)
+
+
+    def get_ticker_latest_price(self, ticker: str) -> str | None:
+        """Return the most recent price date for a ticker, or None if no data."""
+        cur = self.conn.execute(
+            "SELECT MAX(date) AS latest FROM equity_prices WHERE ticker = ?",
+            (ticker,),
+        )
+        row = cur.fetchone()
+        return row["latest"] if row and row["latest"] else None
+
+    # ------------------------------------------------------------------
+    # Crypto Market Data
+    # ------------------------------------------------------------------
+
+    def upsert_crypto_prices(self, rows: list[dict]) -> int:
+        """Insert crypto price rows. Skips duplicates via PRIMARY KEY."""
+        sql = """
+            INSERT OR IGNORE INTO crypto_prices
+                (symbol, timestamp, date, interval, open, high, low, close,
+                 volume, quote_volume, trades)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """
+        params = [
+            (r["symbol"], r["timestamp"], r["date"], r["interval"],
+             r.get("open"), r.get("high"), r.get("low"), r.get("close"),
+             r.get("volume"), r.get("quote_volume"), r.get("trades"))
+            for r in rows
+        ]
+        self.conn.executemany(sql, params)
+        self.conn.commit()
+        return len(params)
+
+    def upsert_crypto_info(self, info: dict) -> int:
+        """Insert or update crypto coin info."""
+        sql = """
+            INSERT OR REPLACE INTO crypto_info
+                (symbol, name, base_asset, quote_asset, exchange, last_updated)
+            VALUES (?, ?, ?, ?, ?, ?)
+        """
+        params = (
+            info["symbol"], info.get("name"), info.get("base_asset"),
+            info.get("quote_asset"), info.get("exchange"), info.get("last_updated")
+        )
+        self.conn.execute(sql, params)
+        self.conn.commit()
+        return 1
+
+    def get_crypto_latest_price(self, symbol: str, interval: str) -> int | None:
+        """Return the most recent timestamp for a symbol/interval, or None."""
+        cur = self.conn.execute(
+            "SELECT MAX(timestamp) AS latest FROM crypto_prices WHERE symbol = ? AND interval = ?",
+            (symbol, interval),
+        )
+        row = cur.fetchone()
+        return row["latest"] if row and row["latest"] else None
 
     # ------------------------------------------------------------------
     # Generic query

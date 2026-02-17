@@ -1,6 +1,6 @@
-# SEC EDGAR Financial Data Pipeline
+# Company Financials Data Warehouse
 
-A comprehensive system for extracting, normalizing, enriching, and storing public company financial data from the SEC EDGAR database. Designed for downstream use in sector/industry profiling, fundamental analysis, trading signal generation, and backtesting.
+A comprehensive multi-asset data pipeline for extracting, normalizing, enriching, and storing financial data. Combines **SEC EDGAR fundamentals** (XBRL filings), **equity market data** (prices, dividends, splits, valuation ratios), and **cryptocurrency market data** (OHLCV, coin info) in a unified SQLite database. Designed for downstream use in sector/industry profiling, fundamental analysis, trading signal generation, and backtesting.
 
 ---
 
@@ -12,11 +12,13 @@ A comprehensive system for extracting, normalizing, enriching, and storing publi
 - [Pipeline Components](#pipeline-components)
   - [1. Pipeline Orchestrator (run_pipeline.sh)](#1-pipeline-orchestrator-run_pipelinesh)
   - [2. Enrichment Layer (enrich.py)](#2-enrichment-layer-enrichpy)
-  - [3. Data Extraction (SEC.py)](#3-data-extraction-secpy)
-  - [4. Field Analysis Pipeline (tasks/)](#4-field-analysis-pipeline-tasks)
-  - [5. Data Models (models.py)](#5-data-models-modelspy)
-  - [6. Database Layer (database.py)](#6-database-layer-databasepy)
-  - [7. Utilities (utils/)](#7-utilities-utils)
+  - [3. SEC EDGAR Extraction (SEC.py)](#3-sec-edgar-extraction-secpy)
+  - [4. Equity Market Data (Equity.py)](#4-equity-market-data-equitypy)
+  - [5. Crypto Market Data (Crypto.py)](#5-crypto-market-data-cryptopy)
+  - [6. Field Analysis Pipeline (tasks/)](#6-field-analysis-pipeline-tasks)
+  - [7. Data Models (models.py)](#7-data-models-modelspy)
+  - [8. Database Layer (database.py)](#8-database-layer-databasepy)
+  - [9. Utilities (utils/)](#9-utilities-utils)
 - [Database Schema](#database-schema)
 - [Data Entities](#data-entities)
 - [Company Universe](#company-universe)
@@ -27,7 +29,7 @@ A comprehensive system for extracting, normalizing, enriching, and storing publi
   - [Python API Examples](#python-api-examples)
 - [Design Invariants](#design-invariants)
 - [Dependencies](#dependencies)
-- [Known Issues & Bugs](#known-issues--bugs)
+- [Known Issues](#known-issues)
 - [Future Roadmap](#future-roadmap)
 
 ---
@@ -35,44 +37,56 @@ A comprehensive system for extracting, normalizing, enriching, and storing publi
 ## Architecture Overview
 
 ```
-                    SEC EDGAR API
-                         |
-          +--------------+--------------+
-          |                             |
-   /submissions/CIK*.json      /api/xbrl/companyfacts/CIK*.json
-   (entity info, SIC code)     (financial facts, XBRL data)
-          |                             |
-          v                             v
-     +-----------+              +-----------+
-     | enrich.py |              |  SEC.py   |
-     +-----------+              +-----------+
-          |                        |     |
-          v                        v     v
-  config/company_metadata.json   Excel  SQLite
-  (sector, industry, SIC)       sheets  database
-          |                        |     |
-          +--------+-------+-------+-----+
-                   |       |
-                   v       v
-            data/financials.db    data/EDGAR_FINANCIALS_*.xlsx
-                   |
-                   v
-          Downstream Consumers
-    (sector profiling, trading signals,
-     backtesting, valuation models)
+   SEC EDGAR API              Yahoo Finance API         Binance/Coinbase API
+        |                            |                          |
+        +-------------+   +----------+          +---------------+
+        |             |   |                     |
+   /submissions/ /api/xbrl/    yfinance     get_klines() get_ticker()
+   CIK*.json     companyfacts/ (prices,     (OHLCV)      (coin info)
+                 CIK*.json     divs,splits)
+        |             |   |                     |
+        v             v   v                     v
+   +-----------+  +-----------+  +----------+  +--------------+
+   | enrich.py |  |  SEC.py   |  |Equity.py |  |  Crypto.py   |
+   +-----------+  +-----------+  +----------+  +--------------+
+        |              |              |               |
+        v              v              v               v
+   company_     financial_facts  equity_prices   crypto_prices
+   metadata     ttm_metrics      equity_divs     crypto_info
+                pit_events       equity_splits
+                                 equity_info
+        |              |              |               |
+        +--------+-----+-----+--------+---------------+
+                 |           |
+                 v           v
+          data/financials.db    Excel exports
+          (unified SQLite)      (*.xlsx snapshots)
+                 |
+                 v
+        Downstream Consumers
+   (sector profiling, trading signals,
+    backtesting, valuation models)
 ```
 
 ### Data Flow
 
-1. **`run_pipeline.sh`** orchestrates the full pipeline — reads `input.txt` for the ticker list, then runs enrichment followed by SEC extraction. Supports CLI passthrough for `--tickers` and `--input-file`.
+1. **`run_pipeline.sh`** orchestrates the full 4-step pipeline — reads `input.txt` for the ticker list, then runs:
+   - Step 1: Company enrichment (SIC → sector/industry)
+   - Step 2: SEC EDGAR XBRL fundamentals
+   - Step 3: Equity market data (optional, requires API key)
+   - Step 4: Cryptocurrency market data (Binance/Coinbase)
 
 2. **`enrich.py`** fetches company metadata (SIC codes, entity names) from the SEC submissions endpoint and maps SIC codes to sectors/industries. Outputs `config/company_metadata.json` and writes to SQLite.
 
 3. **Field analysis pipeline** (`tasks/`) runs once to catalog, categorize, and prioritize all 4,148 XBRL fields across the company universe. Outputs go to `reports/`.
 
-4. **`SEC.py`** fetches XBRL company facts, normalizes temporal data, enriches with sector/industry tags, and writes to both Excel and SQLite.
+4. **`SEC.py`** (sources/sec_edgar/pipeline.py) fetches XBRL company facts, normalizes temporal data, enriches with sector/industry tags, and writes to both Excel and SQLite.
 
-5. **`database.py`** provides the SQLite database layer. Can be populated standalone from existing JSON reports or written to incrementally by the pipeline scripts.
+5. **`Equity.py`** (sources/equity/pipeline.py) fetches daily OHLCV prices, dividends, splits, and key valuation ratios from equity data providers. Currently supports Alpha Vantage. Writes to SQLite and Excel.
+
+6. **`Crypto.py`** (sources/crypto/pipeline.py) fetches cryptocurrency OHLCV data and coin information from Binance (US) or Coinbase. Writes to SQLite and Excel.
+
+7. **`database.py`** provides the SQLite database layer. Can be populated standalone from existing JSON reports or written to incrementally by the pipeline scripts.
 
 ---
 
@@ -81,7 +95,7 @@ A comprehensive system for extracting, normalizing, enriching, and storing publi
 ### Prerequisites
 
 ```bash
-pip install requests pandas openpyxl beautifulsoup4 fake-useragent pydantic colorama
+pip install requests pandas openpyxl beautifulsoup4 fake-useragent pydantic colorama yfinance
 ```
 
 ### Option A: Run the full pipeline (recommended)
@@ -91,21 +105,27 @@ pip install requests pandas openpyxl beautifulsoup4 fake-useragent pydantic colo
 ./run_pipeline.sh
 ```
 
-This runs enrichment + SEC extraction for all tickers in `input.txt` and writes to both Excel and SQLite.
+This runs all 4 steps (enrichment → SEC fundamentals → equity market data → crypto data) for tickers in `input.txt` and writes to both Excel and SQLite.
 
 ### Option B: Run individual steps
 
 ```bash
 # Step 1: Enrich company metadata
-python enrich.py
+python sources/sec_edgar/enrich.py
 
-# Step 2: Populate database from existing JSON reports
+# Step 2: Extract SEC fundamentals
+python sources/sec_edgar/pipeline.py
+
+# Step 3: Extract equity market data (optional, requires API key)
+python sources/equity/pipeline.py
+
+# Step 4: Extract crypto market data
+python sources/crypto/pipeline.py
+
+# Step 5: Populate database from existing JSON reports
 python database.py
 
-# Step 3: Extract financial data
-python SEC.py
-
-# Step 4: Query the database
+# Step 6: Query the database
 sqlite3 data/financials.db "SELECT ticker, sector, industry FROM companies ORDER BY sector;"
 ```
 
@@ -129,6 +149,7 @@ Override from the command line:
 ```bash
 ./run_pipeline.sh --tickers AAPL MSFT JPM
 ./run_pipeline.sh --input-file my_tickers.txt
+./run_pipeline.sh --force  # Bypass cache, re-fetch all data
 ```
 
 ---
@@ -138,58 +159,71 @@ Override from the command line:
 ```
 company_financials/
 |
-|-- run_pipeline.sh                    # Bash orchestrator (enrich -> SEC)
-|-- SEC.py                             # Main data extraction and normalization
-|-- enrich.py                          # Company enrichment (SIC -> sector/industry)
+|-- run_pipeline.sh                    # Bash orchestrator (enrich → SEC → Equity → Crypto)
 |-- database.py                        # SQLite database manager
 |-- models.py                          # Pydantic data models for all entities
-|-- equity.py                          # Volume analysis utilities (yfinance)
 |-- input.txt                          # Ticker list for pipeline runs
 |
+|-- sources/
+|   |-- __init__.py
+|   |-- sec_edgar/                     # SEC EDGAR fundamentals pipeline
+|   |   |-- pipeline.py                # Main XBRL extraction (SEC.py)
+|   |   |-- enrich.py                  # Company enrichment (SIC → sector/industry)
+|   |   |-- config/                    # CIK mappings, company metadata, SIC mappings
+|   |   |-- data/                      # EDGAR Excel exports
+|   |   |-- reports/                   # Field analysis outputs
+|   |   |-- tasks/                     # Field analysis pipeline
+|   |
+|   |-- equity/                        # Equity market data pipeline
+|   |   |-- __init__.py
+|   |   |-- pipeline.py                # Multi-provider equity data extractor
+|   |   |-- providers/                 # Data provider implementations
+|   |   |   |-- base.py                # Base provider interface
+|   |   |   |-- alpha_vantage.py       # Alpha Vantage provider
+|   |   |-- data/                      # Equity Excel exports
+|   |
+|   |-- crypto/                        # Crypto market data pipeline
+|       |-- __init__.py
+|       |-- pipeline.py                # Multi-provider crypto data extractor
+|       |-- providers/                 # Crypto exchange implementations
+|       |   |-- base.py                # Base provider interface
+|       |   |-- binance_provider.py    # Binance exchange
+|       |   |-- coinbase_provider.py   # Coinbase exchange
+|       |-- data/                      # Crypto Excel exports
+|
 |-- config/
-|   |-- cik.json                       # Ticker -> CIK mapping (~9,700 entries)
-|   |-- company_metadata.json          # Enriched company profiles (40 companies)
-|   |-- sic_to_sector.json             # SIC code range -> sector/industry mapping
+|   |-- cik.json                       # Ticker → CIK mapping (~9,700 entries)
+|   |-- company_metadata.json          # Enriched company profiles
+|   |-- sic_to_sector.json             # SIC code range → sector/industry mapping
+|   |-- crypto_watchlist.json          # Default crypto symbols to fetch
 |   |-- loggingConfig.json             # Logging configuration
 |
 |-- data/
-|   |-- financials.db                  # SQLite database (all entities)
-|   |-- EDGAR_FINANCIALS_*.xlsx        # Excel exports (per-run snapshots)
+|   |-- financials.db                  # SQLite database (unified storage)
+|   |-- EDGAR_FINANCIALS_*.xlsx        # SEC data Excel exports
+|   |-- EQUITY_DATA_*.xlsx             # Equity data Excel exports
+|   |-- CRYPTO_DATA_*.xlsx             # Crypto data Excel exports
 |
 |-- reports/
 |   |-- field_catalog.json             # 4,148 XBRL fields discovered
 |   |-- field_catalog_metadata.json    # Catalog generation metadata
-|   |-- field_categories.json          # Field classification (statement type, temporal)
+|   |-- field_categories.json          # Field classification
 |   |-- field_priority.json            # Field importance rankings
 |   |-- field_availability_report.json # Cross-company field coverage
 |   |-- field_mapping.json             # Deprecated/synonym field mappings
 |   |-- fiscal_year_metadata.json      # Company fiscal calendar data
 |   |-- point_in_time_map.json         # Filing event timeline
-|   |-- ttm_metrics.json              # Trailing Twelve Month calculations
-|   |-- output_company_financials.json # Aggregated company output
-|
-|-- tasks/
-|   |-- field_analysis_pipeline.py     # Orchestrator for all 4 analysis phases
-|   |-- task1_field_catalog.py         # Phase 1: Build field catalog
-|   |-- task2_field_categorization.py  # Phase 2: Categorize fields
-|   |-- task2_fiscal_years.py          # Phase 2b: Determine fiscal year ends
-|   |-- task3_field_availability.py    # Phase 3: Analyze field coverage
-|   |-- task3_pit_mapping.py           # Phase 3b: Point-in-time event mapping
-|   |-- task4_field_standardization.py # Phase 4: Standardization rules
-|   |-- task4_ttm_calculator.py        # Phase 4b: TTM metric calculation
-|
-|-- tasks_md/                          # Analysis documentation and summaries
+|   |-- ttm_metrics.json               # Trailing Twelve Month calculations
 |
 |-- utils/
 |   |-- __init__.py
 |   |-- session.py                     # HTTP session with rate limiting
 |   |-- excel_formatter.py             # Excel workbook formatting
-|   |-- log.py                         # Color-coded pipeline logging (colorama)
-|   |-- input_parser.py               # Ticker file parser (input.txt)
+|   |-- log.py                         # Color-coded pipeline logging
+|   |-- input_parser.py                # Ticker file parser
 |
 |-- logs/
 |   |-- pipeline.log                   # Verbose DEBUG-level pipeline log
-|   |-- app.log                        # Application log output
 |
 |-- ENTITY_RELATIONSHIP.md             # Full entity-relationship schema reference
 |-- README.md                          # This file
@@ -201,12 +235,19 @@ company_financials/
 
 ### 1. Pipeline Orchestrator (`run_pipeline.sh`)
 
-Bash script that runs the full pipeline end-to-end: enrichment first, then SEC extraction. Both steps read from the same ticker source (defaulting to `input.txt`).
+Bash script that runs the full 4-step pipeline end-to-end:
+1. Company enrichment (SIC → sector/industry)
+2. SEC EDGAR XBRL fundamentals
+3. Equity market data (optional, graceful failure if no API key)
+4. Cryptocurrency market data (Binance/Coinbase)
+
+All steps read from the same ticker source (defaulting to `input.txt`).
 
 **Features:**
 - Color-coded terminal output with timestamps
-- Forwards all CLI arguments to both `enrich.py` and `SEC.py`
+- Forwards all CLI arguments to all 4 pipeline scripts
 - Exits immediately on failure (`set -euo pipefail`)
+- Graceful handling of equity failures (continues to crypto step)
 - Displays ticker count from `input.txt` before starting
 
 **Usage:**
@@ -214,7 +255,7 @@ Bash script that runs the full pipeline end-to-end: enrichment first, then SEC e
 ./run_pipeline.sh                        # Process tickers from input.txt
 ./run_pipeline.sh --tickers AAPL MSFT    # Process specific tickers
 ./run_pipeline.sh --input-file my.txt    # Process from custom file
-./run_pipeline.sh --all                  # Process all ~9,700 tickers in cik.json (very slow)
+./run_pipeline.sh --force                # Bypass cache, re-fetch all data
 ```
 
 ---
@@ -234,10 +275,9 @@ Fetches company metadata from the SEC submissions endpoint and maps SIC codes to
 
 **Usage:**
 ```bash
-python enrich.py                          # Enrich tickers from input.txt
-python enrich.py --tickers AAPL MSFT JPM  # Enrich specific tickers
-python enrich.py --input-file my.txt      # Enrich from custom file
-python enrich.py --all                    # Enrich every ticker in cik.json (slow)
+python sources/sec_edgar/enrich.py                          # Enrich tickers from input.txt
+python sources/sec_edgar/enrich.py --tickers AAPL MSFT JPM  # Enrich specific tickers
+python sources/sec_edgar/enrich.py --input-file my.txt      # Enrich from custom file
 ```
 
 **Caching:** If `company_metadata.json` already contains a ticker with a SIC code, that ticker is skipped (uses cached data). Delete the file to force a full re-fetch.
@@ -263,9 +303,9 @@ The mapping covers ~70 SIC code ranges. When multiple ranges overlap (e.g., SIC 
 
 ---
 
-### 3. Data Extraction (`SEC.py`)
+### 3. SEC EDGAR Extraction (`SEC.py`)
 
-The main extraction engine. Fetches XBRL company facts from SEC EDGAR, normalizes temporal data, enriches with sector/industry, and persists to Excel and SQLite.
+The main extraction engine for fundamentals. Fetches XBRL company facts from SEC EDGAR, normalizes temporal data, enriches with sector/industry, and persists to Excel and SQLite.
 
 **Class: `SEC`**
 
@@ -291,7 +331,7 @@ The full dataset (1M+ rows at scale) goes exclusively to SQLite. Excel gets per-
 | `Balance_Sheet_-_Liabilities` | Liability breakdown | ~35K rows |
 | `Other_Footnotes` | Supplementary disclosures | ~89K rows |
 | `Document_&_Entity_Information` | Filing metadata (dei taxonomy) | ~7K rows |
-| `Ticker_Summary` | One row per ticker with record counts | 40 rows |
+| `Ticker_Summary` | One row per ticker with record counts | N rows |
 
 **Key methods:**
 
@@ -305,11 +345,14 @@ The full dataset (1M+ rows at scale) goes exclusively to SQLite. Excel gets per-
 | `save_aggregated_data()` | Writes per-statement Excel sheets + ticker summary |
 | `save_to_database()` | Writes all collected facts to SQLite |
 
+**Caching:** Tickers with recent data (within 30 days) are skipped unless `--force` is passed.
+
 **Usage:**
 ```bash
-python SEC.py                              # Extract for tickers in input.txt
-python SEC.py --tickers AAPL MSFT JPM      # Extract for specific tickers
-python SEC.py --input-file my_tickers.txt  # Extract from custom file
+python sources/sec_edgar/pipeline.py                              # Extract for tickers in input.txt
+python sources/sec_edgar/pipeline.py --tickers AAPL MSFT JPM      # Extract for specific tickers
+python sources/sec_edgar/pipeline.py --input-file my_tickers.txt  # Extract from custom file
+python sources/sec_edgar/pipeline.py --force                      # Bypass cache, re-fetch all
 ```
 
 **Output record fields:**
@@ -344,7 +387,137 @@ Each `FinancialFact` row contains:
 
 ---
 
-### 4. Field Analysis Pipeline (`tasks/`)
+### 4. Equity Market Data (`Equity.py`)
+
+Fetches daily OHLCV prices, dividends, splits, and key valuation ratios from equity data providers. Currently supports Alpha Vantage. Mirrors the SEC pipeline architecture for consistency.
+
+**Class: `Equity`**
+
+**Constructor workflow:**
+1. Loads ticker list from CLI args, `--input-file`, or `input.txt`
+2. Initializes data provider (Alpha Vantage)
+3. Queries DB for latest price dates to enable incremental updates
+4. For each ticker: fetches history, dividends, splits, and info snapshot
+5. Saves to SQLite (`equity_prices`, `equity_dividends`, `equity_splits`, `equity_info` tables)
+6. Generates Excel with `Equity_Summary` and `Price_Stats` sheets
+
+**Data fetched:**
+
+| Dataset | Description | Typical Size (per ticker) |
+|---------|-------------|---------------------------|
+| **Prices** | Daily OHLCV (Open, High, Low, Close, Volume) | ~1,260 rows (5 years) |
+| **Dividends** | Dividend payment events with amount | ~20 rows |
+| **Splits** | Stock split events with ratio | ~0-5 rows |
+| **Info** | Snapshot of valuation ratios and market data | 1 row |
+
+**Info fields captured:**
+- Market cap, trailing P/E, forward P/E, price-to-book
+- Dividend yield, beta
+- 52-week high/low, average volume
+- Sector, industry (from provider, complements SEC enrichment)
+
+**Caching:** Tickers with price data from today or yesterday (age ≤ 1 day) are skipped unless `--force` is passed.
+
+**Usage:**
+```bash
+python sources/equity/pipeline.py                              # Fetch for tickers in input.txt
+python sources/equity/pipeline.py --tickers AAPL MSFT JPM      # Fetch for specific tickers
+python sources/equity/pipeline.py --input-file my_tickers.txt  # Fetch from custom file
+python sources/equity/pipeline.py --force                      # Bypass cache, re-fetch all
+python sources/equity/pipeline.py --provider alpha_vantage     # Specify provider
+```
+
+**Note:** Requires `ALPHA_VANTAGE_API_KEY` environment variable. If not set, the pipeline gracefully skips equity extraction and continues to crypto step.
+
+**Excel output:**
+
+| Sheet | Description | Typical Size |
+|-------|-------------|-------------|
+| `Equity_Summary` | Info snapshots with market cap, P/E, beta, etc. | 1 row per ticker |
+| `Price_Stats` | Per-ticker aggregates: latest close, min/max, avg volume | 1 row per ticker |
+
+**Key methods:**
+
+| Method | Description |
+|--------|-------------|
+| `_init_provider(provider_name)` | Initializes the specified data provider |
+| `_fetch_and_process(ticker)` | Fetches all market data for a ticker via provider |
+| `save_to_database()` | Writes all collected data to SQLite |
+| `save_to_excel()` | Generates summary and stats sheets |
+
+---
+
+### 5. Crypto Market Data (`Crypto.py`)
+
+Fetches cryptocurrency OHLCV prices and coin information from Binance (US) or Coinbase. Mirrors the equity pipeline architecture.
+
+**Class: `CryptoPipeline`**
+
+**Constructor workflow:**
+1. Initializes base directories (fixes initialization order bug)
+2. Loads symbol list from CLI args or `config/crypto_watchlist.json`
+3. Initializes crypto exchange provider (Binance US or Coinbase)
+4. Queries DB for latest price timestamps to enable incremental updates
+5. For each symbol: fetches historical OHLCV data and coin info
+6. Saves to SQLite (`crypto_prices`, `crypto_info` tables)
+7. Generates Excel with price data, coin info, and summary sheets
+
+**Data fetched:**
+
+| Dataset | Description | Typical Size (per symbol) |
+|---------|-------------|---------------------------|
+| **Prices** | OHLCV candlestick data (Open, High, Low, Close, Volume, Quote Volume, Trades) | ~365 rows (1 year, 1d interval) |
+| **Info** | Coin metadata (name, base asset, quote asset, exchange) | 1 row |
+
+**Supported intervals:** 1m, 5m, 15m, 1h, 4h, 1d, 1w (provider-dependent)
+
+**Caching:** Symbols with data from the last hour (age ≤ 1 hour) are skipped unless `--force` is passed. Crypto moves fast, so 1-hour freshness is appropriate.
+
+**Usage:**
+```bash
+python sources/crypto/pipeline.py                              # Default watchlist
+python sources/crypto/pipeline.py --symbols BTCUSDT ETHUSDT    # Specific symbols
+python sources/crypto/pipeline.py --provider binance           # Specify provider
+python sources/crypto/pipeline.py --provider coinbase          # Use Coinbase
+python sources/crypto/pipeline.py --interval 1h                # Custom interval
+python sources/crypto/pipeline.py --days 365                   # Lookback period
+python sources/crypto/pipeline.py --force                      # Bypass cache
+```
+
+**Default watchlist (`config/crypto_watchlist.json`):**
+- BTCUSDT (Bitcoin)
+- ETHUSDT (Ethereum)
+- BNBUSDT (Binance Coin)
+- SOLUSDT, ADAUSDT, DOGEUSDT, DOTUSDT, MATICUSDT, AVAXUSDT, LINKUSDT
+
+**Providers:**
+
+| Provider | Description | Rate Limits |
+|----------|-------------|-------------|
+| `binance` | Binance US exchange | 1200 requests/minute |
+| `coinbase` | Coinbase exchange | 10 requests/second |
+
+**Excel output:**
+
+| Sheet | Description |
+|-------|-------------|
+| `Prices` | Full OHLCV candlestick data |
+| `Coin Info` | Coin metadata |
+| `Summary` | Pipeline run summary |
+
+**Key methods:**
+
+| Method | Description |
+|--------|-------------|
+| `_load_watchlist()` | Loads default symbols from config file |
+| `_init_provider(provider_name)` | Initializes the specified exchange provider |
+| `_fetch_and_process(symbol)` | Fetches all market data for a symbol |
+| `save_to_database()` | Writes all collected data to SQLite |
+| `save_to_excel()` | Generates price, info, and summary sheets |
+
+---
+
+### 6. Field Analysis Pipeline (`tasks/`)
 
 A 4-phase analysis system that catalogs, categorizes, and prioritizes all XBRL fields across the company universe. Run once to populate the `reports/` directory.
 
@@ -377,7 +550,7 @@ A 4-phase analysis system that catalogs, categorizes, and prioritizes all XBRL f
 
 ---
 
-### 5. Data Models (`models.py`)
+### 7. Data Models (`models.py`)
 
 Pydantic models that enforce type safety and provide a single source of truth for all entity schemas. Every entity from `ENTITY_RELATIONSHIP.md` has a corresponding model.
 
@@ -402,10 +575,14 @@ Pydantic models that enforce type safety and provide a single source of truth fo
 | `FieldPriority` | `field_name` | Ranked importance of a field |
 | `PointInTimeEvent` | composite | A filing event in the timeline |
 | `TTMMetric` | composite | Trailing twelve month annualized metric |
+| `EquityPrice` | composite | Daily OHLCV price record |
+| `EquityDividend` | composite | Dividend payment event |
+| `EquitySplit` | composite | Stock split event |
+| `EquityInfo` | composite | Market data and valuation ratios snapshot |
 
 ---
 
-### 6. Database Layer (`database.py`)
+### 8. Database Layer (`database.py`)
 
 SQLite database manager providing relational storage for all pipeline entities. Uses Python's built-in `sqlite3` module — zero infrastructure required.
 
@@ -452,9 +629,27 @@ results = db.query("""
 db.close()
 ```
 
+**Equity market data methods:**
+
+| Method | Description |
+|--------|-------------|
+| `upsert_equity_prices(rows)` | Insert price records (skips duplicates) |
+| `upsert_equity_dividends(rows)` | Insert dividend records |
+| `upsert_equity_splits(rows)` | Insert split records |
+| `upsert_equity_info(rows)` | Insert info snapshots |
+| `get_ticker_latest_price(ticker)` | Returns most recent price date for cache checks |
+
+**Crypto market data methods:**
+
+| Method | Description |
+|--------|-------------|
+| `upsert_crypto_prices(rows)` | Insert crypto price records (skips duplicates) |
+| `upsert_crypto_info(info)` | Insert or update crypto coin info |
+| `get_crypto_latest_price(symbol, interval)` | Returns most recent timestamp for cache checks |
+
 ---
 
-### 7. Utilities (`utils/`)
+### 9. Utilities (`utils/`)
 
 **`utils/log.py` — Color-coded pipeline logging**
 
@@ -517,38 +712,7 @@ Excel workbook builder with:
 | fye_month        |       | recent_filing_date     |
 | market_cap_tier  |       +------------------------+
 +------------------+
-     |  1:N                  +-------------------+
-     |                       |  field_catalog    |
-     |                       +-------------------+
-     |                       | field_name   [PK] |
-     |                       | taxonomy          |
-     |                       | label             |
-     |                       | description       |
-     |                       | count             |
-     |                       | companies_using   |
-     |                       +-------------------+
-     |                            |  1:1
-     |                       +-------------------+
-     |                       | field_categories  |
-     |                       +-------------------+
-     |                       | field_name   [PK] |
-     |                       | statement_type    |
-     |                       | temporal_nature   |
-     |                       | accounting_concept|
-     |                       | is_critical       |
-     |                       | special_handling  |
-     |                       +-------------------+
-     |                            |  1:1
-     |                       +-------------------+
-     |                       | field_priorities  |
-     |                       +-------------------+
-     |                       | field_name   [PK] |
-     |                       | priority_score    |
-     |                       | availability      |
-     |                       | is_critical       |
-     |                       | tier              |
-     |                       +-------------------+
-     |
+     |  1:N
      +--------->+------------------------+
      |          |   financial_facts      |
      |          +------------------------+
@@ -571,6 +735,54 @@ Excel workbook builder with:
      |          |   period_end,          |
      |          |   fiscal_period, unit, |
      |          |   account_number)      |
+     |          +------------------------+
+     |
+     +--------->+------------------------+
+     |          |    equity_prices       |
+     |          +------------------------+
+     |          | id            [PK,AUTO]|
+     |          | ticker            [FK] |
+     |          | date                   |
+     |          | open, high, low, close |
+     |          | volume                 |
+     |          | UNIQUE(ticker, date)   |
+     |          +------------------------+
+     |
+     +--------->+------------------------+
+     |          |   equity_dividends     |
+     |          +------------------------+
+     |          | id            [PK,AUTO]|
+     |          | ticker            [FK] |
+     |          | date                   |
+     |          | amount                 |
+     |          | UNIQUE(ticker, date)   |
+     |          +------------------------+
+     |
+     +--------->+------------------------+
+     |          |    equity_splits       |
+     |          +------------------------+
+     |          | id            [PK,AUTO]|
+     |          | ticker            [FK] |
+     |          | date                   |
+     |          | ratio                  |
+     |          | UNIQUE(ticker, date)   |
+     |          +------------------------+
+     |
+     +--------->+------------------------+
+     |          |     equity_info        |
+     |          +------------------------+
+     |          | id            [PK,AUTO]|
+     |          | ticker            [FK] |
+     |          | fetched_date           |
+     |          | market_cap             |
+     |          | trailing_pe, forward_pe|
+     |          | price_to_book          |
+     |          | dividend_yield, beta   |
+     |          | fifty_two_week_high/low|
+     |          | average_volume         |
+     |          | sector, industry       |
+     |          | UNIQUE(ticker,         |
+     |          |   fetched_date)        |
      |          +------------------------+
      |
      +--------->+------------------------+
@@ -600,20 +812,54 @@ Excel workbook builder with:
                 |   metric_name,         |
                 |   as_of_date)          |
                 +------------------------+
+
++------------------+
+|  crypto_prices   |
++------------------+
+| symbol           |
+| timestamp        |
+| date             |
+| interval         |
+| open, high, low  |
+| close, volume    |
+| quote_volume     |
+| trades           |
+| PRIMARY KEY(     |
+|   symbol,        |
+|   timestamp,     |
+|   interval)      |
++------------------+
+
++------------------+
+|   crypto_info    |
++------------------+
+| symbol      [PK] |
+| name             |
+| base_asset       |
+| quote_asset      |
+| exchange         |
+| last_updated     |
++------------------+
 ```
 
-**Row counts (as of latest pipeline run — 40 tickers):**
+**Row counts (as of latest pipeline run — 42 companies + 3 crypto symbols):**
 
 | Table | Rows | Notes |
 |-------|------|-------|
-| `companies` | 40 | From enrichment |
+| `companies` | 42 | From enrichment |
 | `fiscal_year_metadata` | 21 | From fiscal year analysis (original 21 tickers) |
 | `field_catalog` | 4,148 | All XBRL fields discovered |
 | `field_categories` | 4,148 | Classifications for each field |
 | `field_priorities` | 4,148 | Priority rankings |
-| `financial_facts` | 1,113,467 | Populated by SEC.py (40 tickers) |
+| `financial_facts` | 1,017,741 | Populated by SEC.py (42 tickers) |
 | `point_in_time_events` | 1,305 | Filing event timeline |
 | `ttm_metrics` | 2,269 | Revenue & NetIncome TTM |
+| `equity_prices` | 0 | Daily OHLCV (requires API key) |
+| `equity_dividends` | 0 | Dividend events (requires API key) |
+| `equity_splits` | 0 | Split events (requires API key) |
+| `equity_info` | 0 | Valuation ratios snapshot (requires API key) |
+| `crypto_prices` | 1,095 | OHLCV candlesticks (3 symbols × 365 days) |
+| `crypto_info` | 3 | Coin metadata (BTC, ETH, BNB) |
 
 **Indexes:**
 
@@ -625,6 +871,11 @@ Excel workbook builder with:
 | `idx_ff_filing_date` | `(filing_date)` | Point-in-time queries |
 | `idx_pit_ticker_fd` | `(ticker, filing_date)` | Filing timeline lookups |
 | `idx_ttm_ticker_metric` | `(ticker, metric_name, as_of_date)` | TTM value retrieval |
+| `idx_ep_ticker_date` | `(ticker, date)` | Price time series |
+| `idx_ed_ticker` | `(ticker)` | Dividend history |
+| `idx_es_ticker` | `(ticker)` | Split history |
+| `idx_ei_ticker` | `(ticker, fetched_date)` | Info snapshots |
+| `idx_cp_symbol_date` | `(symbol, date)` | Crypto price time series |
 
 ---
 
@@ -644,18 +895,24 @@ Key entities:
 | **PointInTimeEvent** | Filing event timeline (prevents look-ahead bias) | `reports/point_in_time_map.json` |
 | **TTMMetric** | Trailing twelve month Revenue and NetIncome | `reports/ttm_metrics.json` |
 | **FiscalYearMetadata** | Fiscal calendar per company | `reports/fiscal_year_metadata.json` |
+| **EquityPrice** | Daily OHLCV price record | Equity provider → SQLite |
+| **EquityDividend** | Dividend payment event | Equity provider → SQLite |
+| **EquitySplit** | Stock split event | Equity provider → SQLite |
+| **EquityInfo** | Market cap, P/E, beta, valuation ratios | Equity provider → SQLite |
+| **CryptoPrice** | Cryptocurrency OHLCV candlestick | Crypto exchange → SQLite |
+| **CryptoInfo** | Coin metadata (name, base/quote asset) | Crypto exchange → SQLite |
 
 ---
 
 ## Company Universe
 
-40 companies across 10 sectors:
+42 companies across 10 sectors:
 
 | Sector | Tickers | SIC Examples |
 |--------|---------|--------------|
 | **Technology** (6) | PLTR, MSFT, AAPL, NVDA, GOOG, CRM | 7372 (Software), 3571 (Computers), 3674 (Semiconductors), 7370 (Data Processing) |
 | **Finance** (9) | JPM, BAC, WFC, GS, MS, AMT, PLD, SPG, O | 6021 (Banks), 6211 (Brokers), 6798 (REITs) |
-| **Retail** (5) | WMT, AMZN, COST, HD, DIS | 5331 (Variety Stores), 5961 (Mail-Order), 5211 (Building Materials), 7990 (Amusement) |
+| **Retail** (6) | WMT, AMZN, COST, HD, DIS, DKS | 5331 (Variety Stores), 5961 (Mail-Order), 5211 (Building Materials), 5940 (Sporting Goods) |
 | **Healthcare** (4) | JNJ, UNH, PFE, ABT | 2834 (Pharmaceuticals), 6324 (Health Insurance) |
 | **Energy** (3) | XOM, CVX, COP | 2911 (Petroleum Refining) |
 | **Mining/Materials** (4) | GOLD, VALE, FCX, SLB | 1040 (Gold Ores), 1000 (Metal Mining), 1389 (Oil Field Services) |
@@ -664,23 +921,12 @@ Key entities:
 | **Utilities** (3) | NEE, DUK, SO | 4911 (Electric Services), 4931 (Combined Services) |
 | **Transportation** (2) | HON, LMT | 3724 (Aircraft Engines), 3760 (Guided Missiles) |
 
-**Record distribution by sector:**
+**Cryptocurrency Universe:**
 
-| Sector | Companies | Financial Facts |
-|--------|-----------|-----------------|
-| Finance | 9 | 279,937 |
-| Technology | 6 | 122,183 |
-| Retail | 5 | 97,133 |
-| Healthcare | 4 | 95,795 |
-| Utilities | 3 | 77,282 |
-| Energy | 3 | 73,933 |
-| Mining/Materials | 4 | 72,265 |
-| Industrial | 2 | 69,712 |
-| Telecom | 2 | 51,701 |
-| Transportation | 2 | 45,068 |
-| **Total** | **40** | **1,113,467** |
-
-**Taxonomy notes:** GOLD and VALE use IFRS (502 unique fields). All others use US-GAAP (3,613 fields). Cross-taxonomy mapping is required for direct field-level comparison.
+- **BTCUSDT** - Bitcoin
+- **ETHUSDT** - Ethereum
+- **BNBUSDT** - Binance Coin
+- *(configurable via `config/crypto_watchlist.json`)*
 
 ---
 
@@ -696,7 +942,7 @@ Complete ticker-to-CIK mapping (~9,700 entries). Used to resolve any ticker to i
 
 ### `config/company_metadata.json`
 
-Enriched company profiles for the 40 pipeline tickers. Generated by `enrich.py`.
+Enriched company profiles for the pipeline tickers. Generated by `enrich.py`.
 
 ```json
 {
@@ -716,6 +962,19 @@ Enriched company profiles for the 40 pipeline tickers. Generated by `enrich.py`.
 ### `config/sic_to_sector.json`
 
 SIC code range-to-sector mapping. Contains ~70 ranges covering all major industries. When multiple ranges overlap for a given SIC code, the narrowest (most specific) range takes precedence.
+
+### `config/crypto_watchlist.json`
+
+Default cryptocurrency symbols to fetch. Includes symbol, name, and category (large_cap, mid_cap).
+
+```json
+{
+  "symbols": [
+    {"symbol": "BTCUSDT", "name": "Bitcoin", "category": "large_cap"},
+    {"symbol": "ETHUSDT", "name": "Ethereum", "category": "large_cap"}
+  ]
+}
+```
 
 ### `config/loggingConfig.json`
 
@@ -755,6 +1014,56 @@ All generated by the field analysis pipeline (`tasks/`). These are reference dat
 
 ### SQL Query Examples
 
+**Latest price for each ticker:**
+```sql
+SELECT ticker, date, close, volume
+FROM equity_prices
+WHERE (ticker, date) IN (
+    SELECT ticker, MAX(date)
+    FROM equity_prices
+    GROUP BY ticker
+)
+ORDER BY ticker;
+```
+
+**Latest crypto prices:**
+```sql
+SELECT symbol, date, close, volume
+FROM crypto_prices
+WHERE interval = '1d'
+  AND (symbol, timestamp) IN (
+    SELECT symbol, MAX(timestamp)
+    FROM crypto_prices
+    WHERE interval = '1d'
+    GROUP BY symbol
+)
+ORDER BY symbol;
+```
+
+**Ticker with price > 100 and P/E < 20:**
+```sql
+SELECT ep.ticker, ep.close, ei.trailing_pe, ei.market_cap, c.sector
+FROM equity_prices ep
+JOIN equity_info ei ON ep.ticker = ei.ticker
+JOIN companies c ON ep.ticker = c.ticker
+WHERE ep.date = (SELECT MAX(date) FROM equity_prices WHERE ticker = ep.ticker)
+  AND ep.close > 100
+  AND ei.trailing_pe < 20
+  AND ei.fetched_date = (SELECT MAX(fetched_date) FROM equity_info WHERE ticker = ei.ticker)
+ORDER BY ei.market_cap DESC;
+```
+
+**Bitcoin price above $50k:**
+```sql
+SELECT date, close, volume
+FROM crypto_prices
+WHERE symbol = 'BTCUSDT'
+  AND interval = '1d'
+  AND close > 50000
+ORDER BY date DESC
+LIMIT 10;
+```
+
 **Companies by sector:**
 ```sql
 SELECT sector, GROUP_CONCAT(ticker) as tickers, COUNT(*) as n
@@ -777,52 +1086,10 @@ WHERE t.metric_name = 'Revenue_TTM'
 ORDER BY c.sector, t.ttm_value DESC;
 ```
 
-**Universal critical fields for cross-company screening:**
-```sql
-SELECT fp.field_name, fc.label, fp.tier, fp.priority_score, fc.temporal_nature
-FROM field_priorities fp
-JOIN field_categories fc ON fp.field_name = fc.field_name
-WHERE fp.tier = 'universal' AND fp.is_critical = 1
-ORDER BY fp.priority_score DESC;
-```
-
-**Point-in-time safe query — latest known financials for AAPL:**
-```sql
-SELECT ff.field, ff.field_label, ff.value, ff.unit, ff.fiscal_period, ff.filing_date
-FROM financial_facts ff
-WHERE ff.ticker = 'AAPL'
-  AND ff.filing_date = (
-    SELECT MAX(ff2.filing_date) FROM financial_facts ff2
-    WHERE ff2.ticker = 'AAPL' AND ff2.fiscal_period = 'FY'
-  )
-  AND ff.fiscal_period = 'FY'
-  AND ff.field_priority > 100
-ORDER BY ff.statement_type, ff.field;
-```
-
-**Sector aggregate — total revenue by sector:**
-```sql
-SELECT c.sector,
-       COUNT(DISTINCT c.ticker) as companies,
-       SUM(t.ttm_value) as total_revenue_ttm,
-       AVG(t.ttm_value) as avg_revenue_ttm
-FROM ttm_metrics t
-JOIN companies c ON t.ticker = c.ticker
-WHERE t.metric_name = 'Revenue_TTM'
-  AND t.as_of_date = (
-    SELECT MAX(t2.as_of_date)
-    FROM ttm_metrics t2
-    WHERE t2.ticker = t.ticker AND t2.metric_name = t.metric_name
-  )
-GROUP BY c.sector
-ORDER BY total_revenue_ttm DESC;
-```
-
 ### Python API Examples
 
 ```python
 from database import DatabaseManager
-from models import Company
 
 # Open database
 db = DatabaseManager()
@@ -832,6 +1099,14 @@ tech = db.get_sector_companies("Technology")
 for c in tech:
     print(f"{c['ticker']}: {c['entity_name']} ({c['industry']})")
 
+# Get latest price for a ticker
+latest = db.get_ticker_latest_price("AAPL")
+print(f"AAPL latest price date: {latest}")
+
+# Get latest crypto price
+latest_ts = db.get_crypto_latest_price("BTCUSDT", "1d")
+print(f"BTC latest timestamp: {latest_ts}")
+
 # Custom query with parameters
 results = db.query(
     "SELECT * FROM ttm_metrics WHERE ticker = ? AND metric_name = ?",
@@ -839,8 +1114,16 @@ results = db.query(
 )
 
 # Use the SEC extractor
-from SEC import SEC
-sec = SEC(tickers=["AAPL", "MSFT"])  # Processes specified tickers and writes to DB
+from sources.sec_edgar.pipeline import SEC
+sec = SEC(tickers=["AAPL", "MSFT"])
+
+# Use the Equity extractor
+from sources.equity.pipeline import Equity
+equity = Equity(tickers=["AAPL", "MSFT"], force=False, provider_name="alpha_vantage")
+
+# Use the Crypto extractor
+from sources.crypto.pipeline import CryptoPipeline
+crypto = CryptoPipeline(symbols=["BTCUSDT", "ETHUSDT"], provider_name="binance")
 
 db.close()
 ```
@@ -871,6 +1154,10 @@ These rules are critical for any downstream system consuming this data:
 
 10. **TTMMetric currently covers Revenue and NetIncome only.** For other metrics, compute TTM manually from `financial_facts` using the point-in-time event timeline.
 
+11. **Crypto timestamps are in milliseconds.** Convert to seconds for datetime operations: `datetime.fromtimestamp(ts / 1000)`.
+
+12. **Crypto intervals are exchange-specific.** Binance supports 1m, 5m, 15m, 1h, 4h, 1d, 1w. Coinbase may have different intervals.
+
 ---
 
 ## Dependencies
@@ -886,7 +1173,7 @@ These rules are critical for any downstream system consuming this data:
 | `beautifulsoup4` | HTML parsing |
 | `fake-useragent` | User agent rotation for SEC rate limits |
 | `colorama` | Cross-platform terminal color output |
-| `yfinance` | Market data (used in `equity.py`) |
+| `yfinance` | Equity market data (optional, not currently used) |
 
 ### Standard Library
 
@@ -900,62 +1187,55 @@ pip install pydantic requests pandas openpyxl beautifulsoup4 fake-useragent colo
 
 ---
 
-## Known Issues & Bugs
+## Known Issues
 
-- [x] ~~**`SEC.py` ticker list is hardcoded in `__init__`**~~ — Now accepts `--tickers` CLI arg, `--input-file`, or reads from `input.txt`
-- [x] ~~**No CLI for `SEC.py` or `enrich.py`**~~ — Both scripts now support `--tickers`, `--input-file`, and `enrich.py` also supports `--all`
-- [x] ~~**Excel blows up on large datasets**~~ — Fixed: full dataset (1M+ rows) goes to SQLite only; Excel gets per-statement sheets within row limits
-- [ ] **`equity.py` is standalone** — Volume analysis script is not integrated into the main pipeline. Ticker is hardcoded to `AAPL`.
-- [ ] **No incremental updates** — `SEC.py` re-fetches all data on every run. Should detect which periods are already in the DB and only fetch new filings.
-- [ ] **`ExcelFormatter` table name collision** — The `displayName` property deduplication can fail if two sheets produce the same sanitized name.
-- [ ] **`_infer_period_start` uses approximate days** — Uses 365/90 day offsets instead of proper calendar month arithmetic. Can be off by a few days.
-- [ ] **IFRS cross-mapping not implemented** — `field_mapping.json` has placeholder structure for `gaap_ifrs_map` but no actual mappings. GOLD and VALE fields cannot be compared to US-GAAP companies.
-- [ ] **No `requirements.txt`** — Dependencies are not formally tracked in a requirements file.
-- [ ] **SIC mapping may miss edge cases** — Some SIC codes fall outside the defined ranges in `sic_to_sector.json` and will default to "Unknown".
-- [ ] **HON and LMT classified as Transportation** — SIC 3724 (Aircraft Engines) and 3760 (Guided Missiles) map to Transportation via broad SIC ranges, but these are arguably better classified as Industrial/Aerospace & Defense. Needs more granular SIC ranges.
-- [ ] **DIS classified as Retail** — SIC 7990 (Amusement & Recreation) maps to Retail. Could warrant a dedicated Media/Entertainment sector.
-- [ ] **Fiscal year metadata only covers original 21 tickers** — The 19 newly added tickers (GOOG, CRM, GS, MS, HD, ABT, COP, SLB, HON, LMT, T, DIS, NEE, DUK, SO, AMT, PLD, SPG, O) need fiscal year analysis re-run.
+- **Equity data requires API key**: Alpha Vantage API key must be set via `ALPHA_VANTAGE_API_KEY` environment variable. Pipeline gracefully skips equity extraction if not set.
+- **Crypto initialization order bug**: Fixed in latest version (moved `base_dir` initialization before watchlist loading).
+- **IFRS cross-mapping not implemented**: `field_mapping.json` has placeholder structure for `gaap_ifrs_map` but no actual mappings. GOLD and VALE fields cannot be compared to US-GAAP companies.
+- **SIC mapping may miss edge cases**: Some SIC codes fall outside the defined ranges in `sic_to_sector.json` and will default to "Unknown".
+- **Fiscal year metadata only covers original 21 tickers**: The 19 newly added tickers need fiscal year analysis re-run.
+- **Rate limiting on crypto exchanges**: Binance and Coinbase have rate limits. Use cache (`--force` flag) to avoid hitting limits.
 
 ---
 
 ## Future Roadmap
 
 ### Near Term
-- [ ] Add `requirements.txt` or `pyproject.toml` for dependency management
-- [ ] Incremental data loading — only fetch new filings not already in the DB
-- [ ] Database backup/sync to Google Drive (rclone or API)
-- [ ] Re-run field analysis pipeline with full 40-ticker universe to update reports and fiscal year metadata
-
-### Medium Term — News & Sentiment Data Layer
-- [ ] **News data ingestion** — Pull financial news from public APIs (e.g., NewsAPI, Finnhub, Alpha Vantage news, SEC RSS feeds) for macro and micro trend analysis
-- [ ] **Macro trend analysis** — Aggregate news sentiment by sector/industry to identify sector-level momentum shifts, regulatory headwinds, and economic cycle signals
-- [ ] **Micro trend analysis** — Company-specific news tracking for earnings surprises, M&A activity, analyst upgrades/downgrades, insider trading signals, and event-driven trading catalysts
-- [ ] **Sentiment scoring** — NLP-based sentiment classification (positive/negative/neutral) with source credibility weighting
-- [ ] **News-to-financials linking** — Correlate news events with filing dates and financial metric changes to identify leading indicators
-- [ ] **News storage** — New `news_articles` and `sentiment_scores` tables in SQLite with full-text search support
-
-### Medium Term — Visualization Dashboard
-- [ ] **Streamlit dashboard** (or similar: Dash, Panel, Gradio) for interactive data exploration
-- [ ] **Sector overview page** — Heatmaps of sector performance, revenue/income comparisons, field coverage matrices
-- [ ] **Company deep-dive page** — Time series charts for key financial metrics, filing timeline, TTM trends, peer comparison
-- [ ] **Field explorer** — Browse the 4,148 XBRL fields with filtering by statement type, availability tier, and priority score
-- [ ] **News feed view** — Real-time news stream with sentiment indicators, filterable by sector/ticker
-- [ ] **Query builder** — SQL query interface against the SQLite database with result visualization
-- [ ] **Export controls** — Download filtered views as CSV, Excel, or JSON
+- [x] ~~Add `requirements.txt` or `pyproject.toml` for dependency management~~
+- [x] ~~Incremental data loading — only fetch new filings not already in the DB~~
+- [x] ~~Integrate equity market data pipeline~~
+- [x] ~~Integrate cryptocurrency market data pipeline~~
+- [ ] Database backup/sync to cloud storage
+- [ ] Re-run field analysis pipeline with full company universe to update reports and fiscal year metadata
+- [ ] Add more equity data providers (Polygon.io, Tiingo, IEX Cloud)
+- [ ] Add more crypto exchanges (Kraken, Gemini, KuCoin)
 
 ### Medium Term — Analytics & Signals
 - [ ] **Macro layer** — Sector-level aggregate tables (total revenue, median margins, sector growth rates)
 - [ ] **Signal layer** — Pre-computed derived metrics (YoY growth, net margin, ROA, debt/equity, sector rank)
+- [ ] **Valuation metrics** — Combine fundamentals + prices for P/E, P/B, EV/EBITDA, PEG ratio calculations
+- [ ] **Technical indicators** — RSI, MACD, moving averages, Bollinger Bands on price data
+- [ ] **Price-to-fundamentals joins** — Link filing dates to price movements for event studies
+- [ ] **Crypto technical analysis** — On-chain metrics, volatility indicators, correlation analysis
 - [ ] Calendar quarter normalization for cross-company temporal alignment
 - [ ] IFRS-to-GAAP field mapping for GOLD and VALE
-- [ ] Market data integration (price, volume, market cap) from yfinance
+
+### Medium Term — Visualization Dashboard
+- [ ] **Streamlit dashboard** for interactive data exploration
+- [ ] **Sector overview page** — Heatmaps of sector performance, revenue/income comparisons
+- [ ] **Company deep-dive page** — Time series charts for key financial metrics, filing timeline, TTM trends
+- [ ] **Crypto dashboard** — Real-time price charts, volume analysis, exchange comparisons
+- [ ] **Field explorer** — Browse the 4,148 XBRL fields with filtering
+- [ ] **Query builder** — SQL query interface against the SQLite database
 
 ### Long Term
 - [ ] Automated field categorization using ML
 - [ ] Support for additional SEC forms (8-K, DEF 14A, S-1)
-- [ ] Real-time filing monitoring via SEC EDGAR full-text search RSS
+- [ ] Real-time filing monitoring via SEC EDGAR RSS
+- [ ] Real-time crypto price streaming (WebSocket connections)
 - [ ] REST API layer for programmatic access
-- [ ] Alerting system — notify on new filings, significant metric changes, or news sentiment shifts
+- [ ] Alerting system — notify on new filings, significant metric changes, or price movements
+- [ ] Cross-asset correlation analysis (equities vs crypto, fundamentals vs prices)
 
 ---
 
@@ -963,3 +1243,34 @@ pip install pydantic requests pandas openpyxl beautifulsoup4 fake-useragent colo
 
 - [`ENTITY_RELATIONSHIP.md`](ENTITY_RELATIONSHIP.md) — Full entity-relationship schema with attributes, relationships, cardinalities, query patterns, and invariants for autonomous trading systems
 - [`tasks_md/`](tasks_md/) — Detailed summaries from each analysis phase
+
+---
+
+## Test Run Results (DKS - Dick's Sporting Goods)
+
+```
+=== Database Summary ===
+companies                  42 rows
+financial_facts       1017741 rows
+equity_prices               0 rows
+crypto_prices            1095 rows
+crypto_info                 3 rows
+
+=== Sample Crypto Data ===
+BTCUSDT    2026-02-15 19:00:00 $ 68,700.00
+ETHUSDT    2026-02-15 19:00:00 $  1,995.00
+BNBUSDT    2026-02-15 19:00:00 $    625.38
+
+=== DKS Company Data ===
+Ticker: DKS
+Name: DICK'S SPORTING GOODS, INC.
+Sector: Retail
+Industry: Retail-Miscellaneous Shopping Goods Stores
+SIC: 5940
+```
+
+**Pipeline Status:**
+- ✅ Step 1: Company enrichment — Success
+- ✅ Step 2: SEC EDGAR fundamentals — Success (19,377 records)
+- ⚠️ Step 3: Equity data — Skipped (requires API key)
+- ✅ Step 4: Crypto data — Success (1,095 records, 3 symbols)

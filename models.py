@@ -168,3 +168,49 @@ class TTMMetric(BaseModel):
     period_end: str
     ttm_value: float
     source_filing: str = ""
+
+
+# ---------------------------------------------------------------------------
+# Equity Market Data (yfinance)
+# ---------------------------------------------------------------------------
+
+class EquityPrice(BaseModel):
+    """Daily OHLCV price record for a ticker."""
+    ticker: str
+    date: str
+    open: Optional[float] = None
+    high: Optional[float] = None
+    low: Optional[float] = None
+    close: Optional[float] = None
+    volume: Optional[int] = None
+
+
+class EquityDividend(BaseModel):
+    """Dividend payment event."""
+    ticker: str
+    date: str
+    amount: float
+
+
+class EquitySplit(BaseModel):
+    """Stock split event."""
+    ticker: str
+    date: str
+    ratio: float
+
+
+class EquityInfo(BaseModel):
+    """Snapshot of key market data and valuation ratios from yfinance."""
+    ticker: str
+    fetched_date: str
+    market_cap: Optional[float] = None
+    trailing_pe: Optional[float] = None
+    forward_pe: Optional[float] = None
+    price_to_book: Optional[float] = None
+    dividend_yield: Optional[float] = None
+    beta: Optional[float] = None
+    fifty_two_week_high: Optional[float] = None
+    fifty_two_week_low: Optional[float] = None
+    average_volume: Optional[int] = None
+    sector: str = ""
+    industry: str = ""

@@ -5,7 +5,7 @@ from pathlib import Path
 from collections import defaultdict
 
 # Add modules from base repo
-sys.path.append(str(Path(__file__).parent.parent))
+sys.path.append(str(Path(__file__).parent.parent.parent.parent))
 
 from utils.session import RequestSession
 
@@ -27,7 +27,7 @@ def build_expanded_field_catalog():
     reqsesh = RequestSession()
     url_xbrl = "https://data.sec.gov/api/xbrl/companyfacts/CIK##########.json"
     base_dir = os.path.dirname(os.path.abspath(__file__))
-    root_dir = os.path.dirname(base_dir)
+    root_dir = str(Path(base_dir).parent.parent.parent)
     jpath = os.path.join(root_dir, "config/cik.json")
     
     with open(jpath, 'r') as f:
